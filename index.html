@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
@@ -23,13 +23,14 @@
     .container {
       max-width: 900px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 20px;
       position: relative;
+      min-height: 100vh;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
       position: relative;
     }
 
@@ -49,21 +50,45 @@
       color: #64748b;
       font-weight: 400;
       margin-top: 15px;
+      margin-bottom: 30px;
+    }
+
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-arrow {
+      font-size: 1.5rem;
+      margin-top: 8px;
+      color: #dc2626;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-8px);
+      }
+      60% {
+        transform: translateY(-4px);
+      }
     }
 
     .section {
-      margin-bottom: 40px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.6s ease-out forwards;
+      margin-bottom: 25px;
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .section:nth-child(even) {
-      animation-delay: 0.1s;
-    }
-
-    .section:nth-child(odd) {
-      animation-delay: 0.2s;
+    .section:first-of-type {
+      margin-top: 20px;
     }
 
     @keyframes fadeInUp {
@@ -214,7 +239,16 @@
       }
 
       .prayer-section {
-        padding: 30px;
+        padding: 25px;
+        margin-top: 30px;
+      }
+
+      .scroll-hint {
+        font-size: 0.8rem;
+      }
+
+      .scroll-arrow {
+        font-size: 1.3rem;
       }
     }
 
@@ -243,6 +277,10 @@
     <div class="header">
       <h1>Що каже Біблія про останній час?</h1>
       <div class="subtitle">Розуміння пророцтв у світлі сучасних подій</div>
+      <div class="scroll-hint">
+        Прокрутіть вниз, щоб дізнатися більше
+        <div class="scroll-arrow">↓</div>
+      </div>
     </div>
 
     <div class="section">
@@ -353,14 +391,33 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
+          entry.target.style.transform = 'translateY(0)';
+          entry.target.style.opacity = '1';
         }
       });
     }, observerOptions);
 
-    document.querySelectorAll('.section').forEach(section => {
-      section.style.animationPlayState = 'paused';
+    // Set initial state and observe sections
+    document.querySelectorAll('.section').forEach((section, index) => {
+      if (index > 0) { // Keep first section visible
+        section.style.opacity = '0.3';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.6s ease';
+      }
       observer.observe(section);
+    });
+
+    // Hide scroll hint after first scroll
+    let hasScrolled = false;
+    window.addEventListener('scroll', () => {
+      if (!hasScrolled && window.pageYOffset > 50) {
+        hasScrolled = true;
+        const scrollHint = document.querySelector('.scroll-hint');
+        if (scrollHint) {
+          scrollHint.style.opacity = '0';
+          scrollHint.style.transition = 'opacity 0.5s ease';
+        }
+      }
     });
   </script>
 </body>
