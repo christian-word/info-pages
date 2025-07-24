@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Слово Життя - Вивчення Біблії</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 50%, #5c6bc0 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 24px;
+            padding: 50px;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ffeb3b, #ffd700);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .cross-symbol {
+            font-size: 48px;
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            display: block;
+        }
+
+        .brand {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ffeb3b, #fff9c4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #e8eaf6;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .verse {
+            font-size: 14px;
+            color: #c5cae9;
+            font-style: italic;
+            border-left: 3px solid #ffd700;
+            padding-left: 15px;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+
+        .player-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, #ffeb3b, #ffd700);
+        }
+
+        .lesson-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .lesson-number {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            color: #1a237e;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lesson-book {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .lesson-duration {
+            color: #c5cae9;
+            font-size: 14px;
+        }
+
+        .lesson-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .bible-reference {
+            font-size: 16px;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .lesson-description {
+            color: #e8eaf6;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .audio-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .custom-player {
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            outline: none;
+            position: relative;
+        }
+
+        .custom-player::-webkit-media-controls-panel {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            font-family: 'Georgia', serif;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 215, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #ffd700, #ffb300);
+            border: none;
+            color: #1a237e;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .ministry-info {
+            margin-bottom: 20px;
+        }
+
+        .ministry-name {
+            font-size: 18px;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .ministry-verse {
+            font-size: 12px;
+            color: #c5cae9;
+            font-style: italic;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .copyright {
+            color: #9e9e9e;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+            }
+            
+            .brand {
+                font-size: 28px;
+            }
+            
+            .lesson-title {
+                font-size: 22px;
+            }
+            
+            .action-buttons {
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .lesson-meta {
+                justify-content: center;
+            }
+        }
+
+        /* Анімації */
+        @keyframes holy-glow {
+            0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+        }
+
+        .playing {
+            animation: holy-glow 3s infinite;
+        }
+
+        @keyframes cross-shine {
+            0% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
+            100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        }
+
+        .cross-symbol {
+            animation: cross-shine 4s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="cross-symbol">✝</span>
+            <h1 class="brand">Слово Життя</h1>
+            <p class="tagline">Вивчення Священного Писання</p>
+            <p class="verse">"Слово Твоє — світильник нозі моїй і світло стежці моїй" - Псалом 118:105</p>
+        </div>
+        
+        <div class="player-section" id="playerSection">
+            <div class="lesson-meta">
+                <span class="lesson-number">Урок 7</span>
+                <span class="lesson-book">Євангеліє від Луки</span>
+                <span class="lesson-duration">42:15</span>
+            </div>
+            
+            <h2 class="lesson-title">Хрест замість меча: Місія Христа</h2>
+            <p class="bible-reference">Луки 2:49-52, 9:56; Римлян 2:4</p>
+            <p class="lesson-description">
+                У цьому глибокому уроці ми досліджуємо природу місії Христа та роль страждання в Божому плані спасіння. 
+                Розглядаємо чотири ключові питання: коли Христос усвідомив Свою місію, чому Марія страждала, 
+                будучи обраною Богом, чому Христос прийшов з хрестом, а не з мечем, і чому Бог обрав шлях 
+                любові, а не примусу для покаяння людей.
+            </p>
+            
+            <div class="audio-container">
+                <audio class="custom-player" controls preload="metadata" id="audioPlayer">
+                    <source src="https://www.dropbox.com/scl/fi/4n9f8e1i2b7acmbjmz05y/Conversations-on-Biblical-Concepts.wav?rlkey=yswmvy5pjihqigymr4eev9z4b&st=pkh0hw0b&dl=1" type="audio/wav">
+                    Ваш браузер не підтримує відтворення аудіо.
+                </audio>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn primary" id="downloadBtn">
+                    📥 Завантажити урок
+                </button>
+                <button class="action-btn" id="favoriteBtn">
+                    ⭐ У вибране
+                </button>
+                <button class="action-btn" id="shareBtn">
+                    📤 Поділитися
+                </button>
+                <button class="action-btn" id="notesBtn">
+                    📝 Нотатки
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="ministry-info">
+                <div class="ministry-name">Християнське служіння "Слово Життя"</div>
+                <div class="ministry-verse">"Дослідіть Писання" - Івана 5:39</div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link" title="YouTube">📺</a>
+                <a href="#" class="social-link" title="Telegram">💬</a>
+                <a href="#" class="social-link" title="Подкасти">🎧</a>
+                <a href="#" class="social-link" title="Сайт">🌐</a>
+            </div>
+            <p class="copyright">© 2025 Слово Життя. Нехай благословить вас Господь!</p>
+        </div>
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playerSection = document.getElementById('playerSection');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const favoriteBtn = document.getElementById('favoriteBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const notesBtn = document.getElementById('notesBtn');
+
+        // Анімація при відтворенні
+        audioPlayer.addEventListener('play', () => {
+            playerSection.classList.add('playing');
+        });
+
+        audioPlayer.addEventListener('pause', () => {
+            playerSection.classList.remove('playing');
+        });
+
+        // Функціонал кнопок
+        downloadBtn.addEventListener('click', () => {
+            const audio = document.querySelector('audio source');
+            const link = document.createElement('a');
+            link.href = audio.src;
+            link.download = 'слово-життя-урок7.wav';
+            link.click();
+            
+            downloadBtn.innerHTML = '✅ Завантажено';
+            setTimeout(() => {
+                downloadBtn.innerHTML = '📥 Завантажити урок';
+            }, 2000);
+        });
+
+        favoriteBtn.addEventListener('click', () => {
+            if (favoriteBtn.style.background.includes('rgb(255, 215, 0)')) {
+                favoriteBtn.style.background = 'rgba(255, 255, 255, 0.08)';
+                favoriteBtn.innerHTML = '⭐ У вибране';
+                favoriteBtn.style.color = '#ffffff';
+            } else {
+                favoriteBtn.style.background = 'linear-gradient(135deg, #ffd700, #ffb300)';
+                favoriteBtn.style.color = '#1a237e';
+                favoriteBtn.innerHTML = '⭐ Збережено';
+            }
+        });
+
+        shareBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Слово Життя - Хрест замість меча',
+                        text: 'Вивчення Біблії: урок про місію Христа з Євангелія від Луки',
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Помилка при спробі поділитися:', err);
+                }
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                shareBtn.innerHTML = '✅ Скопійовано';
+                setTimeout(() => {
+                    shareBtn.innerHTML = '📤 Поділитися';
+                }, 2000);
+            }
+        });
+
+        notesBtn.addEventListener('click', () => {
+            if (notesBtn.innerHTML.includes('Нотатки')) {
+                notesBtn.innerHTML = '📖 Записи відкрито';
+                notesBtn.style.background = 'rgba(255, 215, 0, 0.15)';
+                notesBtn.style.borderColor = 'rgba(255, 215, 0, 0.5)';
+                
+                // Створюємо просту область для нотаток
+                let notesArea = document.getElementById('notesArea');
+                if (!notesArea) {
+                    notesArea = document.createElement('div');
+                    notesArea.id = 'notesArea';
+                    notesArea.style.cssText = `
+                        margin-top: 20px;
+                        padding: 20px;
+                        background: rgba(255, 215, 0, 0.05);
+                        border: 1px solid rgba(255, 215, 0, 0.3);
+                        border-radius: 12px;
+                    `;
+                    notesArea.innerHTML = `
+                        <h4 style="color: #ffd700; margin-bottom: 10px;">📝 Ваші нотатки:</h4>
+                        <textarea style="width: 100%; height: 100px; background: rgba(255,255,255,0.1); 
+                                  border: 1px solid rgba(255,215,0,0.3); border-radius: 8px; 
+                                  color: #fff; padding: 10px; font-family: Georgia, serif;"
+                                  placeholder="Записуйте ваші думки та роздуми про урок..."></textarea>
+                    `;
+                    playerSection.appendChild(notesArea);
+                }
+            } else {
+                notesBtn.innerHTML = '📝 Нотатки';
+                notesBtn.style.background = 'rgba(255, 255, 255, 0.08)';
+                notesBtn.style.borderColor = 'rgba(255, 215, 0, 0.3)';
+                
+                const notesArea = document.getElementById('notesArea');
+                if (notesArea) {
+                    notesArea.remove();
+                }
+            }
+        });
+
+        // Додаємо ефекти наведення
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                if (!btn.classList.contains('primary')) {
+                    btn.style.transform = 'translateY(-2px) scale(1.02)';
+                }
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                if (!btn.classList.contains('primary')) {
+                    btn.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+
+        // Додаємо благословення при завантаженні
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('🙏 Нехай благословить вас Господь вивченням Його Слова!');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
