@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+﻿function handleTrackEnd(index) {
+            tracks[index].classList.remove('playing');
+            
+            <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Христианская Музыка</title>
+    <title>Християнська Музика</title>
     <meta property="og:image" content="https://christian-word.github.io/info-pages/ico-msg/gurt.jpg" />
     <style>
         * {
@@ -14,7 +17,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #d4edda 100%);
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ffeaa7 100%);
             min-height: 100vh;
             color: #2c3e50;
             overflow-x: hidden;
@@ -38,7 +41,7 @@
             font-size: 3rem;
             font-weight: bold;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #3498db, #2ecc71, #f39c12);
+            background: linear-gradient(45deg, #3498db, #e67e22, #9b59b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -48,7 +51,7 @@
 
         @keyframes textGlow {
             from { filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.3)); }
-            to { filter: drop-shadow(0 0 15px rgba(52, 152, 219, 0.6)); }
+            to { filter: drop-shadow(0 0 15px rgba(231, 76, 60, 0.6)); }
         }
 
         .header p {
@@ -60,7 +63,7 @@
 
         .cross-icon {
             font-size: 3.5rem;
-            color: #3498db;
+            color: #e74c3c;
             margin-bottom: 20px;
             animation: glow 2s ease-in-out infinite alternate;
             cursor: pointer;
@@ -72,8 +75,8 @@
         }
 
         @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(52, 152, 219, 0.5); }
-            to { text-shadow: 0 0 30px rgba(52, 152, 219, 0.8), 0 0 40px rgba(46, 204, 113, 0.4); }
+            from { text-shadow: 0 0 20px rgba(231, 76, 60, 0.5); }
+            to { text-shadow: 0 0 30px rgba(231, 76, 60, 0.8), 0 0 40px rgba(155, 89, 182, 0.4); }
         }
 
         .controls-panel {
@@ -122,7 +125,7 @@
         }
 
         .control-btn {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
+            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -149,7 +152,7 @@
         }
 
         .shuffle-btn.active, .repeat-btn.active {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
+            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
             color: white;
         }
 
@@ -180,7 +183,7 @@
         }
 
         .track-count {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
+            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
             color: white;
             padding: 5px 12px;
             border-radius: 15px;
@@ -188,7 +191,7 @@
         }
 
         .track {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(230, 126, 34, 0.05), rgba(155, 89, 182, 0.05));
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
@@ -201,8 +204,8 @@
 
         .track:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.2);
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+            box-shadow: 0 15px 35px rgba(230, 126, 34, 0.2);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(230, 126, 34, 0.1), rgba(155, 89, 182, 0.1));
         }
 
         .track::before {
@@ -227,7 +230,7 @@
         }
 
         .track-number {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
+            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
             color: white;
             width: 50px;
             height: 50px;
@@ -237,7 +240,7 @@
             justify-content: center;
             font-weight: bold;
             margin-right: 20px;
-            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 6px 15px rgba(230, 126, 34, 0.3);
             font-size: 1.1rem;
             transition: all 0.3s ease;
         }
@@ -318,7 +321,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3498db, #2ecc71);
+            background: linear-gradient(90deg, #3498db, #e67e22, #9b59b6);
             border-radius: 3px;
             width: 0%;
             transition: width 0.1s ease;
@@ -336,9 +339,9 @@
             text-align: center;
             margin-top: 40px;
             padding: 30px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(230, 126, 34, 0.1), rgba(155, 89, 182, 0.1));
             border-radius: 20px;
-            border-left: 5px solid #3498db;
+            border-left: 5px solid #e67e22;
             animation: fadeIn 1s ease-out 0.6s both;
             position: relative;
             overflow: hidden;
@@ -375,7 +378,7 @@
         }
 
         .verse cite {
-            color: #3498db;
+            color: #e67e22;
             font-weight: bold;
             font-size: 1rem;
         }
@@ -461,7 +464,7 @@
 
         .bar {
             width: 4px;
-            background: linear-gradient(to top, #3498db, #2ecc71);
+            background: linear-gradient(to top, #3498db, #e67e22, #9b59b6);
             border-radius: 2px;
             animation: visualize 0.8s ease-in-out infinite alternate;
         }
@@ -554,11 +557,11 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #e67e22, #f39c12);
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
             transform: translateX(400px);
             transition: transform 0.5s ease;
             z-index: 1000;
@@ -592,7 +595,7 @@
         }
 
         .theme-btn.active {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
+            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
             color: white;
         }
     </style>
@@ -619,8 +622,8 @@
     <div class="container">
         <div class="header">
             <div class="cross-icon" onclick="blessPage()">✝</div>
-            <h1>Христианская Музыка</h1>
-            <p>м. Суми, Музикальне служіння 04 серпня : © 2025 р</p>
+            <h1>Християнська Музика</h1>
+            <p>м. Суми, Музичне служіння 04 серпня : © 2025 р</p>
         </div>
 
         <div class="controls-panel">
@@ -641,8 +644,8 @@
 
         <div class="music-player">
             <div class="playlist-header">
-                <h2 class="playlist-title">📿 Духовные песни</h2>
-                <div class="track-count">5 композиций</div>
+                <h2 class="playlist-title">📿 Духовні пісні</h2>
+                <div class="track-count">5 композицій</div>
             </div>
 
             <div class="visualizer" id="visualizer">
@@ -674,7 +677,7 @@
                 <div class="audio-controls">
                     <audio controls preload="metadata">
                         <source src="https://raw.githubusercontent.com/christian-word/gospel-audio/main/AudioFolder/EXB/До%20тебе%20Господь%20у%20молитві йдемо.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио элемент.
+                        Ваш браузер не підтримує аудіо елемент.
                     </audio>
                     <div class="progress-bar" onclick="seekTo(event, this)">
                         <div class="progress-fill"></div>
@@ -702,7 +705,7 @@
                 <div class="audio-controls">
                     <audio controls preload="metadata">
                         <source src="https://raw.githubusercontent.com/christian-word/gospel-audio/main/AudioFolder/EXB/Охр_04.08.25.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио элемент.
+                        Ваш браузер не підтримує аудіо елемент.
                     </audio>
                     <div class="progress-bar" onclick="seekTo(event, this)">
                         <div class="progress-fill"></div>
@@ -730,7 +733,7 @@
                 <div class="audio-controls">
                     <audio controls preload="metadata">
                         <source src="https://raw.githubusercontent.com/christian-word/gospel-audio/main/AudioFolder/EXB/Милість.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио элемент.
+                        Ваш браузер не підтримує аудіо елемент.
                     </audio>
                     <div class="progress-bar" onclick="seekTo(event, this)">
                         <div class="progress-fill"></div>
@@ -758,7 +761,7 @@
                 <div class="audio-controls">
                     <audio controls preload="metadata">
                         <source src="https://raw.githubusercontent.com/christian-word/gospel-audio/main/AudioFolder/EXB/Влад%20Тима%20Юля_27.07.25.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио элемент.
+                        Ваш браузер не підтримує аудіо елемент.
                     </audio>
                     <div class="progress-bar" onclick="seekTo(event, this)">
                         <div class="progress-fill"></div>
@@ -786,7 +789,7 @@
                 <div class="audio-controls">
                     <audio controls preload="metadata">
                         <source src="https://raw.githubusercontent.com/christian-word/gospel-audio/main/AudioFolder/EXB/Хай%20буде%20ім'я%20Бога%20благословенне.mp3" type="audio/mpeg">
-                        Ваш браузер не поддерживает аудио элемент.
+                        Ваш браузер не підтримує аудіо елемент.
                     </audio>
                     <div class="progress-bar" onclick="seekTo(event, this)">
                         <div class="progress-fill"></div>
@@ -800,7 +803,7 @@
         </div>
 
         <div class="verse">
-            <p>"Пойте Господу песнь новую, хвала Ему в собрании святых."</p>
+            <p>"Співайте Господу пісню нову, хвала Йому в зборі святих."</p>
             <cite>— Псалом 149:1</cite>
         </div>
     </div>
@@ -868,7 +871,7 @@
                     audio.volume = masterVolume;
                 });
                 
-                showNotification(`Громкость: ${this.value}%`);
+                showNotification(`Гучність: ${this.value}%`);
             });
         }
 
@@ -941,7 +944,7 @@
         }
 
         function handleTrackPlay(index) {
-            // Остановка других треков
+            // Зупинка інших треків
             audios.forEach((audio, i) => {
                 if (i !== index) {
                     audio.pause();
@@ -955,12 +958,12 @@
             isPlaying = true;
             currentTrackIndex = index;
 
-            // Увеличение счетчика прослушиваний
+            // Збільшення лічильника прослуховувань
             const playCount = tracks[index].querySelector('.play-count');
             const currentCount = parseInt(playCount.textContent.replace('👥 ', ''));
             playCount.textContent = `👥 ${currentCount + 1}`;
 
-            showNotification(`🎵 Играет: ${tracks[index].querySelector('h3').textContent}`);
+            showNotification(`🎵 Грає: ${tracks[index].querySelector('h3').textContent}`);
         }
 
         function handleTrackPause(index) {
@@ -974,21 +977,35 @@
             tracks[index].classList.remove('playing');
             
             if (repeatMode === 2) {
-                // Повтор одного трека
+                // Повтор одного треку
                 audios[index].currentTime = 0;
                 audios[index].play();
+                showNotification('🔂 Повтор поточного треку');
                 return;
             }
 
-            // Автоматический переход к следующему треку
+            // Автоматичний перехід до наступного треку
             if (repeatMode === 1 || index < audios.length - 1) {
                 setTimeout(() => {
-                    nextTrack();
-                }, 500);
+                    let nextIndex;
+                    
+                    if (isShuffleMode) {
+                        do {
+                            nextIndex = Math.floor(Math.random() * audios.length);
+                        } while (nextIndex === currentTrackIndex && audios.length > 1);
+                    } else {
+                        nextIndex = (index + 1) % audios.length;
+                    }
+
+                    // Автоматично програвати наступний трек
+                    playTrack(nextIndex);
+                    showNotification(`🎵 Автоперехід: ${tracks[nextIndex].querySelector('h3').textContent}`);
+                }, 1000);
             } else {
                 document.getElementById('playPauseBtn').textContent = '▶️';
                 document.getElementById('visualizer').classList.remove('active');
                 isPlaying = false;
+                showNotification('🏁 Плейлист завершено');
             }
         }
 
@@ -1017,16 +1034,17 @@
                 playTrack(nextIndex);
             } else {
                 currentTrackIndex = nextIndex;
-                showNotification(`Следующий трек: ${tracks[nextIndex].querySelector('h3').textContent}`);
+                showNotification(`Наступний трек: ${tracks[nextIndex].querySelector('h3').textContent}`);
             }
         }
 
         function previousTrack() {
             const currentAudio = audios[currentTrackIndex];
             
-            // Если прошло более 3 секунд, перемотать к началу
+            // Якщо пройшло більше 3 секунд, перемотати до початку
             if (currentAudio.currentTime > 3) {
                 currentAudio.currentTime = 0;
+                showNotification('⏪ Перемотано до початку');
                 return;
             }
 
@@ -1036,7 +1054,7 @@
                 playTrack(prevIndex);
             } else {
                 currentTrackIndex = prevIndex;
-                showNotification(`Предыдущий трек: ${tracks[prevIndex].querySelector('h3').textContent}`);
+                showNotification(`Попередній трек: ${tracks[prevIndex].querySelector('h3').textContent}`);
             }
         }
 
@@ -1046,10 +1064,10 @@
             
             if (isShuffleMode) {
                 shuffleBtn.classList.add('active');
-                showNotification('🔀 Перемешивание включено');
+                showNotification('🔀 Перемішування увімкнено');
             } else {
                 shuffleBtn.classList.remove('active');
-                showNotification('📋 Последовательное воспроизведение');
+                showNotification('📋 Послідовне відтворення');
             }
         }
 
@@ -1061,16 +1079,16 @@
                 case 0:
                     repeatBtn.classList.remove('active');
                     repeatBtn.textContent = '🔁';
-                    showNotification('🚫 Повтор отключен');
+                    showNotification('🚫 Повтор вимкнено');
                     break;
                 case 1:
                     repeatBtn.classList.add('active');
                     repeatBtn.textContent = '🔁';
-                    showNotification('🔄 Повтор всех треков');
+                    showNotification('🔄 Повтор всіх треків');
                     break;
                 case 2:
                     repeatBtn.textContent = '🔂';
-                    showNotification('🔂 Повтор текущего трека');
+                    showNotification('🔂 Повтор поточного треку');
                     break;
             }
         }
@@ -1081,10 +1099,10 @@
             
             if (btn.classList.contains('active')) {
                 btn.textContent = '♥';
-                showNotification(`❤️ "${trackTitle}" добавлен в избранное`);
+                showNotification(`❤️ "${trackTitle}" додано до улюблених`);
             } else {
                 btn.textContent = '♡';
-                showNotification(`💔 "${trackTitle}" удален из избранного`);
+                showNotification(`💔 "${trackTitle}" видалено з улюблених`);
             }
         }
 
@@ -1148,9 +1166,9 @@
             cross.offsetHeight; // Trigger reflow
             cross.style.animation = 'glow 0.5s ease-in-out 3';
             
-            // Создание эффекта благословения
+            // Створення ефекту благословення
             createBlessingEffect();
-            showNotification('🙏 Божьих благословений!');
+            showNotification('🙏 Божих благословень!');
         }
 
         function createBlessingEffect() {
@@ -1180,25 +1198,25 @@
             buttons.forEach(btn => btn.classList.remove('active'));
             
             if (theme === 'dark') {
-                document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)';
+                document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #8e44ad 100%)';
                 document.body.style.color = '#ecf0f1';
                 event.target.classList.add('active');
-                showNotification('🌙 Темная тема активирована');
+                showNotification('🌙 Темна тема активована');
             } else {
-                document.body.style.background = 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #d4edda 100%)';
+                document.body.style.background = 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ffeaa7 100%)';
                 document.body.style.color = '#2c3e50';
                 buttons[0].classList.add('active');
-                showNotification('☀️ Светлая тема активирована');
+                showNotification('☀️ Світла тема активована');
             }
         }
 
         function loadUserPreferences() {
-            // Здесь можно было бы загружать предпочтения пользователя
-            // Но так как localStorage недоступен, используем значения по умолчанию
-            showNotification('🎵 Добро пожаловать! Используйте пробел для воспроизведения');
+            // Тут можна було б завантажувати налаштування користувача
+            // Але оскільки localStorage недоступний, використовуємо значення за замовчуванням
+            showNotification('🎵 Ласкаво просимо! Використовуйте пробіл для відтворення');
         }
 
-        // Эффекты при загрузке страницы
+        // Ефекти при завантаженні сторінки
         window.addEventListener('load', function() {
             setTimeout(() => {
                 document.querySelector('.header').style.transform = 'scale(1.05)';
