@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ffeaa7 100%);
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #d4edda 100%);
             min-height: 100vh;
             color: #2c3e50;
             overflow-x: hidden;
@@ -41,7 +41,7 @@
             font-size: 3rem;
             font-weight: bold;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(45deg, #3498db, #2ecc71, #9b59b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -51,7 +51,7 @@
 
         @keyframes textGlow {
             from { filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.3)); }
-            to { filter: drop-shadow(0 0 15px rgba(231, 76, 60, 0.6)); }
+            to { filter: drop-shadow(0 0 15px rgba(155, 89, 182, 0.6)); }
         }
 
         .header p {
@@ -63,7 +63,7 @@
 
         .cross-icon {
             font-size: 3.5rem;
-            color: #e74c3c;
+            color: #3498db;
             margin-bottom: 20px;
             animation: glow 2s ease-in-out infinite alternate;
             cursor: pointer;
@@ -75,8 +75,8 @@
         }
 
         @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(231, 76, 60, 0.5); }
-            to { text-shadow: 0 0 30px rgba(231, 76, 60, 0.8), 0 0 40px rgba(155, 89, 182, 0.4); }
+            from { text-shadow: 0 0 20px rgba(52, 152, 219, 0.5); }
+            to { text-shadow: 0 0 30px rgba(52, 152, 219, 0.8), 0 0 40px rgba(155, 89, 182, 0.4); }
         }
 
         .controls-panel {
@@ -125,7 +125,7 @@
         }
 
         .control-btn {
-            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(135deg, #3498db, #2ecc71, #9b59b6);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -134,12 +134,12 @@
             transition: all 0.3s ease;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
         }
 
         .control-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
         }
 
         .control-btn:active {
@@ -147,12 +147,12 @@
         }
 
         .shuffle-btn, .repeat-btn {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
+            background: rgba(155, 89, 182, 0.2);
+            color: #9b59b6;
         }
 
         .shuffle-btn.active, .repeat-btn.active {
-            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(135deg, #3498db, #2ecc71, #9b59b6);
             color: white;
         }
 
@@ -183,7 +183,7 @@
         }
 
         .track-count {
-            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(135deg, #3498db, #2ecc71, #9b59b6);
             color: white;
             padding: 5px 12px;
             border-radius: 15px;
@@ -191,11 +191,11 @@
         }
 
         .track {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(230, 126, 34, 0.05), rgba(155, 89, 182, 0.05));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05), rgba(155, 89, 182, 0.03));
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(155, 89, 182, 0.15);
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
@@ -204,8 +204,8 @@
 
         .track:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(230, 126, 34, 0.2);
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(230, 126, 34, 0.1), rgba(155, 89, 182, 0.1));
+            box-shadow: 0 15px 35px rgba(155, 89, 182, 0.2);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.08), rgba(155, 89, 182, 0.06));
         }
 
         .track::before {
@@ -215,7 +215,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(155, 89, 182, 0.1), transparent);
             transition: left 0.6s ease;
         }
 
@@ -230,7 +230,7 @@
         }
 
         .track-number {
-            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(135deg, #3498db, #2ecc71, #9b59b6);
             color: white;
             width: 50px;
             height: 50px;
@@ -240,7 +240,7 @@
             justify-content: center;
             font-weight: bold;
             margin-right: 20px;
-            box-shadow: 0 6px 15px rgba(230, 126, 34, 0.3);
+            box-shadow: 0 6px 15px rgba(155, 89, 182, 0.3);
             font-size: 1.1rem;
             transition: all 0.3s ease;
         }
@@ -274,11 +274,11 @@
         }
 
         .play-count, .duration {
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(155, 89, 182, 0.1);
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 0.8rem;
-            color: #3498db;
+            color: #9b59b6;
         }
 
         .favorite-btn {
@@ -304,7 +304,7 @@
             width: 100%;
             height: 60px;
             border-radius: 30px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.08), rgba(155, 89, 182, 0.06));
             outline: none;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
         }
@@ -312,7 +312,7 @@
         .progress-bar {
             width: 100%;
             height: 6px;
-            background: rgba(52, 152, 219, 0.2);
+            background: rgba(155, 89, 182, 0.2);
             border-radius: 3px;
             margin-top: 10px;
             position: relative;
@@ -321,7 +321,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(90deg, #3498db, #2ecc71, #9b59b6);
             border-radius: 3px;
             width: 0%;
             transition: width 0.1s ease;
@@ -339,9 +339,9 @@
             text-align: center;
             margin-top: 40px;
             padding: 30px;
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(230, 126, 34, 0.1), rgba(155, 89, 182, 0.1));
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.08), rgba(155, 89, 182, 0.06));
             border-radius: 20px;
-            border-left: 5px solid #e67e22;
+            border-left: 5px solid #9b59b6;
             animation: fadeIn 1s ease-out 0.6s both;
             position: relative;
             overflow: hidden;
@@ -353,7 +353,7 @@
             top: -10px;
             left: 20px;
             font-size: 4rem;
-            color: rgba(52, 152, 219, 0.2);
+            color: rgba(155, 89, 182, 0.2);
             font-family: serif;
         }
 
@@ -363,7 +363,7 @@
             bottom: -20px;
             right: 20px;
             font-size: 4rem;
-            color: rgba(52, 152, 219, 0.2);
+            color: rgba(155, 89, 182, 0.2);
             font-family: serif;
         }
 
@@ -378,7 +378,7 @@
         }
 
         .verse cite {
-            color: #e67e22;
+            color: #9b59b6;
             font-weight: bold;
             font-size: 1rem;
         }
@@ -414,13 +414,13 @@
         /* Пульсирующий эффект для активного трека */
         .track.playing {
             animation: pulse 2s ease-in-out infinite;
-            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(52, 152, 219, 0.15));
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(52, 152, 219, 0.12), rgba(155, 89, 182, 0.1));
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(155, 89, 182, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(155, 89, 182, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(155, 89, 182, 0); }
         }
 
         /* Плавающие частицы */
@@ -436,7 +436,7 @@
 
         .particle {
             position: absolute;
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(155, 89, 182, 0.1);
             border-radius: 50%;
             animation: float 8s ease-in-out infinite;
         }
@@ -464,7 +464,7 @@
 
         .bar {
             width: 4px;
-            background: linear-gradient(to top, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(to top, #3498db, #2ecc71, #9b59b6);
             border-radius: 2px;
             animation: visualize 0.8s ease-in-out infinite alternate;
         }
@@ -557,11 +557,11 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #e67e22, #f39c12);
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.3);
             transform: translateX(400px);
             transition: transform 0.5s ease;
             z-index: 1000;
@@ -595,7 +595,7 @@
         }
 
         .theme-btn.active {
-            background: linear-gradient(135deg, #3498db, #e67e22, #9b59b6);
+            background: linear-gradient(135deg, #3498db, #2ecc71, #9b59b6);
             color: white;
         }
     </style>
@@ -1203,7 +1203,7 @@
                 event.target.classList.add('active');
                 showNotification('🌙 Темна тема активована');
             } else {
-                document.body.style.background = 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ffeaa7 100%)';
+                document.body.style.background = 'linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #d4edda 100%)';
                 document.body.style.color = '#2c3e50';
                 buttons[0].classList.add('active');
                 showNotification('☀️ Світла тема активована');
