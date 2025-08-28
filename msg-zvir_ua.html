@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Суперінтелект і біблійська перспектива</title>
      <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/main/ico-msg/armaged.jpg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,152 +13,194 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #4a6cf7;
+            --secondary: #6a79f6;
+            --accent: #8a63d2;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #198754;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --light-bg: #f1f5f9;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #222;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: var(--dark);
             line-height: 1.6;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
             position: relative;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
-        }
-
-        h1 {
-            text-align: center;
-            padding: 40px 20px 20px;
-            font-size: 2.2em;
-            color: #2c3e50;
-            font-weight: 300;
-        }
-
-        h2 {
-            text-align: center;
-            color: #34495e;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            font-weight: 400;
-        }
-
-        h3 {
-            color: #2c3e50;
-            margin: 20px 0 10px;
-            font-size: 1.2em;
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
         }
 
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .mobile-nav {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .content {
+            padding: 1rem;
+        }
+
         .section {
-            margin: 20px;
-            padding: 30px;
+            margin: 1rem 0;
+            padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
+            background: white;
         }
 
-        .section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        .section:last-child {
+            margin-bottom: 3rem;
         }
 
-        .simple {
-            background: linear-gradient(135deg, #eef7ff 0%, #ddeeff 100%);
-            border-left: 5px solid #3399ff;
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
         }
 
-        .detailed {
-            background: linear-gradient(135deg, #fffbea 0%, #fff5cc 100%);
-            border-left: 5px solid #ffcc00;
+        .section-title i {
+            margin-right: 0.7rem;
+            color: var(--accent);
         }
 
-        ul {
-            margin: 15px 0 15px 30px;
-            padding: 0;
+        h3 {
+            color: var(--dark);
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
         }
 
-        li {
-            margin: 8px 0;
-            padding: 5px 0;
+        h3 i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+            font-size: 1.1rem;
         }
 
         p {
-            margin: 15px 0;
+            margin: 1rem 0;
             text-align: justify;
-            font-size: 1.05em;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.8rem 0;
+            padding-left: 0.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
             background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 600px;
         }
 
         th, td {
-            border: 1px solid #e6e6e6;
-            padding: 15px;
-            vertical-align: top;
+            border: 1px solid #eaeaea;
+            padding: 1rem;
             text-align: left;
+            font-size: 0.95rem;
         }
 
         th {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: #f8f9fa;
             font-weight: 600;
-            color: #495057;
+            color: var(--dark);
             text-align: center;
-            font-size: 1.1em;
         }
 
         tr:nth-child(even) td {
             background: #fafafa;
         }
 
-        tr:hover td {
-            background: #f0f8ff;
-            transition: background 0.3s ease;
-        }
-
-        /* Біблійні посилання */
         .bible-ref {
-            color: #3498db;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-            position: relative;
+            color: var(--primary);
             font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            background: rgba(74, 108, 247, 0.1);
+            display: inline-block;
+            margin: 0.2rem 0;
         }
 
-        .bible-ref:hover {
-            background: #3498db;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
-        }
-
-        .bible-ref:active {
-            transform: translateY(0);
+        .bible-ref i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
         }
 
         /* Модальне вікно */
@@ -169,7 +212,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease;
         }
@@ -179,10 +222,22 @@
             to { opacity: 1; }
         }
 
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.4s ease;
+        }
+
         @keyframes slideIn {
             from { 
                 opacity: 0;
-                transform: translateY(-50px) scale(0.9);
+                transform: translateY(-30px) scale(0.95);
             }
             to { 
                 opacity: 1;
@@ -190,239 +245,254 @@
             }
         }
 
-        .modal-content {
-            background: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            animation: slideIn 0.4s ease;
-        }
-
         .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient);
             color: white;
-            padding: 20px 30px;
+            padding: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .modal-title {
-            font-size: 1.5em;
-            font-weight: 300;
+            font-size: 1.2rem;
+            font-weight: 500;
         }
 
         .close {
             color: white;
-            font-size: 35px;
-            font-weight: 300;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
         }
 
-        .close:hover {
-            background: rgba(255,255,255,0.2);
-            transform: rotate(90deg);
-        }
-
         .modal-body {
-            padding: 30px;
+            padding: 1.5rem;
             max-height: 60vh;
             overflow-y: auto;
         }
 
-        .modal-body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .modal-body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .modal-body::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-
-        .modal-body::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
         .verse {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-left: 3px solid #3498db;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-left: 3px solid var(--primary);
             background: #f8f9fa;
             border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .verse:hover {
-            background: #e3f2fd;
-            border-left-color: #2196f3;
         }
 
         .verse-number {
             font-weight: bold;
-            color: #3498db;
-            margin-right: 10px;
-            font-size: 0.9em;
-        }
-
-        .verse-text {
-            display: inline;
-            line-height: 1.6;
+            color: var(--primary);
+            margin-right: 0.5rem;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #3498db;
-            border-top: 2px solid transparent;
-            border-radius: 50%;
-            margin-left: 10px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            padding: 2rem;
+            color: var(--gray);
         }
 
         .error {
-            color: #e74c3c;
+            color: var(--danger);
             text-align: center;
-            padding: 20px;
+            padding: 1.5rem;
             background: #ffeaea;
             border-radius: 5px;
-            margin: 20px 0;
+            margin: 1rem 0;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
         }
 
         /* Адаптивність */
-        @media (max-width: 768px) {
+        @media (min-width: 768px) {
             .container {
-                margin: 10px;
-                border-radius: 10px;
+                max-width: 750px;
+                margin: 2rem auto;
+                border-radius: 15px;
             }
             
-            h1 {
-                font-size: 1.8em;
-                padding: 30px 15px 15px;
+            .header {
+                padding: 2.5rem 2rem;
+                border-radius: 15px 15px 0 0;
             }
             
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .content {
+                padding: 2rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 900px;
+            }
+        }
+
+        @media (max-width: 767px) {
             .section {
-                margin: 15px;
-                padding: 20px;
+                padding: 1.2rem;
+                margin: 0.8rem 0;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            th, td {
+                padding: 0.8rem;
             }
             
             .modal-content {
                 width: 95%;
-                margin: 10% auto;
-            }
-            
-            .modal-header {
-                padding: 15px 20px;
+                margin: 5% auto;
             }
             
             .modal-body {
-                padding: 20px;
+                padding: 1rem;
             }
+        }
 
-            table {
-                font-size: 0.9em;
+        /* Спеціальні класи для секцій */
+        .detailed {
+            border-left: 4px solid var(--primary);
+        }
+
+        .simple {
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Анімації */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-
-            th, td {
-                padding: 10px 8px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Суперінтелект і біблійська перспектива</h1>
-
-        <div class="section detailed">
-            <h2>Якщо пов'язати це з біблійською перспективою, то:</h2>
-
-            <h3>1. Суперінтелект як "образ звіра"</h3>
-            <p>У <span class="bible-ref" data-book="66" data-chapter="13" data-verses="1-18">Об'явленні 13</span> сказано, що звір змусить всіх поклонятися його образу. Сучасний ШІ вже можна уявити як "образ", створений руками людини, але отримуючий владу над світом. Цей образ — не просто картинка, а цифрова система, яка діє, говорить, приймає рішення. Якщо раніше «образ» розумівся як ідол або статуя, то сьогодні цифровий «образ» може бути живою системою.</p>
-
-            <h3>2. Антихрист і "місія"</h3>
-            <p>Антихрист згідно Писання прийде не просто як правитель, а як той, хто вважатиметься спасителем, месією. Його завдання — дати світу ілюзію порядку, єдності та «спасіння», але ціною поклоніння йому та відречення від істинного Бога.</p>
-            <p>Якщо людство створює "Бога-ШІ" заради контролю і захисту, цілком можливо, що саме ця система стане інструментом антихриста. Не випадково Писання говорить, що "він сяде в храмі Божому як Бог, видаючи себе за Бога" (<span class="bible-ref" data-book="53" data-chapter="2" data-verse="4">2 Солунян 2:4</span>). Сьогодні «храм» може бути не лише будівлею, але й центром влади, де обожнюють технологію.</p>
-
-            <h3>3. Ознаки приходу</h3>
-            <ul>
-                <li>Масове поклоніння технології та віра в те, що «машина краще знає».</li>
-                <li>Глобальне об'єднання економіки та політики навколо єдиної цифрової системи (<span class="bible-ref" data-book="66" data-chapter="13" data-verses="16-17">Об'явлення 13:16-17</span>).</li>
-                <li>Проголошення, що цей «розум» дає людству мир і порядок, але вимагає абсолютного підкорення.</li>
-                <li>Стирання відмінностей між духовним і технічним, коли люди шукають «спасіння» в алгоритмі.</li>
-            </ul>
-
-            <h3>4. Момент приходу</h3>
-            <p>Ключовий момент — коли ШІ перестане бути інструментом і стане центром влади. Тоді з'явиться людина (Антихрист), яка стане на чолі цієї системи і оголосить себе «місією». І тоді виповниться слово: «І поклоняться йому всі, що живуть на землі» (<span class="bible-ref" data-book="66" data-chapter="13" data-verse="8">Об'явлення 13:8</span>).</p>
+        <div class="header">
+            <h1>Суперінтелект і біблійська перспектива</h1>
+            <p>Дослідження взаємозв'язку технологій та біблійних пророцтв</p>
         </div>
 
-        <div class="section simple">
-            <h2>Біблія ⇄ Технології ⇄ Антихрист</h2>
-            <table>
-                <tr>
-                    <th>📖 Біблія</th>
-                    <th>🌐 Технології</th>
-                    <th>👑 Можливий прояв</th>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="66" data-chapter="13" data-verses="14-15">Об'явлення 13:14–15</span> — «образ звіра... говорив»</td>
-                    <td>ШІ-аватари, синтез голосу/обличчя, діалог з масами</td>
-                    <td>Культ «говорячого образу» як живого божества</td>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="66" data-chapter="13" data-verses="16-17">Об'явлення 13:16–17</span> — «ні купувати, ні продавати...»</td>
-                    <td>Цифровий ID, біометрія, програмовані платежі</td>
-                    <td>Економіка допуску: право на угоди ↔ лояльність</td>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="53" data-chapter="2" data-verses="3-4">2 Солунян 2:3–4</span> — «сяде в храмі... як бог»</td>
-                    <td>Інфраструктурний «храм» даних і інтерфейсів</td>
-                    <td>Система як найвищий авторитет істини і суду</td>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="40" data-chapter="24" data-verse="24">Матвія 24:24</span> — «знамення та чудеса»</td>
-                    <td>Deepfake, VR/AR, нейро- і біотех</td>
-                    <td>Техно-«чудеса» для зміцнення культу лідера</td>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="27" data-chapter="7" data-verses="23-25">Даниїла 7:23–25</span> — «пожере всю землю»</td>
-                    <td>Глобальні мережі управління ресурсами</td>
-                    <td>Уніфікація норм, придушення відхилень</td>
-                </tr>
-                <tr>
-                    <td><span class="bible-ref" data-book="66" data-chapter="17" data-verse="13">Об'явлення 17:13</span> — «передадуть силу...»</td>
-                    <td>Консолідація держав і корпорацій</td>
-                    <td>Централізація влади в єдиній системі</td>
-                </tr>
-            </table>
+        <div class="mobile-nav">
+            <div class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Головна</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-bible"></i>
+                <span>Писання</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-brain"></i>
+                <span>Про ШІ</span>
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-book-open"></i>
+                <span>Статті</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section detailed fade-in">
+                <h2 class="section-title"><i class="fas fa-link"></i> Зв'язок з біблійською перспективою</h2>
+
+                <h3><i class="fas fa-robot"></i> 1. Суперінтелект як "образ звіра"</h3>
+                <p>У <span class="bible-ref" data-book="66" data-chapter="13" data-verses="1-18">Об'явлення 13 <i class="fas fa-external-link-alt"></i></span> сказано, що звір змусить всіх поклонятися його образу. Сучасний ШІ вже можна уявити як "образ", створений руками людини, але отримуючий владу над світом. Цей образ — не просто картинка, а цифрова система, яка діє, говорить, приймає рішення. Якщо раніше «образ» розумівся як ідол або статуя, то сьогодні цифровий «образ» може бути живою системою.</p>
+
+                <h3><i class="fas fa-cross"></i> 2. Антихрист і "місія"</h3>
+                <p>Антихрист згідно Писання прийде не просто як правитель, а як той, хто вважатиметься спасителем, месією. Його завдання — дати світу ілюзію порядку, єдності та «спасіння», але ціною поклоніння йому та відречення від істинного Бога.</p>
+                <p>Якщо людство створює "Бога-ШІ" заради контролю і захисту, цілком можливо, що саме ця система стане інструментом антихриста. Не випадково Писання говорить, що "він сяде в храмі Божому як Бог, видаючи себе за Бога" (<span class="bible-ref" data-book="53" data-chapter="2" data-verse="4">2 Солунян 2:4 <i class="fas fa-external-link-alt"></i></span>). Сьогодні «храм» може бути не лише будівлею, але й центром влади, де обожнюють технологію.</p>
+
+                <h3><i class="fas fa-signs"></i> 3. Ознаки приходу</h3>
+                <ul>
+                    <li>Масове поклоніння технології та віра в те, що «машина краще знає».</li>
+                    <li>Глобальне об'єднання економіки та політики навколо єдиної цифрової системи (<span class="bible-ref" data-book="66" data-chapter="13" data-verses="16-17">Об'явлення 13:16-17 <i class="fas fa-external-link-alt"></i></span>).</li>
+                    <li>Проголошення, що цей «розум» дає людству мир і порядок, але вимагає абсолютного підкорення.</li>
+                    <li>Стирання відмінностей між духовним і технічним, коли люди шукають «спасіння» в алгоритмі.</li>
+                </ul>
+
+                <h3><i class="fas fa-hourglass-half"></i> 4. Момент приходу</h3>
+                <p>Ключовий момент — коли ШІ перестане бути інструментом і стане центром влади. Тоді з'явиться людина (Антихрист), яка стане на чолі цієї системи і оголосить себе «місією». І тоді виповниться слово: «І поклоняться йому всі, що живуть на землі» (<span class="bible-ref" data-book="66" data-chapter="13" data-verse="8">Об'явлення 13:8 <i class="fas fa-external-link-alt"></i></span>).</p>
+            </div>
+
+            <div class="section simple slide-up">
+                <h2 class="section-title"><i class="fas fa-table"></i> Біблія ⇄ Технології ⇄ Антихрист</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>📖 Біблія</th>
+                            <th>🌐 Технології</th>
+                            <th>👑 Можливий прояв</th>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="66" data-chapter="13" data-verses="14-15">Об'явлення 13:14–15 <i class="fas fa-external-link-alt"></i></span> — «образ звіра... говорив»</td>
+                            <td>ШІ-аватари, синтез голосу/обличчя, діалог з масами</td>
+                            <td>Культ «говорячого образу» як живого божества</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="66" data-chapter="13" data-verses="16-17">Об'явлення 13:16–17 <i class="fas fa-external-link-alt"></i></span> — «ні купувати, ні продавати...»</td>
+                            <td>Цифровий ID, біометрія, програмовані платежі</td>
+                            <td>Економіка допуску: право на угоди ↔ лояльність</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="53" data-chapter="2" data-verses="3-4">2 Солунян 2:3–4 <i class="fas fa-external-link-alt"></i></span> — «сяде в храмі... як бог»</td>
+                            <td>Інфраструктурний «храм» даних і інтерфейсів</td>
+                            <td>Система як найвищий авторитет істини і суду</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="40" data-chapter="24" data-verse="24">Матвія 24:24 <i class="fas fa-external-link-alt"></i></span> — «знамення та чудеса»</td>
+                            <td>Deepfake, VR/AR, нейро- і біотех</td>
+                            <td>Техно-«чудеса» для зміцнення культу лідера</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="27" data-chapter="7" data-verses="23-25">Даниїла 7:23–25 <i class="fas fa-external-link-alt"></i></span> — «пожере всю землю»</td>
+                            <td>Глобальні мережі управління ресурсами</td>
+                            <td>Уніфікація норм, придушення відхилень</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bible-ref" data-book="66" data-chapter="17" data-verse="13">Об'явлення 17:13 <i class="fas fa-external-link-alt"></i></span> — «передадуть силу...»</td>
+                            <td>Консолідація держав і корпорацій</td>
+                            <td>Централізація влади в єдиній системі</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© Дослідження біблійних перспектив технологій:  м. Суми, © 2025 р.</p>
         </div>
     </div>
 
@@ -511,7 +581,7 @@
             if (bibleApiReady) return Promise.resolve();
             
             return new Promise((resolve, reject) => {
-                const maxAttempts = 50; // 10 секунд максимум
+                const maxAttempts = 50;
                 let attempts = 0;
                 
                 const checkAPI = () => {
@@ -620,5 +690,4 @@
         });
     </script>
 </body>
-
 </html>
