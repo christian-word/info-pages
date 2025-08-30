@@ -944,6 +944,66 @@
                     </div>
                 </div>
 
+                <!-- Новый рассказ 1: Неприметная свидетельница. История Анны. -->
+                <div class="story-card">
+                    <span class="story-icon">👵</span>
+                    <h2 class="story-title">Неприметная свидетельница. История Анны.</h2>
+                    <p class="story-description">История о случайной свидетельници Анны, которая увидела странного человека, который обещал разрушить и построить храм.</p>
+                    <p class="story-duration">Продолжительность: 12 минут</p>
+                    <div class="story-actions">
+                        <button class="play-button" onclick="toggleAudio(this, 'anna-story')"><i class="fas fa-play"></i> Слушать</button>
+                        <button class="action-button" title="Добавить в избранное"><i class="far fa-bookmark"></i></button>
+                        <button class="action-button" title="Поделиться"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                    <div class="audio-player" id="anna-story">
+                        <div class="audio-controls">
+                            <button onclick="skipBackward(this)"><i class="fas fa-backward-step"></i></button>
+                            <button onclick="playPause(this)"><i class="fas fa-play"></i></button>
+                            <button onclick="skipForward(this)"><i class="fas fa-forward-step"></i></button>
+                            <div class="progress-container" onclick="seekAudio(event, this)">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="time" id="current-time-anna">0:00</div>
+                            <div class="time">/</div>
+                            <div class="time" id="duration-anna">0:00</div>
+                        </div>
+                        <audio preload="metadata" ontimeupdate="updateProgress(this, 'anna-story')" onloadedmetadata="initDuration(this, 'anna-story')">
+                            <source src="https://github.com/christian-word/info-pages/raw/main/media/anna.mp3" type="audio/mpeg">
+                            Ваш браузер не поддерживает аудио элемент.
+                        </audio>
+                    </div>
+                </div>
+
+                <!-- Новый рассказ 2: Донесение центуриона Гая Лонгина -->
+                <div class="story-card">
+                    <span class="story-icon">⚔️</span>
+                    <h2 class="story-title">Донесение центуриона Гая Лонгина</h2>
+                    <p class="story-description">Отчёт римского центуриона, командовавшего казнью на Голгофе. Его личные записи и впечатления от событий, изменивших историю человечества. Взгляд на crucifixion с неожиданной точки зрения.</p>
+                    <p class="story-duration">Продолжительность: 18 минут</p>
+                    <div class="story-actions">
+                        <button class="play-button" onclick="toggleAudio(this, 'centurion-report')"><i class="fas fa-play"></i> Слушать</button>
+                        <button class="action-button" title="Добавить в избранное"><i class="far fa-bookmark"></i></button>
+                        <button class="action-button" title="Поделиться"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                    <div class="audio-player" id="centurion-report">
+                        <div class="audio-controls">
+                            <button onclick="skipBackward(this)"><i class="fas fa-backward-step"></i></button>
+                            <button onclick="playPause(this)"><i class="fas fa-play"></i></button>
+                            <button onclick="skipForward(this)"><i class="fas fa-forward-step"></i></button>
+                            <div class="progress-container" onclick="seekAudio(event, this)">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="time" id="current-time-centurion">0:00</div>
+                            <div class="time">/</div>
+                            <div class="time" id="duration-centurion">0:00</div>
+                        </div>
+                        <audio preload="metadata" ontimeupdate="updateProgress(this, 'centurion-report')" onloadedmetadata="initDuration(this, 'centurion-report')">
+                            <source src="https://github.com/christian-word/info-pages/raw/main/media/centurion.mp3" type="audio/mpeg">
+                            Ваш браузер не поддерживает аудио элемент.
+                        </audio>
+                    </div>
+                </div>
+
                 <div class="story-card">
                     <span class="story-icon">🕊️</span>
                     <h2 class="story-title">«Илия на Кармиле» и «Гефсимания»</h2>
@@ -1063,7 +1123,6 @@
         </form>
     </div>
 </div>
-
     <script>
         // Глобальные переменные для управления аудио
         let currentlyPlaying = null;
