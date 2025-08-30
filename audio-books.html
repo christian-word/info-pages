@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аудио Рассказы</title>
+    <title>Священные Повествования - Аудио Рассказы</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
@@ -338,7 +338,7 @@
             transform: scale(0.98);
         }
 
-        .play-button.active {
+        .play-button.playing {
             background: linear-gradient(135deg, #b8941f, #d4c393);
             color: #1a0f08;
         }
@@ -377,27 +377,51 @@
             animation: fadeIn 0.5s ease;
         }
 
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .audio-controls button {
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            background: rgba(212, 175, 55, 0.2);
+            height: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #d4af37;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .time {
+            font-size: 0.8rem;
+            color: #e6d3a3;
+            min-width: 40px;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         audio {
-            width: 100%;
-            height: 45px;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        audio::-webkit-media-controls-panel {
-            background-color: rgba(212, 175, 55, 0.9);
-            border-radius: 6px;
-        }
-
-        audio::-webkit-media-controls-play-button,
-        audio::-webkit-media-controls-pause-button {
-            background-color: #2c1810;
-            border-radius: 50%;
+            display: none;
         }
 
         /* О проекте */
@@ -739,6 +763,16 @@
             .form-group textarea {
                 padding: 10px;
             }
+
+            .audio-controls {
+                flex-wrap: wrap;
+            }
+            
+            .progress-container {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -754,10 +788,6 @@
             
             .audio-player {
                 padding: 12px;
-            }
-            
-            audio {
-                height: 40px;
             }
 
             .story-actions {
@@ -896,7 +926,18 @@
                         <button class="action-button" title="Поделиться"><i class="fas fa-share-alt"></i></button>
                     </div>
                     <div class="audio-player" id="noah-ark">
-                        <audio controls preload="metadata">
+                        <div class="audio-controls">
+                            <button onclick="skipBackward(this)"><i class="fas fa-backward-step"></i></button>
+                            <button onclick="playPause(this)"><i class="fas fa-play"></i></button>
+                            <button onclick="skipForward(this)"><i class="fas fa-forward-step"></i></button>
+                            <div class="progress-container" onclick="seekAudio(event, this)">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="time" id="current-time-1">0:00</div>
+                            <div class="time">/</div>
+                            <div class="time" id="duration-1">0:00</div>
+                        </div>
+                        <audio preload="metadata" ontimeupdate="updateProgress(this, 'noah-ark')" onloadedmetadata="initDuration(this, 'noah-ark')">
                             <source src="https://github.com/christian-word/info-pages/raw/main/media/Luca-Francini.mp3" type="audio/mpeg">
                             Ваш браузер не поддерживает аудио элемент.
                         </audio>
@@ -914,7 +955,18 @@
                         <button class="action-button" title="Поделиться"><i class="fas fa-share-alt"></i></button>
                     </div>
                     <div class="audio-player" id="elijah-gethsemane">
-                        <audio controls preload="metadata">
+                        <div class="audio-controls">
+                            <button onclick="skipBackward(this)"><i class="fas fa-backward-step"></i></button>
+                            <button onclick="playPause(this)"><i class="fas fa-play"></i></button>
+                            <button onclick="skipForward(this)"><i class="fas fa-forward-step"></i></button>
+                            <div class="progress-container" onclick="seekAudio(event, this)">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="time" id="current-time-2">0:00</div>
+                            <div class="time">/</div>
+                            <div class="time" id="duration-2">0:00</div>
+                        </div>
+                        <audio preload="metadata" ontimeupdate="updateProgress(this, 'elijah-gethsemane')" onloadedmetadata="initDuration(this, 'elijah-gethsemane')">
                             <source src="https://github.com/christian-word/info-pages/raw/main/media/ily_gevs.mp3" type="audio/mpeg">
                             Ваш браузер не поддерживает аудио элемент.
                         </audio>
@@ -932,7 +984,18 @@
                         <button class="action-button" title="Поделиться"><i class="fas fa-share-alt"></i></button>
                     </div>
                     <div class="audio-player" id="david-goliath">
-                        <audio controls preload="metadata">
+                        <div class="audio-controls">
+                            <button onclick="skipBackward(this)"><i class="fas fa-backward-step"></i></button>
+                            <button onclick="playPause(this)"><i class="fas fa-play"></i></button>
+                            <button onclick="skipForward(this)"><i class="fas fa-forward-step"></i></button>
+                            <div class="progress-container" onclick="seekAudio(event, this)">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="time" id="current-time-3">0:00</div>
+                            <div class="time">/</div>
+                            <div class="time" id="duration-3">0:00</div>
+                        </div>
+                        <audio preload="metadata" ontimeupdate="updateProgress(this, 'david-goliath')" onloadedmetadata="initDuration(this, 'david-goliath')">
                             <source src="https://github.com/christian-word/info-pages/raw/main/media/david_goliaf.mp3" type="audio/mpeg">
                             Ваш браузер не поддерживает аудио элемент.
                         </audio>
@@ -1002,10 +1065,25 @@
 </div>
 
     <script>
+        // Глобальные переменные для управления аудио
+        let currentlyPlaying = null;
+
         function toggleAudio(button, audioId) {
             const audioPlayer = document.getElementById(audioId);
+            const audioElement = audioPlayer.querySelector('audio');
             const allPlayers = document.querySelectorAll('.audio-player');
             const allButtons = document.querySelectorAll('.play-button');
+
+            // Если это же аудио уже играет, останавливаем его
+            if (currentlyPlaying === audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+                currentlyPlaying = null;
+                button.innerHTML = '<i class="fas fa-play"></i> Слушать';
+                button.classList.remove('playing');
+                audioPlayer.classList.remove('active');
+                return;
+            }
 
             // Останавливаем все другие аудио
             allPlayers.forEach(player => {
@@ -1022,25 +1100,103 @@
             // Сбрасываем все кнопки
             allButtons.forEach(btn => {
                 if (btn !== button) {
-                    btn.textContent = 'Слушать';
-                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="fas fa-play"></i> Слушать';
+                    btn.classList.remove('playing');
                 }
             });
 
-            // Переключаем текущий плеер
-            if (audioPlayer.classList.contains('active')) {
-                audioPlayer.classList.remove('active');
-                button.textContent = 'Слушать';
-                button.classList.remove('active');
-                const audio = audioPlayer.querySelector('audio');
-                if (audio) {
-                    audio.pause();
-                }
-            } else {
-                audioPlayer.classList.add('active');
-                button.textContent = 'Скрыть плеер';
-                button.classList.add('active');
+            // Запускаем текущее аудио
+            audioPlayer.classList.add('active');
+            button.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+            button.classList.add('playing');
+            
+            // Если другое аудио играло, останавливаем его
+            if (currentlyPlaying && currentlyPlaying !== audioElement) {
+                currentlyPlaying.pause();
+                currentlyPlaying.currentTime = 0;
             }
+            
+            // Воспроизводим текущее аудио
+            const playPromise = audioElement.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    currentlyPlaying = audioElement;
+                }).catch(error => {
+                    console.log('Автовоспроизведение предотвращено:', error);
+                    // Показываем уведомление, что нужно взаимодействие
+                    alert('Нажмите на кнопку воспроизведения в аудиоплеере для запуска');
+                });
+            }
+        }
+
+        function playPause(button) {
+            const audioPlayer = button.closest('.audio-player');
+            const audioElement = audioPlayer.querySelector('audio');
+            const mainButton = audioPlayer.parentElement.querySelector('.play-button');
+            
+            if (audioElement.paused) {
+                audioElement.play();
+                button.innerHTML = '<i class="fas fa-pause"></i>';
+                if (mainButton) {
+                    mainButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                    mainButton.classList.add('playing');
+                }
+                currentlyPlaying = audioElement;
+            } else {
+                audioElement.pause();
+                button.innerHTML = '<i class="fas fa-play"></i>';
+                if (mainButton) {
+                    mainButton.innerHTML = '<i class="fas fa-play"></i> Слушать';
+                    mainButton.classList.remove('playing');
+                }
+                currentlyPlaying = null;
+            }
+        }
+
+        function skipBackward(button) {
+            const audioElement = button.closest('.audio-player').querySelector('audio');
+            audioElement.currentTime = Math.max(0, audioElement.currentTime - 10);
+        }
+
+        function skipForward(button) {
+            const audioElement = button.closest('.audio-player').querySelector('audio');
+            audioElement.currentTime = Math.min(audioElement.duration, audioElement.currentTime + 30);
+        }
+
+        function seekAudio(event, container) {
+            const audioElement = container.closest('.audio-player').querySelector('audio');
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percent = x / rect.width;
+            audioElement.currentTime = percent * audioElement.duration;
+        }
+
+        function updateProgress(audioElement, playerId) {
+            const progressBar = document.querySelector(`#${playerId} .progress-bar`);
+            const currentTimeElement = document.querySelector(`#current-time-${playerId.split('-').pop()}`);
+            
+            if (progressBar) {
+                const percent = (audioElement.currentTime / audioElement.duration) * 100;
+                progressBar.style.width = `${percent}%`;
+            }
+            
+            if (currentTimeElement) {
+                currentTimeElement.textContent = formatTime(audioElement.currentTime);
+            }
+        }
+
+        function initDuration(audioElement, playerId) {
+            const durationElement = document.querySelector(`#duration-${playerId.split('-').pop()}`);
+            if (durationElement) {
+                durationElement.textContent = formatTime(audioElement.duration);
+            }
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
         // Функции для модального окна
@@ -1069,16 +1225,64 @@
             const audioElements = document.querySelectorAll('audio');
             audioElements.forEach(audio => {
                 audio.addEventListener('play', function() {
-                    audioElements.forEach(otherAudio => {
-                        if (otherAudio !== audio && !otherAudio.paused) {
-                            otherAudio.pause();
-                        }
-                    });
+                    // Обновляем все кнопки воспроизведения при запуске аудио
+                    const playerId = this.closest('.audio-player').id;
+                    const mainButton = document.querySelector(`button[onclick="toggleAudio(this, '${playerId}')"]`);
+                    const controlButton = this.closest('.audio-player').querySelector('.audio-controls button:nth-child(2)');
+                    
+                    if (mainButton) {
+                        mainButton.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                        mainButton.classList.add('playing');
+                    }
+                    
+                    if (controlButton) {
+                        controlButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    }
+                });
+
+                audio.addEventListener('pause', function() {
+                    // Обновляем все кнопки воспроизведения при паузе аудио
+                    const playerId = this.closest('.audio-player').id;
+                    const mainButton = document.querySelector(`button[onclick="toggleAudio(this, '${playerId}')"]`);
+                    const controlButton = this.closest('.audio-player').querySelector('.audio-controls button:nth-child(2)');
+                    
+                    if (mainButton && !mainButton.classList.contains('playing')) {
+                        mainButton.innerHTML = '<i class="fas fa-play"></i> Слушать';
+                    }
+                    
+                    if (controlButton) {
+                        controlButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                });
+
+                audio.addEventListener('ended', function() {
+                    // Сбрасываем кнопки после завершения воспроизведения
+                    const playerId = this.closest('.audio-player').id;
+                    const mainButton = document.querySelector(`button[onclick="toggleAudio(this, '${playerId}')"]`);
+                    const controlButton = this.closest('.audio-player').querySelector('.audio-controls button:nth-child(2)');
+                    
+                    if (mainButton) {
+                        mainButton.innerHTML = '<i class="fas fa-play"></i> Слушать';
+                        mainButton.classList.remove('playing');
+                    }
+                    
+                    if (controlButton) {
+                        controlButton.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                    
+                    currentlyPlaying = null;
                 });
 
                 // Обработка ошибок загрузки аудио
                 audio.addEventListener('error', function() {
                     console.log('Ошибка загрузки аудио:', audio.src);
+                    const playerId = this.closest('.audio-player').id;
+                    const mainButton = document.querySelector(`button[onclick="toggleAudio(this, '${playerId}')"]`);
+                    
+                    if (mainButton) {
+                        mainButton.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Ошибка';
+                        mainButton.disabled = true;
+                    }
                 });
             });
 
