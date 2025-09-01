@@ -17,6 +17,8 @@
             --primary: #8fb8ff;
             --secondary: #6c5ce7;
             --accent: #fd79a8;
+            --success: #00b894;
+            --warning: #fdcb6e;
             --dark: #1a2a6c;
             --light: #f8f9fa;
             --gradient: linear-gradient(135deg, #1a2a6c, #2b5876, #4e4376);
@@ -102,6 +104,41 @@
             margin-bottom: 35px;
             font-weight: 300;
             padding: 0 10px;
+        }
+        
+        /* Кнопка заявки */
+        .request-btn {
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(253, 121, 168, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .request-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(253, 121, 168, 0.4);
+        }
+        
+        .request-btn i {
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
         
         .audio-section {
@@ -268,6 +305,235 @@
             margin: 5px 0;
         }
         
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a2a6c, #2b5876);
+            border-radius: 20px;
+            padding: 35px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .modal-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .request-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .option-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-section h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .messenger-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .messenger-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .messenger-btn.telegram {
+            background: linear-gradient(to right, #0088cc, #00a0e6);
+        }
+        
+        .messenger-btn.viber {
+            background: linear-gradient(to right, #665cac, #8b7ec8);
+        }
+        
+        .messenger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-container {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--light);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(143, 184, 255, 0.2);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, var(--success), #00cec9);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 185, 148, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status-message.success {
+            background: rgba(0, 185, 148, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(0, 185, 148, 0.3);
+        }
+        
+        .status-message.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
         /* Мобильная адаптация */
         @media (max-width: 768px) {
             body {
@@ -288,6 +554,12 @@
                 font-size: 1rem;
                 margin-bottom: 30px;
                 padding: 0 5px;
+            }
+            
+            .request-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                margin-bottom: 25px;
             }
             
             .audio-section {
@@ -332,6 +604,23 @@
             
             .footer {
                 margin-top: 40px;
+            }
+            
+            .modal-content {
+                padding: 25px 20px;
+                margin: 20px;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .messenger-buttons {
+                flex-direction: column;
+            }
+            
+            .messenger-btn {
+                min-width: auto;
             }
         }
         
@@ -386,6 +675,15 @@
                 width: 42px;
                 height: 42px;
             }
+            
+            .request-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .modal-content {
+                padding: 20px 15px;
+            }
         }
         
         /* Анимации */
@@ -400,7 +698,7 @@
         
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
     </style>
 </head>
 <body>
@@ -409,13 +707,13 @@
             <img src="https://raw.githubusercontent.com/christian-word/info-pages/refs/heads/main/ico-msg/podcast-icon-neon.svg" 
                  alt="Логотип подкаста" class="podcast-logo">
             <h1>Евангельский Подкаст</h1>
-             <p class="subtitle">Выпуск 2: Послання до Римлян, аналіз розділів 3-5</p>
+            <p class="subtitle">Выпуск 2: Послання до Римлян, аналіз розділів 3-5</p>
         </div>
         
         <div class="audio-section animated delay-1">
             <div class="episode-card">
                 <div class="player-title">
-                    <i class="fas fa-play-circle"></i>Тема : Послання до Римлян: Виправдання вірою (1 розбір)
+                    <i class="fas fa-play-circle"></i>Тема: Виправдання вірою (1 розбір)
                 </div>
                 <div class="audio-player">
                     <audio controls>
@@ -431,7 +729,7 @@
             
             <div class="episode-card">
                 <div class="player-title">
-                    <i class="fas fa-play-circle"></i>Тема : Послання до Римлян: Виправдання вірою (2 розбір)
+                    <i class="fas fa-play-circle"></i>Тема: Виправдання вірою (2 розбір)
                 </div>
                 <div class="audio-player">
                     <audio controls>
@@ -446,26 +744,194 @@
             </div>
         </div>
         
-        <div class="next-topic animated delay-2">
+        <!-- Кнопка для заявки -->
+        <button class="request-btn animated delay-2" id="openModal">
+            <i class="fas fa-lightbulb"></i>
+            Предложить тему
+        </button>
+        
+        <div class="next-topic animated delay-3">
             <h3><i class="fas fa-forward"></i>Следующая тема:</h3>
             <p>Притчи Иисуса: Мы рассмотрим, как истории, рассказанные две тысячи лет назад, остаются актуальными и сегодня.</p>
         </div>
         
-        <div class="social-section animated delay-3">
+        <div class="social-section animated delay-4">
             <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
             <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
         </div>
         
-        <div class="footer animated delay-3">
+        <div class="footer animated delay-4">
             <p>© 2025 Gospel Voice Podcast | м. Суми</p>
         </div>
     </div>
 
+    <!-- Модальное окно -->
+    <div id="requestModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-lightbulb"></i> Предложить тему</h2>
+                <p>Хотите услышать разбор определенной темы? Напишите нам!</p>
+            </div>
+            
+            <div class="request-options">
+                <!-- Быстрая связь -->
+                <div class="option-section">
+                    <h3><i class="fas fa-rocket"></i> Быстро через мессенджер</h3>
+                    <div class="messenger-buttons">
+                        <a href="https://t.me/yuriy_2868?text=Хочу%20предложить%20тему%20для%20подкаста" target="_blank" class="messenger-btn telegram">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </a>
+                        <a href="viber://chat?number=%2B380509866724" class="messenger-btn viber">
+                            <i class="fab fa-viber"></i> Viber
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Форма -->
+                <div class="option-section">
+                    <h3><i class="fas fa-edit"></i> Через форму</h3>
+                    <div class="form-container">
+                        <form id="topicForm">
+                            <div class="form-group">
+                                <label for="userName">Ваше имя (необязательно):</label>
+                                <input type="text" id="userName" placeholder="Как к вам обращаться?">
+                            </div>
+                            <div class="form-group">
+                                <label for="topicIdea">Предлагаемая тема:</label>
+                                <textarea id="topicIdea" placeholder="Опишите тему, которую хотели бы услышать в подкасте..." required></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn" id="submitBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                Отправить заявку
+                            </button>
+                        </form>
+                        <div class="status-message" id="statusMessage"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Настройки Telegram бота
+        const TELEGRAM_CONFIG = {
+            token: "8392455667:AAH5KupAwib6YnnPwg4kY_yTOiZIr4kNnck",
+            chatId: "1174385777"
+        };
+
+        // Элементы модального окна
+        const modal = document.getElementById('requestModal');
+        const openModalBtn = document.getElementById('openModal');
+        const closeModal = document.querySelector('.close');
+        const form = document.getElementById('topicForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Открытие модального окна
+        openModalBtn.addEventListener('click', () => {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Закрытие модального окна
+        function closeModalHandler() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            
+            // Сброс формы и статуса
+            setTimeout(() => {
+                form.reset();
+                statusMessage.style.display = 'none';
+                statusMessage.className = 'status-message';
+            }, 300);
+        }
+
+        closeModal.addEventListener('click', closeModalHandler);
+
+        // Закрытие по клику вне модального окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalHandler();
+            }
+        });
+
+        // Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                closeModalHandler();
+            }
+        });
+
+        // Функция показа статуса
+        function showStatus(message, isSuccess) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${isSuccess ? 'success' : 'error'}`;
+            statusMessage.style.display = 'block';
+        }
+
+        // Отправка формы
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            const topicIdea = document.getElementById('topicIdea').value.trim();
+            
+            if (!topicIdea) {
+                showStatus('Пожалуйста, опишите предлагаемую тему', false);
+                return;
+            }
+
+            // Блокировка кнопки
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправляем...';
+
+            // Формирование сообщения
+            let message = `🎙️ НОВАЯ ЗАЯВКА НА ТЕМУ ПОДКАСТА\n\n`;
+            if (userName) {
+                message += `👤 От: ${userName}\n`;
+            }
+            message += `💡 Предлагаемая тема:\n${topicIdea}\n\n`;
+            message += `📅 Дата: ${new Date().toLocaleString('ru-RU')}`;
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.token}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CONFIG.chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                if (response.ok) {
+                    showStatus('✅ Заявка успешно отправлена! Спасибо за предложение!', true);
+                    form.reset();
+                    
+                    // Закрытие модального окна через 2 секунды
+                    setTimeout(() => {
+                        closeModalHandler();
+                    }, 2000);
+                } else {
+                    throw new Error('Ошибка сервера');
+                }
+            } catch (error) {
+                console.error('Ошибка отправки:', error);
+                showStatus('❌ Ошибка при отправке. Попробуйте связаться через мессенджер.', false);
+            } finally {
+                // Разблокировка кнопки
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить заявку';
+            }
+        });
+
+        // Анимация загрузки страницы
         document.addEventListener('DOMContentLoaded', function() {
-            // Добавляем классы анимации для элементов при загрузке
             const elementsToAnimate = document.querySelectorAll('.animated');
             
             elementsToAnimate.forEach(element => {
@@ -478,7 +944,7 @@
                 });
             }, 100);
             
-            // Имитация функционала кнопок
+            // Функционал кнопок аудио
             const buttons = document.querySelectorAll('.btn');
             buttons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -487,11 +953,12 @@
                         this.style.transform = '';
                     }, 200);
                     
-                    // В реальном проекте здесь будет функционал для кнопок
                     if (this.querySelector('.fa-download')) {
                         console.log('Скачать clicked');
+                        // Здесь будет логика скачивания
                     } else if (this.querySelector('.fa-share-alt')) {
                         console.log('Поделиться clicked');
+                        // Здесь будет логика поделиться
                     }
                 });
             });
