@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Евангельский Подкаст</title>
+    <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/main/ico-msg/podcast_on.jpg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #8fb8ff;
+            --secondary: #6c5ce7;
+            --accent: #fd79a8;
+            --dark: #1a2a6c;
+            --light: #f8f9fa;
+            --gradient: linear-gradient(135deg, #1a2a6c, #2b5876, #4e4376);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gradient);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><text x="50%" y="50%" font-size="20" text-anchor="middle" dominant-baseline="middle" fill="white">✝</text></svg>');
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 25px 15px;
+            text-align: center;
+        }
+        
+        .logo-container {
+            margin-bottom: 35px;
+            position: relative;
+        }
+        
+        .logo-container::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+            margin: 20px auto;
+            border-radius: 3px;
+        }
+        
+        .podcast-logo {
+            width: 130px;
+            height: 130px;
+            filter: drop-shadow(0 0 25px rgba(143, 184, 255, 0.8));
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .podcast-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 30px rgba(143, 184, 255, 1));
+        }
+        
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #8fb8ff, #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 35px;
+            font-weight: 300;
+            padding: 0 10px;
+        }
+        
+        .audio-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .audio-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .episode-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            text-align: left;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+            width: 100%;
+        }
+        
+        .episode-card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .episode-card:hover {
+            background: rgba(0, 0, 0, 0.25);
+        }
+        
+        .player-title {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .player-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        audio {
+            width: 100%;
+            outline: none;
+            border-radius: 12px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .next-topic {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--accent);
+            padding: 22px;
+            border-radius: 16px;
+            margin: 35px 0;
+            text-align: left;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .next-topic:hover {
+            transform: translateX(5px);
+        }
+        
+        .next-topic h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .next-topic h3 i {
+            margin-right: 10px;
+        }
+        
+        .social-section {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 30px 0;
+            width: 100%;
+        }
+        
+        .social-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-icon:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .footer {
+            margin-top: 45px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            .container {
+                padding: 20px 10px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                padding: 0 5px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+                padding: 0 5px;
+            }
+            
+            .audio-section {
+                padding: 20px 15px;
+                border-radius: 16px;
+                margin-bottom: 20px;
+            }
+            
+            .episode-card {
+                padding: 18px;
+                margin-bottom: 20px;
+            }
+            
+            .player-title {
+                font-size: 1.15rem;
+            }
+            
+            .podcast-logo {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .btn {
+                padding: 9px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .next-topic {
+                padding: 20px;
+                margin: 30px 0;
+            }
+            
+            .social-section {
+                gap: 15px;
+            }
+            
+            .social-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+            
+            .footer {
+                margin-top: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px 8px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .podcast-logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .audio-section {
+                padding: 18px 12px;
+            }
+            
+            .episode-card {
+                padding: 16px;
+            }
+            
+            .player-title {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+            
+            .audio-controls {
+                justify-content: center;
+            }
+            
+            .next-topic {
+                padding: 18px;
+            }
+            
+            .next-topic h3 {
+                font-size: 1.1rem;
+            }
+            
+            .social-icon {
+                width: 42px;
+                height: 42px;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container animated">
+            <img src="https://raw.githubusercontent.com/christian-word/info-pages/refs/heads/main/ico-msg/podcast-icon-neon.svg" 
+                 alt="Логотип подкаста" class="podcast-logo">
+            <h1>Евангельский Подкаст</h1>
+             <p class="subtitle">Выпуск 2: Послання до Римлян, аналіз розділів 3-5</p>
+        </div>
+        
+        <div class="audio-section animated delay-1">
+            <div class="episode-card">
+                <div class="player-title">
+                    <i class="fas fa-play-circle"></i>Тема : Послання до Римлян: Виправдання вірою (1 розбір)
+                </div>
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Justification_By_Faith.mp3" type="audio/mp3">
+                        Ваш браузер не поддерживает аудио элемент.
+                    </audio>
+                </div>
+                <div class="audio-controls">
+                    <button class="btn"><i class="fas fa-download"></i> Скачать</button>
+                    <button class="btn"><i class="fas fa-share-alt"></i> Поделиться</button>
+                </div>
+            </div>
+            
+            <div class="episode-card">
+                <div class="player-title">
+                    <i class="fas fa-play-circle"></i>Тема : Послання до Римлян: Виправдання вірою (2 розбір)
+                </div>
+                <div class="audio-player">
+                    <audio controls>
+                        <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Justification_By_Faith2.mp3" type="audio/mp3">
+                        Ваш браузер не поддерживает аудио элемент.
+                    </audio>
+                </div>
+                <div class="audio-controls">
+                    <button class="btn"><i class="fas fa-download"></i> Скачать</button>
+                    <button class="btn"><i class="fas fa-share-alt"></i> Поделиться</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="next-topic animated delay-2">
+            <h3><i class="fas fa-forward"></i>Следующая тема:</h3>
+            <p>Притчи Иисуса: Мы рассмотрим, как истории, рассказанные две тысячи лет назад, остаются актуальными и сегодня.</p>
+        </div>
+        
+        <div class="social-section animated delay-3">
+            <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
+        </div>
+        
+        <div class="footer animated delay-3">
+            <p>© 2025 Gospel Voice Podcast | м. Суми</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем классы анимации для элементов при загрузке
+            const elementsToAnimate = document.querySelectorAll('.animated');
+            
+            elementsToAnimate.forEach(element => {
+                element.style.opacity = '0';
+            });
+            
+            setTimeout(() => {
+                elementsToAnimate.forEach(element => {
+                    element.classList.add('animated');
+                });
+            }, 100);
+            
+            // Имитация функционала кнопок
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                    
+                    // В реальном проекте здесь будет функционал для кнопок
+                    if (this.querySelector('.fa-download')) {
+                        console.log('Скачать clicked');
+                    } else if (this.querySelector('.fa-share-alt')) {
+                        console.log('Поделиться clicked');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
