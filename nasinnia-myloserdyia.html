@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Євангельський Подкаст</title>
-    <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/refs/heads/main/ico-msg/podcast-icon-neon.svg" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/main/ico-msg/podcast_on.jpg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -981,8 +981,62 @@
             }
         });
 
-        // Инициализация анимаций
+        // Инициализация анимаций и скролл-индикаторов
         document.addEventListener('DOMContentLoaded', function() {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const contentPeek = document.getElementById('contentPeek');
+            const audioSection = document.querySelector('.content-section');
+            const nextContent = document.querySelector('.info-card');
+
+            // Проверяем существование всех элементов
+            if (!scrollIndicator || !contentPeek || !audioSection || !nextContent) {
+                console.warn('Некоторые элементы не найдены в DOM');
+                return;
+            }
+
+            // Функция для проверки видимости контента
+            function checkContentVisibility() {
+                try {
+                    const audioSectionRect = audioSection.getBoundingClientRect();
+                    const nextContentRect = nextContent.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+
+                    // Показываем индикатор, если аудио-секция видна, но следующий контент - нет
+                    const audioVisible = audioSectionRect.top < windowHeight && audioSectionRect.bottom > 0;
+                    const nextContentVisible = nextContentRect.top < windowHeight;
+
+                    if (audioVisible && !nextContentVisible) {
+                        scrollIndicator.classList.remove('hidden');
+                        contentPeek.classList.add('visible');
+                    } else {
+                        scrollIndicator.classList.add('hidden');
+                        contentPeek.classList.remove('visible');
+                    }
+                } catch (error) {
+                    console.warn('Ошибка при проверке видимости:', error);
+                }
+            }
+
+            // Прокрутка к следующему контенту при клике на индикатор
+            scrollIndicator.addEventListener('click', () => {
+                nextContent.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+
+            // Проверка при прокрутке с throttling для производительности
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    clearTimeout(scrollTimeout);
+                }
+                scrollTimeout = setTimeout(checkContentVisibility, 10);
+            });
+            
+            // Первоначальная проверка с задержкой
+            setTimeout(checkContentVisibility, 1000);
+
             // Функционал кнопок управления аудио
             const controlBtns = document.querySelectorAll('.control-btn');
             controlBtns.forEach(btn => {
