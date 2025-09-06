@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Евангельский Подкаст</title>
-    <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/main/ico-msg/podcast_on.jpg" />
+    <title>Євангельський Подкаст</title>
+    <meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/refs/heads/main/ico-msg/podcast-icon-neon.svg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,298 +14,334 @@
         }
         
         :root {
-            --primary: #8fb8ff;
-            --secondary: #6c5ce7;
-            --accent: #fd79a8;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --dark: #1a2a6c;
-            --light: #f8f9fa;
-            --gradient: linear-gradient(135deg, #1a2a6c, #2b5876, #4e4376);
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary: #4a90e2;
+            --primary-light: #6ba3ef;
+            --secondary: #5d4e75;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --text-light: #ecf0f1;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --background: linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #2c3e50 100%);
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --button-bg: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --shadow-soft: 0 2px 20px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 4px 25px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--gradient);
-            color: var(--light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-light);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
             line-height: 1.6;
             position: relative;
-            overflow-x: hidden;
         }
         
+        /* Фоновый паттерн */
         body::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><text x="50%" y="50%" font-size="20" text-anchor="middle" dominant-baseline="middle" fill="white">✝</text></svg>');
-            z-index: -1;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(52, 152, 219, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         
         .container {
             max-width: 800px;
             width: 100%;
             margin: 0 auto;
-            padding: 25px 15px;
-            text-align: center;
-        }
-        
-        .logo-container {
-            margin-bottom: 35px;
+            padding: 20px;
             position: relative;
+            z-index: 1;
         }
         
-        .logo-container::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(to right, transparent, var(--primary), transparent);
-            margin: 20px auto;
-            border-radius: 3px;
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
         }
         
         .podcast-logo {
-            width: 130px;
-            height: 130px;
-            filter: drop-shadow(0 0 25px rgba(143, 184, 255, 0.8));
-            margin-bottom: 20px;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            display: block;
+            filter: drop-shadow(0 4px 20px rgba(74, 144, 226, 0.3));
             transition: var(--transition);
         }
         
         .podcast-logo:hover {
             transform: scale(1.05);
-            filter: drop-shadow(0 0 30px rgba(143, 184, 255, 1));
+            filter: drop-shadow(0 6px 25px rgba(74, 144, 226, 0.4));
         }
         
-        h1 {
-            font-size: 2.3rem;
+        .main-title {
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to right, #8fb8ff, #6c5ce7);
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .subtitle {
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 35px;
+            color: var(--text-muted);
             font-weight: 300;
-            padding: 0 10px;
+            margin-bottom: 25px;
         }
         
-        /* Кнопка заявки */
-        .request-btn {
-            background: linear-gradient(to right, var(--accent), var(--secondary));
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            transition: var(--transition);
+        /* ACTION BUTTON - выделяем как единственную настоящую кнопку */
+        .cta-button {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 8px 25px rgba(253, 121, 168, 0.3);
+            gap: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-medium);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
-        .request-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(253, 121, 168, 0.4);
+        .cta-button:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(231, 76, 60, 0.3);
         }
         
-        .request-btn i {
-            font-size: 1.2rem;
-            animation: pulse 2s infinite;
+        .cta-button i {
+            font-size: 1.1rem;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .audio-section {
+        /* CONTENT SECTIONS - делаем их НЕ похожими на кнопки */
+        .content-section {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border-radius: 18px;
-            padding: 25px 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
             transition: var(--transition);
-            width: 100%;
         }
         
-        .audio-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        .content-section:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         }
         
-        .episode-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 22px;
-            text-align: left;
-            transition: var(--transition);
-            border-left: 4px solid var(--primary);
-            width: 100%;
+        .section-header {
+            padding: 20px 25px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
         }
         
-        .episode-card:last-child {
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .section-title i {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        
+        .section-content {
+            padding: 25px;
+        }
+        
+        /* AUDIO PLAYER - делаем естественным */
+        .audio-episode {
+            margin-bottom: 30px;
+        }
+        
+        .audio-episode:last-child {
             margin-bottom: 0;
         }
         
-        .episode-card:hover {
-            background: rgba(0, 0, 0, 0.25);
-        }
-        
-        .player-title {
-            font-size: 1.25rem;
-            margin-bottom: 15px;
-            color: var(--primary);
+        .episode-title {
+            font-size: 1.1rem;
             font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--text-light);
             display: flex;
             align-items: center;
+            gap: 10px;
         }
         
-        .player-title i {
-            margin-right: 10px;
-            font-size: 1.2rem;
+        .episode-title .play-icon {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .audio-player-wrapper {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
         }
         
         .audio-player {
             width: 100%;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.2);
+            height: 40px;
+            border-radius: 4px;
         }
         
-        audio {
-            width: 100%;
-            outline: none;
-            border-radius: 12px;
-        }
-        
-        .audio-controls {
+        /* UTILITY CONTROLS - делаем их мелкими и второстепенными */
+        .episode-controls {
             display: flex;
+            gap: 10px;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 15px;
         }
         
-        .btn {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 50px;
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            font-weight: 500;
-            font-size: 0.9rem;
+            gap: 6px;
         }
         
-        .btn i {
-            margin-right: 8px;
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+            border-color: rgba(255, 255, 255, 0.25);
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .control-btn i {
+            font-size: 0.8rem;
         }
         
-        .next-topic {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-left: 4px solid var(--accent);
-            padding: 22px;
-            border-radius: 16px;
-            margin: 35px 0;
-            text-align: left;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            width: 100%;
+        /* CONTENT DIVIDER */
+        .content-divider {
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
         }
         
-        .next-topic:hover {
-            transform: translateX(5px);
+        .content-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
         }
         
-        .next-topic h3 {
-            color: var(--accent);
-            margin-bottom: 15px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
+        .divider-text {
+            background: rgba(44, 62, 80, 0.9);
+            color: var(--text-muted);
+            padding: 5px 15px;
+            font-size: 0.8rem;
+            position: relative;
+            display: inline-block;
+            border-radius: 12px;
         }
         
-        .next-topic h3 i {
-            margin-right: 10px;
-        }
-        
-        .social-section {
-            display: flex;
-            justify-content: center;
-            gap: 18px;
+        /* NEXT TOPIC CARD - информационная карточка */
+        .info-card {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(142, 68, 173, 0.1) 100%);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            border-radius: 8px;
+            padding: 25px;
             margin: 30px 0;
-            width: 100%;
+            border-left: 4px solid var(--primary);
         }
         
-        .social-icon {
-            width: 48px;
-            height: 48px;
+        .info-card-title {
+            color: var(--primary-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-card-content {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        /* SOCIAL LINKS - мелкие иконки */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--card-bg);
-            color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            text-decoration: none;
             transition: var(--transition);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .social-icon:hover {
+        .social-link:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            border-color: var(--primary);
         }
         
+        /* FOOTER */
         .footer {
-            margin-top: 45px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
             text-align: center;
-            width: 100%;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
         }
         
-        .footer p {
-            margin: 5px 0;
-        }
-        
-        /* УЛУЧШЕННОЕ МОДАЛЬНОЕ ОКНО */
+        /* MODAL - остается как есть, но с небольшими улучшениями */
         .modal {
             display: none;
             position: fixed;
@@ -332,8 +368,8 @@
         }
         
         .modal-content {
-            background: linear-gradient(135deg, #1a2a6c, #2b5876);
-            border-radius: 20px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 12px;
             width: 100%;
             max-width: 500px;
             max-height: 90vh;
@@ -347,21 +383,20 @@
         }
         
         @keyframes modalSlideIn {
-            from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+            from { transform: translateY(-30px) scale(0.95); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
         
         .modal-header {
             padding: 25px 25px 20px;
             text-align: center;
-            flex-shrink: 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .modal-header h2 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            color: var(--primary-light);
+            font-size: 1.6rem;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -369,64 +404,54 @@
         }
         
         .modal-header p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
         }
         
         .modal-body {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 25px 15px;
-            min-height: 0;
+            padding: 20px 25px;
         }
         
         .modal-footer {
-            flex-shrink: 0;
             padding: 15px 25px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.1);
         }
         
         .close {
             position: absolute;
             top: 15px;
             right: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 24px;
+            color: var(--text-muted);
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             transition: var(--transition);
-            z-index: 10;
             width: 30px;
             height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
         }
         
         .close:hover {
             color: white;
-            background: rgba(0, 0, 0, 0.5);
-            transform: scale(1.1);
-        }
-        
-        .request-options {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            background: rgba(0, 0, 0, 0.4);
         }
         
         .option-section {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.15);
             padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
         .option-section h3 {
-            color: var(--accent);
+            color: var(--primary-light);
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -437,14 +462,12 @@
         .messenger-buttons {
             display: flex;
             gap: 12px;
-            flex-wrap: wrap;
         }
         
         .messenger-btn {
             flex: 1;
-            min-width: 120px;
             padding: 12px 20px;
-            border-radius: 50px;
+            border-radius: 6px;
             border: none;
             color: white;
             font-weight: 500;
@@ -459,33 +482,25 @@
         }
         
         .messenger-btn.telegram {
-            background: linear-gradient(to right, #0088cc, #00a0e6);
+            background: #0088cc;
         }
         
         .messenger-btn.viber {
-            background: linear-gradient(to right, #665cac, #8b7ec8);
+            background: #665cac;
         }
         
         .messenger-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .form-container {
-            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         
         .form-group {
             margin-bottom: 15px;
         }
         
-        .form-group:last-of-type {
-            margin-bottom: 20px;
-        }
-        
         .form-group label {
             display: block;
-            color: var(--light);
+            color: var(--text-light);
             margin-bottom: 6px;
             font-weight: 500;
             font-size: 0.9rem;
@@ -495,9 +510,9 @@
         .form-group textarea {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
             color: white;
             font-size: 14px;
             transition: var(--transition);
@@ -508,13 +523,8 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(143, 184, 255, 0.2);
-        }
-        
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
         }
         
         .form-group textarea {
@@ -526,9 +536,9 @@
         .submit-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(to right, var(--success), #00cec9);
+            background: var(--success);
             border: none;
-            border-radius: 50px;
+            border-radius: 6px;
             color: white;
             font-size: 1rem;
             font-weight: 600;
@@ -541,8 +551,9 @@
         }
         
         .submit-btn:hover:not(:disabled) {
+            background: #229954;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 185, 148, 0.3);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
         
         .submit-btn:disabled {
@@ -553,7 +564,7 @@
         .status-message {
             margin-top: 15px;
             padding: 10px 12px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
             font-weight: 500;
             font-size: 0.9rem;
@@ -561,401 +572,261 @@
         }
         
         .status-message.success {
-            background: rgba(0, 185, 148, 0.2);
-            color: var(--success);
-            border: 1px solid rgba(0, 185, 148, 0.3);
+            background: rgba(39, 174, 96, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(39, 174, 96, 0.3);
         }
         
         .status-message.error {
             background: rgba(231, 76, 60, 0.2);
-            color: #ff6b6b;
+            color: #e74c3c;
             border: 1px solid rgba(231, 76, 60, 0.3);
         }
         
-        /* Стили для разделителя между плеерами */
-        .player-separator {
-            margin: 20px 0;
-            text-align: center;
-            position: relative;
-        }
-        
-        .player-separator::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateY(-50%);
-        }
-        
-        .player-separator span {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-        
-        /* Мобильная адаптация */
+        /* RESPONSIVE DESIGN */
         @media (max-width: 768px) {
-            body {
-                padding: 12px;
-            }
-            
             .container {
-                padding: 20px 10px;
-                max-width: 100%;
+                padding: 15px;
             }
             
-            h1 {
-                font-size: 2rem;
-                padding: 0 5px;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
+            .header {
+                padding: 25px 15px;
                 margin-bottom: 30px;
-                padding: 0 5px;
             }
             
-            .request-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-                margin-bottom: 25px;
-            }
-            
-            .audio-section {
-                padding: 20px 15px;
-                border-radius: 16px;
-                margin-bottom: 20px;
-            }
-            
-            .episode-card {
-                padding: 18px;
-                margin-bottom: 20px;
-            }
-            
-            .player-title {
-                font-size: 1.15rem;
-            }
-            
-            .podcast-logo {
-                width: 110px;
-                height: 110px;
-            }
-            
-            .btn {
-                padding: 9px 16px;
-                font-size: 0.85rem;
-            }
-            
-            .next-topic {
-                padding: 20px;
-                margin: 30px 0;
-            }
-            
-            .social-section {
-                gap: 15px;
-            }
-            
-            .social-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 1.1rem;
-            }
-            
-            .footer {
-                margin-top: 40px;
-            }
-            
-            /* Модальное окно на мобильных */
-            .modal {
-                padding: 5px;
-            }
-            
-            .modal-content {
-                max-width: 100%;
-                max-height: 95vh;
-                border-radius: 16px;
-            }
-            
-            .modal-header {
-                padding: 20px 20px 15px;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.5rem;
-            }
-            
-            .modal-body {
-                padding: 15px 20px 10px;
-            }
-            
-            .modal-footer {
-                padding: 12px 20px 18px;
-            }
-            
-            .option-section {
-                padding: 18px;
-            }
-            
-            .messenger-buttons {
-                flex-direction: column;
-            }
-            
-            .messenger-btn {
-                min-width: auto;
-            }
-            
-            .close {
-                top: 10px;
-                right: 15px;
-                font-size: 20px;
-                width: 28px;
-                height: 28px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 15px 8px;
-            }
-            
-            h1 {
+            .main-title {
                 font-size: 1.8rem;
             }
             
             .podcast-logo {
                 width: 100px;
                 height: 100px;
+                margin-bottom: 20px;
             }
             
-            .audio-section {
-                padding: 18px 12px;
+            .section-content {
+                padding: 20px;
             }
             
-            .episode-card {
-                padding: 16px;
+            .cta-button {
+                padding: 12px 24px;
+                font-size: 0.95rem;
             }
             
-            .player-title {
-                font-size: 1.1rem;
+            .episode-controls {
+                justify-content: center;
+                flex-wrap: wrap;
             }
             
-            .btn {
-                padding: 8px 14px;
+            .control-btn {
+                padding: 7px 10px;
                 font-size: 0.8rem;
             }
             
-            .audio-controls {
-                justify-content: center;
+            .social-links {
+                gap: 12px;
             }
             
-            .next-topic {
-                padding: 18px;
+            .social-link {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
             }
             
-            .next-topic h3 {
-                font-size: 1.1rem;
-            }
-            
-            .social-icon {
-                width: 42px;
-                height: 42px;
-            }
-            
-            .request-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            
-            /* Очень маленькие экраны */
             .modal-content {
-                margin: 5px;
-                max-height: 98vh;
-            }
-            
-            .modal-header {
-                padding: 15px 15px 12px;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.3rem;
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .modal-body {
-                padding: 12px 15px 8px;
-            }
-            
-            .modal-footer {
-                padding: 10px 15px 15px;
-            }
-            
-            .option-section {
-                padding: 15px;
-            }
-            
-            .form-group {
-                margin-bottom: 12px;
-            }
-            
-            .form-group textarea {
-                min-height: 70px;
-                max-height: 100px;
-            }
-        }
-        
-        /* Дополнительные стили для высоты экрана */
-        @media (max-height: 600px) {
-            .modal-content {
+                margin: 10px;
                 max-height: 95vh;
             }
             
-            .modal-header {
-                padding: 15px 25px 10px;
+            .messenger-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
             }
             
-            .modal-body {
-                padding: 10px 25px 8px;
+            .header {
+                padding: 20px 10px;
             }
             
-            .modal-footer {
-                padding: 10px 25px 12px;
+            .main-title {
+                font-size: 1.6rem;
             }
             
-            .option-section {
-                padding: 15px;
+            .subtitle {
+                font-size: 1rem;
             }
             
-            .form-group textarea {
-                min-height: 60px;
-                max-height: 80px;
+            .section-content {
+                padding: 18px;
+            }
+            
+            .section-header {
+                padding: 18px 20px 12px;
+            }
+            
+            .info-card {
+                padding: 20px;
+            }
+            
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
         }
         
-        /* Анимации */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .animated {
-            animation: fadeIn 0.8s ease forwards;
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
         }
         
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-4 { animation-delay: 0.8s; }
-        
-        /* Кастомный скроллбар для модального окна */
-        .modal-body::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .modal-body::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-        
-        .modal-body::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-        
-        .modal-body::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary);
-        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo-container animated">
+        <!-- HEADER -->
+        <header class="header animate-in">
             <img src="https://raw.githubusercontent.com/christian-word/info-pages/refs/heads/main/ico-msg/podcast-icon-neon.svg" 
                  alt="Логотип подкаста" class="podcast-logo">
-            <h1>📖 Біблійна історія та аудіо-розбір</h1>
+            <h1 class="main-title">📖 Біблійна історія та аудіо-розбір</h1>
             <p class="subtitle">Насіння милосердя</p>
-        </div>
+            <button class="cta-button" id="openModal">
+                <i class="fas fa-lightbulb"></i>
+                Предложить тему
+            </button>
+        </header>
         
-        <div class="audio-section animated delay-1">
-            <div class="episode-card">
-                <div class="player-title">
-                    <i class="fas fa-play-circle"></i>Біблійна історія: Насіння милосердя
+        <!-- MAIN CONTENT -->
+        <main>
+            <!-- AUDIO SECTION -->
+            <section class="content-section animate-in delay-1">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-headphones"></i>
+                        Аудіо-матеріали
+                    </h2>
+                    <p class="section-subtitle">Прослухайте біблійні історії та роздуми</p>
                 </div>
-                <div class="audio-player">
-                    <audio controls>
-                        <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Seeds-of-mercy.mp3" type="audio/mp3">
-                        Ваш браузер не поддерживает аудио элемент.
-                    </audio>
+                <div class="section-content">
+                    <!-- Episode 1 -->
+                    <div class="audio-episode">
+                        <div class="episode-title">
+                            <i class="fas fa-play-circle play-icon"></i>
+                            Біблійна історія: Насіння милосердя
+                        </div>
+                        <div class="audio-player-wrapper">
+                            <audio controls class="audio-player">
+                                <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Seeds-of-mercy.mp3" type="audio/mp3">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                        <div class="episode-controls">
+                            <button class="control-btn">
+                                <i class="fas fa-download"></i>
+                                Скачати
+                            </button>
+                            <button class="control-btn">
+                                <i class="fas fa-share-alt"></i>
+                                Поділитися
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="content-divider">
+                        <span class="divider-text">Біблійний розбір</span>
+                    </div>
+                    
+                    <!-- Episode 2 -->
+                    <div class="audio-episode">
+                        <div class="episode-title">
+                            <i class="fas fa-play-circle play-icon"></i>
+                            Звільнення через прощення
+                        </div>
+                        <div class="audio-player-wrapper">
+                            <audio controls class="audio-player">
+                                <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Forgiveness-Biblical01.mp3" type="audio/mp3">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                        
+                        <div class="content-divider">
+                            <span class="divider-text">Додаткові матеріали</span>
+                        </div>
+                        
+                        <div class="audio-player-wrapper">
+                            <audio controls class="audio-player">
+                                <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Forgiveness-Biblical02.mp3" type="audio/mp3">
+                                Ваш браузер не поддерживает аудио элемент.
+                            </audio>
+                        </div>
+                        
+                        <div class="episode-controls">
+                            <button class="control-btn">
+                                <i class="fas fa-download"></i>
+                                Скачати
+                            </button>
+                            <button class="control-btn">
+                                <i class="fas fa-share-alt"></i>
+                                Поділитися
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="audio-controls">
-                    <button class="btn"><i class="fas fa-download"></i> Скачать</button>
-                    <button class="btn"><i class="fas fa-share-alt"></i> Поделиться</button>
+            </section>
+            
+            <!-- NEXT TOPIC -->
+            <div class="info-card animate-in delay-2">
+                <h3 class="info-card-title">
+                    <i class="fas fa-forward"></i>
+                    Наступна тема
+                </h3>
+                <div class="info-card-content">
+                    Притчі Ісуса: Ми розглянемо, як історії, розказані дві тисячі років тому, залишаються актуальними і сьогодні.
                 </div>
             </div>
             
-            <div class="episode-card">
-                <div class="player-title">
-                    <i class="fas fa-play-circle"></i>Біблійний розбір: Звільнення через прощення
-                </div>
-                <div class="audio-player">
-                    <audio controls>
-                        <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Forgiveness-Biblical01.mp3" type="audio/mp3">
-                        Ваш браузер не поддерживает аудио элемент.
-                    </audio>
-                </div>
-                
-                <div class="player-separator">
-                    <span>Дополнительные материалы</span>
-                </div>
-                
-                <div class="audio-player">
-                    <audio controls>
-                        <source src="https://raw.githubusercontent.com/christian-word/info-pages/main/media/Forgiveness-Biblical02.mp3" type="audio/mp3">
-                        Ваш браузер не поддерживает аудио элемент.
-                    </audio>
-                </div>
-                
-                <div class="audio-controls">
-                    <button class="btn"><i class="fas fa-download"></i> Скачать</button>
-                    <button class="btn"><i class="fas fa-share-alt"></i> Поделиться</button>
-                </div>
+            <!-- SOCIAL LINKS -->
+            <div class="social-links animate-in delay-3">
+                <a href="#" class="social-link" title="Telegram">
+                    <i class="fab fa-telegram"></i>
+                </a>
+                <a href="#" class="social-link" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="social-link" title="VKontakte">
+                    <i class="fab fa-vk"></i>
+                </a>
+                <a href="#" class="social-link" title="Spotify">
+                    <i class="fab fa-spotify"></i>
+                </a>
             </div>
-        </div>
+        </main>
         
-        <!-- Кнопка для заявки -->
-        <button class="request-btn animated delay-2" id="openModal">
-            <i class="fas fa-lightbulb"></i>
-            Предложить тему
-        </button>
-        
-        <div class="next-topic animated delay-3">
-            <h3><i class="fas fa-forward"></i>Следующая тема:</h3>
-            <p>Притчи Иисуса: Мы рассмотрим, как истории, рассказанные две тысячи лет назад, остаются актуальными и сегодня.</p>
-        </div>
-        
-        <div class="social-section animated delay-4">
-            <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-spotify"></i></a>
-        </div>
-        
-        <div class="footer animated delay-4">
+        <!-- FOOTER -->
+        <footer class="footer animate-in delay-4">
             <p>© 2025 Gospel Voice Podcast | м. Суми</p>
-        </div>
+        </footer>
     </div>
 
-    <!-- УЛУЧШЕННОЕ МОДАЛЬНОЕ ОКНО -->
+    <!-- MODAL -->
     <div id="requestModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -965,37 +836,30 @@
             </div>
             
             <div class="modal-body">
-                <div class="request-options">
-                    <!-- Быстрая связь -->
-                    <div class="option-section">
-                        <h3><i class="fas fa-rocket"></i> Быстро через мессенджер</h3>
-                        <div class="messenger-buttons">
-                            <a href="https://t.me/yuriy_2868?text=Хочу%20предложить%20тему%20для%20подкаста" target="_blank" class="messenger-btn telegram">
-                                <i class="fab fa-telegram"></i> Telegram
-                            </a>
-                            <a href="viber://chat?number=%2B380509866724" class="messenger-btn viber">
-                                <i class="fab fa-viber"></i> Viber
-                            </a>
-                        </div>
+                <div class="option-section">
+                    <h3><i class="fas fa-rocket"></i> Быстро через мессенджер</h3>
+                    <div class="messenger-buttons">
+                        <a href="https://t.me/yuriy_2868?text=Хочу%20предложить%20тему%20для%20подкаста" target="_blank" class="messenger-btn telegram">
+                            <i class="fab fa-telegram"></i> Telegram
+                        </a>
+                        <a href="viber://chat?number=%2B380509866724" class="messenger-btn viber">
+                            <i class="fab fa-viber"></i> Viber
+                        </a>
                     </div>
-                    
-                    <!-- Форма -->
-                    <div class="option-section">
-                        <h3><i class="fas fa-edit"></i> Через форму</h3>
-                        <div class="form-container">
-                            <form id="topicForm">
-                                <div class="form-group">
-                                    <label for="userName">Ваше имя (необязательно):</label>
-                                    <input type="text" id="userName" placeholder="Как к вам обращаться?">
-                                </div>
-                                <div class="form-group">
-                                    <label for="topicIdea">Предлагаемая тема:</label>
-                                    <textarea id="topicIdea" placeholder="Опишите тему, которую хотели бы услышать в подкасте..." required></textarea>
-                                </div>
-                            </form>
-                            <div class="status-message" id="statusMessage"></div>
+                </div>
+                
+                <div class="option-section">
+                    <h3><i class="fas fa-edit"></i> Через форму</h3>
+                    <form id="topicForm">
+                        <div class="form-group">
+                            <label for="userName">Ваше имя (необязательно):</label>
+                            <input type="text" id="userName" placeholder="Как к вам обращаться?">
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label for="topicIdea">Предлагаемая тема:</label>
+                            <textarea id="topicIdea" placeholder="Опишите тему, которую хотели бы услышать в подкасте..." required></textarea>
+                        </div>
+                    </form>
                 </div>
             </div>
             
@@ -1035,7 +899,6 @@
             modal.classList.remove('show');
             document.body.style.overflow = 'auto';
             
-            // Сброс формы и статуса
             setTimeout(() => {
                 form.reset();
                 statusMessage.style.display = 'none';
@@ -1045,14 +908,12 @@
 
         closeModal.addEventListener('click', closeModalHandler);
 
-        // Закрытие по клику вне модального окна
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 closeModalHandler();
             }
         });
 
-        // Закрытие по Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('show')) {
                 closeModalHandler();
@@ -1078,11 +939,9 @@
                 return;
             }
 
-            // Блокировка кнопки
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправляем...';
 
-            // Формирование сообщения
             let message = `🎙️ НОВАЯ ЗАЯВКА НА ТЕМУ ПОДКАСТА\n\n`;
             if (userName) {
                 message += `👤 От: ${userName}\n`;
@@ -1107,7 +966,6 @@
                     showStatus('✅ Заявка успешно отправлена! Спасибо за предложение!', true);
                     form.reset();
                     
-                    // Закрытие модального окна через 2 секунды
                     setTimeout(() => {
                         closeModalHandler();
                     }, 2000);
@@ -1118,46 +976,48 @@
                 console.error('Ошибка отправки:', error);
                 showStatus('❌ Ошибка при отправке. Попробуйте связаться через мессенджер.', false);
             } finally {
-                // Разблокировка кнопки
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить заявку';
             }
         });
 
-        // Анимация загрузки страницы
+        // Инициализация анимаций
         document.addEventListener('DOMContentLoaded', function() {
-            const elementsToAnimate = document.querySelectorAll('.animated');
-            
-            elementsToAnimate.forEach(element => {
-                element.style.opacity = '0';
-            });
-            
-            setTimeout(() => {
-                elementsToAnimate.forEach(element => {
-                    element.classList.add('animated');
-                });
-            }, 100);
-            
-            // Функционал кнопок аудио
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
+            // Функционал кнопок управления аудио
+            const controlBtns = document.querySelectorAll('.control-btn');
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Визуальный фидбек
                     this.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         this.style.transform = '';
-                    }, 200);
+                    }, 150);
                     
                     if (this.querySelector('.fa-download')) {
                         console.log('Скачать clicked');
-                        // Здесь будет логика скачивания
+                        // Логика скачивания
                     } else if (this.querySelector('.fa-share-alt')) {
                         console.log('Поделиться clicked');
-                        // Здесь будет логика поделиться
+                        // Логика шаринга
                     }
+                });
+            });
+
+            // Улучшенное взаимодействие с аудио плеерами
+            const audioElements = document.querySelectorAll('audio');
+            audioElements.forEach(audio => {
+                audio.addEventListener('play', function() {
+                    // Приостанавливаем другие плееры
+                    audioElements.forEach(otherAudio => {
+                        if (otherAudio !== this && !otherAudio.paused) {
+                            otherAudio.pause();
+                        }
+                    });
                 });
             });
         });
     </script>
 </body>
-
 </html>
