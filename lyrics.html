@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Розпізнавання тексту пісні</title>
+  <title>Розпізнавання та переклад тексту пісні</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -12,6 +12,7 @@
       --primary: #1a73e8;
       --success: #2f7d32;
       --danger: #b00020;
+      --warning: #ff9800;
       --border: #e5e5e5;
       --hover: #f0f0f0;
     }
@@ -70,6 +71,16 @@
       color: var(--text);
       font-size: 16px;
     }
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
     button {
       width: 100%;
       padding: 12px;
@@ -116,6 +127,11 @@
       background: rgba(176, 0, 32, 0.1);
       color: var(--danger);
       border: 1px solid var(--danger);
+    }
+    .status.warning {
+      background: rgba(255, 152, 0, 0.1);
+      color: var(--warning);
+      border: 1px solid var(--warning);
     }
     .hidden {
       display: none;
@@ -171,24 +187,26 @@
 <body>
   <div class="container">
     <h1>🎤 Для внутрішнього використання церкви</h1>
-    <p class="description">Розпізнавання тексту пісні. Завантажте аудіофайл (MP3, WAV, M4A) для отримання тексту пісні</p>
-    
+    <p class="description">Розпізнавання та переклад тексту пісні. Завантажте аудіофайл (MP3, WAV, M4A) для отримання тексту пісні</p>
     <div id="status" class="status hidden"></div>
-    
     <div class="form-group">
       <label for="audio-file">Аудіофайл:</label>
       <input type="file" id="audio-file" accept="audio/*" />
       <audio id="audio-preview" controls class="hidden"></audio>
+      
+      <label for="target-language">Мова розпізнавання/перекладу:</label>
+      <select id="target-language">
+        <option value="uk">Українська</option>
+        <option value="en">Англійська</option>
+        <option value="ru">Російська</option>
+      </select>
     </div>
-    
     <button id="transcribe-btn" disabled>
-      <span id="button-text">Розпізнати текст пісні</span>
+      <span id="button-text">Розпізнати та перекласти</span>
     </button>
-    
     <div class="info-box">
-      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ для перетворення мовлення з аудіо в текст. Чим чіткіше звучить спів, тим точнішим буде результат. Підтримуються різні мови.
+      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ Whisper для перетворення мовлення з аудіо в текст. Ви можете вибрати мову, на якій буде розпізнано текст. Чим чіткіше звучить спів, тим точнішим буде результат.
     </div>
-
     <div id="result-container" class="hidden">
         <div id="result" class="result"></div>
         <div class="actions">
@@ -197,7 +215,6 @@
         </div>
     </div>
   </div>
-
   <script>
     /* =========================
       API CONFIGURATION
@@ -205,45 +222,38 @@
     const encrypted = "Z3NrX1NUelQyS1FFQko3MGNDb1hDSllaV0dkeWIzRlk5OHJHN2xvWXUxSmc1SnV0VFZOSzIyVHY=";
     const apiKey = atob(encrypted);
     const API_URL = "https://api.groq.com/openai/v1/audio/transcriptions";
-
     /* =========================
       UTILITY FUNCTIONS
       ========================= */
-    function showStatus(message, isSuccess = true) {
+    function showStatus(message, type = 'success') {
       const statusEl = document.getElementById('status');
       statusEl.textContent = message;
-      statusEl.className = `status ${isSuccess ? 'success' : 'error'}`;
+      statusEl.className = `status ${type}`;
       statusEl.classList.remove('hidden');
     }
-
     function hideStatus() {
       document.getElementById('status').classList.add('hidden');
     }
-
     function showResult(content) {
       const container = document.getElementById('result-container');
       const resultEl = document.getElementById('result');
       resultEl.textContent = content;
       container.classList.remove('hidden');
     }
-
     function hideResult() {
       document.getElementById('result-container').classList.add('hidden');
     }
-
     function setButtonLoading(isLoading) {
       const button = document.getElementById('transcribe-btn');
       const buttonText = document.getElementById('button-text');
-      
       if (isLoading) {
         button.disabled = true;
         buttonText.innerHTML = '<span class="loading"></span> Обробка...';
       } else {
         button.disabled = false;
-        buttonText.textContent = 'Розпізнати текст пісні';
+        buttonText.textContent = 'Розпізнати та перекласти';
       }
     }
-
     /* =========================
       AUDIO HANDLING
       ========================= */
@@ -251,7 +261,6 @@
       const file = e.target.files[0];
       const button = document.getElementById('transcribe-btn');
       const preview = document.getElementById('audio-preview');
-      
       if (file) {
         button.disabled = false;
         // Створюємо попередній перегляд аудіо
@@ -264,36 +273,35 @@
         preview.src = '';
       }
     });
-
     /* =========================
-      TRANSCRIPTION FUNCTION
+      TRANSCRIPTION & TRANSLATION FUNCTION
       ========================= */
-    async function transcribeSong() {
+    async function transcribeAndTranslate() {
       hideStatus();
       hideResult();
       setButtonLoading(true);
-      
       const fileInput = document.getElementById('audio-file');
+      const languageSelect = document.getElementById('target-language');
       const file = fileInput.files[0];
-      
+      const targetLanguage = languageSelect.value;
+
       if (!file) {
-        showStatus('Будь ласка, оберіть аудіофайл', false);
+        showStatus('Будь ласка, оберіть аудіофайл', 'error');
         setButtonLoading(false);
         return;
       }
-      
       // Перевірка розміру файлу (Groq має ліміт 25MB)
       if (file.size > 25 * 1024 * 1024) {
-        showStatus('Файл занадто великий. Максимальний розмір 25MB.', false);
+        showStatus('Файл занадто великий. Максимальний розмір 25MB.', 'error');
         setButtonLoading(false);
         return;
       }
-      
       const formData = new FormData();
       formData.append('file', file);
       formData.append('model', 'whisper-large-v3');
       formData.append('response_format', 'text');
-      formData.append('language', 'uk'); // За замовчуванням українська мова
+      // Встановлюємо мову для розпізнавання/перекладу
+      formData.append('language', targetLanguage); 
       
       try {
         const res = await fetch(API_URL, {
@@ -303,30 +311,25 @@
           },
           body: formData
         });
-        
         if (!res.ok) {
           const errorText = await res.text().catch(() => "Немає деталей помилки");
           throw new Error(`HTTP ${res.status}: ${errorText}`);
         }
-        
         const transcript = await res.text();
-        
         if (!transcript || transcript.trim() === '') {
           showResult('Не вдалося розпізнати текст. Можливо, аудіо занадто тихе, відсутнє мовлення або файл пошкоджений.');
         } else {
           showResult(transcript);
-          showStatus('Текст пісні успішно розпізнано!', true);
+          showStatus(`Текст пісні успішно розпізнано на ${languageSelect.options[languageSelect.selectedIndex].text.toLowerCase()}!`, 'success');
         }
-        
       } catch (err) {
         showResult('');
-        showStatus(`Помилка: ${err.message}`, false);
+        showStatus(`Помилка: ${err.message}`, 'error');
         console.error("Transcription Error:", err);
       } finally {
         setButtonLoading(false);
       }
     }
-
     /* =========================
       SAVE & COPY FUNCTIONS
       ========================= */
@@ -334,37 +337,33 @@
         const resultText = document.getElementById('result').textContent;
         navigator.clipboard.writeText(resultText)
             .then(() => {
-                showStatus('Текст скопійовано до буфера обміну!', true);
+                showStatus('Текст скопійовано до буфера обміну!', 'success');
             })
             .catch(err => {
-                showStatus('Помилка копіювання: ' + err, false);
+                showStatus('Помилка копіювання: ' + err, 'error');
             });
     }
-
     function saveToFile() {
         const resultText = document.getElementById('result').textContent;
         const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
-        
         const a = document.createElement('a');
         a.href = url;
         a.download = 'текст_пісні.txt';
         document.body.appendChild(a);
         a.click();
-        
         // Очищуємо ресурси
         setTimeout(() => {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 100);
     }
-
     /* =========================
       INITIALIZATION
       ========================= */
     document.addEventListener('DOMContentLoaded', () => {
       // Додаємо обробники подій
-      document.getElementById('transcribe-btn').addEventListener('click', transcribeSong);
+      document.getElementById('transcribe-btn').addEventListener('click', transcribeAndTranslate);
       document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
       document.getElementById('save-btn').addEventListener('click', saveToFile);
     });
