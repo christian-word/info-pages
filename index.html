@@ -71,7 +71,7 @@
       color: var(--text);
       font-size: 16px;
     }
-    select {
+    select, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--border);
@@ -80,15 +80,6 @@
       color: var(--text);
       font-size: 16px;
       margin-bottom: 15px;
-    }
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 16px;
       font-family: inherit;
       resize: vertical;
       min-height: 60px;
@@ -212,13 +203,13 @@
         <option value="ru">Російська</option>
       </select>
       <label for="context-prompt">Контекстні підказки (необов'язково):</label>
-      <textarea id="context-prompt" placeholder="Введіть слова, фрази або теми, які можуть зустрітися в пісні (наприклад: Господь, Ісус, церква, хвала, Біблія, небеса...)"></textarea>
+      <textarea id="context-prompt" placeholder="Введіть слова, фрази або теми, які можуть зустрітися в аудіо...">Розпізнайте церковну пісню. Виділіть куплети та припіви. Припів повторюється. Якщо почуєте повтор фрази - це припів. Слова для орієнтації: Господь, Ісус, Христос, хвала, слава, алілуя, амінь.</textarea>
     </div>
     <button id="transcribe-btn" disabled>
       <span id="button-text">Розпізнати та перекласти</span>
     </button>
     <div class="info-box">
-      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ Whisper для перетворення мовлення з аудіо в текст. Ви можете вибрати мову, на якій буде розпізнано текст. Чим чіткіше звучить спів, тим точнішим буде результат. Поле "Контекстні підказки" дозволяє вказати ключові слова, що допомагає моделі краще розпізнати складні або специфічні терміни.
+      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ Whisper для перетворення мовлення з аудіо в текст. Ви можете вибрати мову, на якій буде розпізнано текст. Чим чіткіше звучить спів, тим точнішим буде результат. Поле "Контекстні підказки" дозволяє вказати ключові слова або структуру, що допомагає моделі краще розпізнати складні або специфічні фрагменти.
     </div>
     <div id="result-container" class="hidden">
         <div id="result" class="result"></div>
@@ -299,6 +290,7 @@
       const file = fileInput.files[0];
       const targetLanguage = languageSelect.value;
       const contextPrompt = promptInput.value.trim();
+
       if (!file) {
         showStatus('Будь ласка, оберіть аудіофайл', 'error');
         setButtonLoading(false);
@@ -316,10 +308,17 @@
       formData.append('response_format', 'text');
       // Встановлюємо мову для розпізнавання/перекладу
       formData.append('language', targetLanguage);
-      // Додаємо контекстну підказку, якщо вона вказана
+      
+      // Додаємо універсальний контекстний промт за замовчуванням
+      // Користувач може його змінити або очистити
       if (contextPrompt) {
         formData.append('prompt', contextPrompt);
+      } else {
+        // Якщо користувач очистив поле, все одно додаємо базовий промт
+        const defaultPrompt = "Тип: Пісня. Має куплети та припів. Припів повторюється. Зверніть увагу на повторювані частини. Структура: повтори, куплет, припів.";
+        formData.append('prompt', defaultPrompt);
       }
+
       try {
         const res = await fetch(API_URL, {
           method: "POST",
@@ -360,43 +359,35 @@
                 showStatus('Помилка копіювання: ' + err, 'error');
             });
     }
-function saveToFile() {
-    const resultText = document.getElementById('result').textContent;
-    if (!resultText) {
-        showStatus('Немає тексту для збереження', 'warning');
-        return;
+    function saveToFile() {
+        const resultText = document.getElementById('result').textContent;
+        if (!resultText) {
+            showStatus('Немає тексту для збереження', 'warning');
+            return;
+        }
+        try {
+            const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none'; // Скрываем элемент
+            a.href = url;
+            a.download = 'tekst_pisni.txt'; // Имя файла латиницей
+
+            document.body.appendChild(a);
+            a.click();
+
+            // Отложено удаляем элемент и URL
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+
+            showStatus('Файл збережено! Якщо завантаження не почалося, перевірте папку "Завантаження" на вашому пристрої.', 'success');
+        } catch (err) {
+            console.error("Помилка збереження:", err);
+            showStatus('Не вдалося зберегти файл: ' + err.message, 'error');
+        }
     }
-
-    try {
-        const blob = new Blob([resultText], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none'; // Оставим это для скрытия
-        a.href = url;
-        // Убедитесь, что имя файла не содержит символов, которые могут вызвать проблемы на мобильных устройствах
-        a.download = 'tekst_pisni.txt'; // Используйте латиницу и подчеркивания
-
-        document.body.appendChild(a);
-        // Используйте непосредственный клик
-        a.click();
-        
-        // Отложено удаляем элемент и URL, но без setTimeout
-        // Лучше использовать requestAnimationFrame или Promise.resolve().then()
-        // но даже простой отложенный setTimeout часто работает
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100); // Меньшая задержка может быть достаточной
-
-        showStatus('Файл збережено! Якщо завантаження не почалося, перевірте папку "Завантаження" на вашому пристрої.', 'success');
-    } catch (err) {
-        console.error("Помилка збереження:", err);
-        showStatus('Не вдалося зберегти файл: ' + err.message, 'error');
-        // Альтернативный вариант для мобильных - показать текст и предложить скопировать вручную
-        // Или открыть текст в новом окне/вкладке
-        // window.open(URL.createObjectURL(new Blob([resultText], { type: 'text/plain' })), '_blank');
-    }
-}
     /* =========================
       INITIALIZATION
       ========================= */
