@@ -81,6 +81,18 @@
       font-size: 16px;
       margin-bottom: 15px;
     }
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+    }
     button {
       width: 100%;
       padding: 12px;
@@ -193,19 +205,20 @@
       <label for="audio-file">Аудіофайл:</label>
       <input type="file" id="audio-file" accept="audio/*" />
       <audio id="audio-preview" controls class="hidden"></audio>
-      
       <label for="target-language">Мова розпізнавання/перекладу:</label>
       <select id="target-language">
         <option value="uk">Українська</option>
         <option value="en">Англійська</option>
         <option value="ru">Російська</option>
       </select>
+      <label for="context-prompt">Контекстні підказки (необов'язково):</label>
+      <textarea id="context-prompt" placeholder="Введіть слова, фрази або теми, які можуть зустрітися в пісні (наприклад: Господь, Ісус, церква, хвала, Біблія, небеса...)"></textarea>
     </div>
     <button id="transcribe-btn" disabled>
       <span id="button-text">Розпізнати та перекласти</span>
     </button>
     <div class="info-box">
-      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ Whisper для перетворення мовлення з аудіо в текст. Ви можете вибрати мову, на якій буде розпізнано текст. Чим чіткіше звучить спів, тим точнішим буде результат.
+      <strong>ℹ️ Як це працює:</strong> Ця сторінка використовує модель ШІ Whisper для перетворення мовлення з аудіо в текст. Ви можете вибрати мову, на якій буде розпізнано текст. Чим чіткіше звучить спів, тим точнішим буде результат. Поле "Контекстні підказки" дозволяє вказати ключові слова, що допомагає моделі краще розпізнати складні або специфічні терміни.
     </div>
     <div id="result-container" class="hidden">
         <div id="result" class="result"></div>
@@ -282,9 +295,10 @@
       setButtonLoading(true);
       const fileInput = document.getElementById('audio-file');
       const languageSelect = document.getElementById('target-language');
+      const promptInput = document.getElementById('context-prompt');
       const file = fileInput.files[0];
       const targetLanguage = languageSelect.value;
-
+      const contextPrompt = promptInput.value.trim();
       if (!file) {
         showStatus('Будь ласка, оберіть аудіофайл', 'error');
         setButtonLoading(false);
@@ -301,8 +315,11 @@
       formData.append('model', 'whisper-large-v3');
       formData.append('response_format', 'text');
       // Встановлюємо мову для розпізнавання/перекладу
-      formData.append('language', targetLanguage); 
-      
+      formData.append('language', targetLanguage);
+      // Додаємо контекстну підказку, якщо вона вказана
+      if (contextPrompt) {
+        formData.append('prompt', contextPrompt);
+      }
       try {
         const res = await fetch(API_URL, {
           method: "POST",
