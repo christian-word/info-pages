@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Календар Християнських Свят 2026</title>
-        <meta property="og:image" content="https://christian-word.github.io/info-pages/ico-msg/cal.jpg" />
+    <title>Календар Християнських Свят</title>
+    <meta property="og:image" content="https://christian-word.github.io/info-pages/ico-msg/cal.jpg" />
     <style>
         * {
             margin: 0;
@@ -54,6 +54,13 @@
             font-size: 1.8em;
             color: #4b5563;
             margin-bottom: 30px;
+        }
+
+        .year-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 20px;
         }
 
         .countdown-box {
@@ -107,6 +114,44 @@
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             align-items: center;
+        }
+
+        .year-selector {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            align-items: center;
+        }
+
+        .year-label {
+            color: #6b7280;
+            font-weight: 600;
+            padding-left: 8px;
+        }
+
+        #yearSelect {
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #1f2937;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        #yearSelect:hover {
+            border-color: #2563eb;
+        }
+
+        #yearSelect:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .btn {
@@ -280,7 +325,6 @@
             transform: rotate(180deg);
         }
 
-        /* Градієнти для різних свят */
         .gradient-blue { background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%); }
         .gradient-purple { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); }
         .gradient-pink { background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%); }
@@ -315,6 +359,13 @@
             border-radius: 50%;
         }
 
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5em;
@@ -336,7 +387,7 @@
                 flex-direction: column;
             }
 
-            .control-group {
+            .control-group, .year-selector {
                 width: 100%;
                 justify-content: center;
             }
@@ -367,9 +418,10 @@
                 </svg>
                 <h1>КАЛЕНДАР</h1>
             </div>
-            <div class="subtitle">Християнських свят 2026</div>
+            <div class="subtitle">Християнських свят</div>
+            <div class="year-display" id="yearDisplay">2025</div>
             
-            <div class="countdown-box">
+            <div class="countdown-box" id="countdownBox">
                 <div class="countdown-label">
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -382,6 +434,19 @@
         </header>
 
         <div class="controls">
+            <div class="year-selector">
+                <span class="year-label">Рік:</span>
+                <select id="yearSelect">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>
+            </div>
+
             <div class="control-group">
                 <button class="btn active" data-view="grid">Сітка</button>
                 <button class="btn" data-view="list">Список</button>
@@ -407,10 +472,12 @@
     </div>
 
     <script>
-        const events = [
+        // Базовий шаблон свят (без конкретних дат)
+        const holidayTemplates = [
             {
-                date: '2026-01-06',
-                displayDate: '06 січня',
+                id: 'epiphany',
+                month: 1,
+                day: 6,
                 title: 'ХРЕЩЕННЯ ГОСПОДНЄ',
                 description: 'І сталося тими днями, прийшов Ісус із Назарету Галілейського і хрестився від Івана в Йордані.',
                 scripture: 'Марка 1:9',
@@ -419,8 +486,9 @@
                 fullText: 'Свято Хрещення Господнього відзначається на честь хрещення Ісуса Христа в річці Йордан. Це одне з найважливіших свят у християнстві. У цей день християни вшановують момент, коли на Ісуса зійшов Святий Дух у вигляді голуба, і пролунав голос Бога-Отця: "Це Син Мій возлюблений, що Його Я вподобав."'
             },
             {
-                date: '2026-02-02',
-                displayDate: '02 лютого',
+                id: 'meeting',
+                month: 2,
+                day: 2,
                 title: 'СТРІТЕННЯ ГОСПОДНЄ',
                 description: 'Свято зустрічі немовляти Ісуса в храмі.',
                 scripture: '',
@@ -429,8 +497,9 @@
                 fullText: 'Стрітення Господнє - свято зустрічі Сімеона Богоприємця з немовлям Ісусом у Єрусалимському храмі. Згідно з євангельською розповіддю, праведний старець Сімеон, якому було обіцяно, що він не помре, доки не побачить Месію, взяв на руки Ісуса і прославив Бога, проголосивши пророчі слова про майбутнє Спасителя.'
             },
             {
-                date: '2026-03-25',
-                displayDate: '25 березня',
+                id: 'annunciation',
+                month: 3,
+                day: 25,
                 title: 'БЛАГОВІЩЕННЯ',
                 description: 'Архангел Гавриїл благовістив Діві Марії про народження Спасителя.',
                 scripture: '',
@@ -439,48 +508,9 @@
                 fullText: 'Благовіщення Пресвятої Богородиці - свято на честь звістки архангела Гавриїла Діві Марії про майбутнє народження від Неї Сина Божого, Ісуса Христа. Це день, коли людство вперше дізналося про прихід Спасителя у світ. Марія прийняла цю звістку з вірою та покорою волі Божій.'
             },
             {
-                date: '2026-03-29',
-                displayDate: '29 березня',
-                title: 'ВХІД ІСУСА ДО ЄРУСАЛИМУ',
-                description: 'Вербна неділя - свято входу Господа до Єрусалиму.',
-                scripture: '',
-                isOfficial: false,
-                gradient: 'gradient-green',
-                fullText: 'Вхід Господень до Єрусалиму, також відомий як Вербна неділя, відзначається за тиждень до Великодня. У цей день віряни вшановують урочистий в\'їзд Ісуса Христа до Єрусалиму, коли народ зустрічав Його з пальмовими гілками, вітаючи як Царя та Месію. Цей вхід знаменував початок Страсного тижня.'
-            },
-            {
-                date: '2026-04-05',
-                displayDate: '05 квітня',
-                title: 'ВЕЛИКДЕНЬ',
-                description: 'Воскресіння Господа Ісуса Христа - найбільше християнське свято.',
-                scripture: '',
-                isOfficial: true,
-                gradient: 'gradient-yellow',
-                fullText: 'Великдень - найбільше та найрадісніше християнське свято, що відзначає воскресіння Ісуса Христа з мертвих на третій день після Його розп\'яття. Воскресіння Христа є центральною подією християнської віри, що перемагає смерть і дарує надію на вічне життя всім віруючим. Христос Воскрес!'
-            },
-            {
-                date: '2026-05-14',
-                displayDate: '14 травня',
-                title: 'ВОЗНЕСІННЯ ГОСПОДНЄ',
-                description: 'І, сказавши це, Він піднісся перед ними, і хмара забрала Його з їхніх очей.',
-                scripture: 'Дії святих апостолів 1:9',
-                isOfficial: false,
-                gradient: 'gradient-cyan',
-                fullText: 'Вознесіння Господнє відзначається на 40-й день після Великодня і знаменує вознесіння Ісуса Христа на небеса. Після Свого воскресіння Христос протягом 40 днів являвся учням, навчав їх про Царство Боже, а потім вознісся до Бога-Отця, обіцявши повернутися знову.'
-            },
-            {
-                date: '2026-05-24',
-                displayDate: '24 травня',
-                title: 'ЗІШЕСТЯ СВЯТОГО ДУХА',
-                description: 'П\'ятидесятниця - день народження Церкви.',
-                scripture: '',
-                isOfficial: false,
-                gradient: 'gradient-red',
-                fullText: 'День Святої Трійці (П\'ятидесятниця) - свято сходження Святого Духа на апостолів на 50-й день після Великодня. Цей день вважається днем народження Церкви. Святий Дух дарував апостолам силу, мужність та дар говорити різними мовами, щоб проповідувати Євангеліє по всьому світу.'
-            },
-            {
-                date: '2026-08-06',
-                displayDate: '06 серпня',
+                id: 'transfiguration',
+                month: 8,
+                day: 6,
                 title: 'ПРЕОБРАЖЕННЯ',
                 description: 'І преобразився перед ними: обличчя Його засяяло, як сонце, а одежі Його стали білі, як світло.',
                 scripture: 'Євангелія від Матвія 17:2',
@@ -489,28 +519,124 @@
                 fullText: 'Преображення Господнє - свято, що відзначає преображення Ісуса Христа на горі Фавор перед трьома учнями: Петром, Іаковом та Іоанном. У цей момент апостоли побачили Божественну славу Христа, і Він постав перед ними в сяючих одежах, розмовляючи з пророками Мойсеєм та Іллею.'
             },
             {
-                date: '2026-12-25',
-                displayDate: '25 грудня',
+                id: 'christmas',
+                month: 12,
+                day: 25,
                 title: 'РІЗДВО ХРИСТОВЕ',
                 description: 'Народження Ісуса Христа - свято, що приносить радість усьому світу.',
                 scripture: '',
                 isOfficial: true,
                 gradient: 'gradient-emerald',
-                fullText: 'Різдво Христове - велике свято народження Ісуса Христа у Вифлеємі від Діви Марії. Це одне з найважливіших християнських свят, що знаменує прихід у світ Сына Божого, який став людиною для спасіння людства. Ангели возвістили пастухам радісну звістку: "Не бійтеся! Народився вам Спаситель!"'
+                fullText: 'Різдво Христове - велике свято народження Ісуса Христа у Вифлеємі від Діви Марії. Це одне з найважливіших християнських свят, що знаменує прихід у світ Сина Божого, який став людиною для спасіння людства. Ангели возвістили пастухам радісну звістку: "Не бійтеся! Народився вам Спаситель!"'
             }
         ];
 
+        // Рухомі свята для кожного року (Великдень та залежні від нього)
+        const movableHolidays = {
+            2024: { easter: '2024-05-05', palmSunday: '2024-04-28', ascension: '2024-06-13', pentecost: '2024-06-23' },
+            2025: { easter: '2025-04-20', palmSunday: '2025-04-13', ascension: '2025-05-29', pentecost: '2025-06-08' },
+            2026: { easter: '2026-04-05', palmSunday: '2026-03-29', ascension: '2026-05-14', pentecost: '2026-05-24' },
+            2027: { easter: '2027-04-25', palmSunday: '2027-04-18', ascension: '2027-06-03', pentecost: '2027-06-13' },
+            2028: { easter: '2028-04-16', palmSunday: '2028-04-09', ascension: '2028-05-25', pentecost: '2028-06-04' },
+            2029: { easter: '2029-04-01', palmSunday: '2029-03-25', ascension: '2029-05-10', pentecost: '2029-05-20' },
+            2030: { easter: '2030-04-21', palmSunday: '2030-04-14', ascension: '2030-05-30', pentecost: '2030-06-09' }
+        };
+
+        let currentYear = new Date().getFullYear();
         let currentView = 'grid';
         let currentFilter = 'all';
+        let currentEvents = [];
+
+        function generateEventsForYear(year) {
+            const events = [];
+            const movable = movableHolidays[year];
+
+            // Додаємо фіксовані свята
+            holidayTemplates.forEach(template => {
+                const date = new Date(year, template.month - 1, template.day);
+                events.push({
+                    ...template,
+                    date: date.toISOString().split('T')[0],
+                    displayDate: formatDate(date)
+                });
+            });
+
+            // Додаємо рухомі свята, якщо вони є для цього року
+            if (movable) {
+                events.push({
+                    id: 'palm-sunday',
+                    date: movable.palmSunday,
+                    displayDate: formatDate(new Date(movable.palmSunday)),
+                    title: 'ВХІД ІСУСА ДО ЄРУСАЛИМУ',
+                    description: 'Вербна неділя - свято входу Господа до Єрусалиму.',
+                    scripture: '',
+                    isOfficial: false,
+                    gradient: 'gradient-green',
+                    fullText: 'Вхід Господень до Єрусалиму, також відомий як Вербна неділя, відзначається за тиждень до Великодня. У цей день віряни вшановують урочистий в\'їзд Ісуса Христа до Єрусалиму, коли народ зустрічав Його з пальмовими гілками, вітаючи як Царя та Месію. Цей вхід знаменував початок Страсного тижня.'
+                });
+
+                events.push({
+                    id: 'easter',
+                    date: movable.easter,
+                    displayDate: formatDate(new Date(movable.easter)),
+                    title: 'ВЕЛИКДЕНЬ',
+                    description: 'Воскресіння Господа Ісуса Христа - найбільше християнське свято.',
+                    scripture: '',
+                    isOfficial: true,
+                    gradient: 'gradient-yellow',
+                    fullText: 'Великдень - найбільше та найрадісніше християнське свято, що відзначає воскресіння Ісуса Христа з мертвих на третій день після Його розп\'яття. Воскресіння Христа є центральною подією християнської віри, що перемагає смерть і дарує надію на вічне життя всім віруючим. Христос Воскрес!'
+                });
+
+                events.push({
+                    id: 'ascension',
+                    date: movable.ascension,
+                    displayDate: formatDate(new Date(movable.ascension)),
+                    title: 'ВОЗНЕСІННЯ ГОСПОДНЄ',
+                    description: 'І, сказавши це, Він піднісся перед ними, і хмара забрала Його з їхніх очей.',
+                    scripture: 'Дії святих апостолів 1:9',
+                    isOfficial: false,
+                    gradient: 'gradient-cyan',
+                    fullText: 'Вознесіння Господнє відзначається на 40-й день після Великодня і знаменує вознесіння Ісуса Христа на небеса. Після Свого воскресіння Христос протягом 40 днів являвся учням, навчав їх про Царство Боже, а потім вознісся до Бога-Отця, обіцявши повернутися знову.'
+                });
+
+                events.push({
+                    id: 'pentecost',
+                    date: movable.pentecost,
+                    displayDate: formatDate(new Date(movable.pentecost)),
+                    title: 'ЗІШЕСТЯ СВЯТОГО ДУХА',
+                    description: 'П\'ятидесятниця - день народження Церкви.',
+                    scripture: '',
+                    isOfficial: false,
+                    gradient: 'gradient-red',
+                    fullText: 'День Святої Трійці (П\'ятидесятниця) - свято сходження Святого Духа на апостолів на 50-й день після Великодня. Цей день вважається днем народження Церкви. Святий Дух дарував апостолам силу, мужність та дар говорити різними мовами, щоб проповідувати Євангеліє по всьому світу.'
+                });
+            }
+
+            // Сортуємо за датою
+            return events.sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+
+        function formatDate(date) {
+            const months = ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 
+                          'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'];
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = months[date.getMonth()];
+            return `${day} ${month}`;
+        }
 
         function renderEvents() {
             const grid = document.getElementById('calendar-grid');
             grid.className = currentView === 'grid' ? 'view-mode-grid' : 'view-mode-list';
             grid.innerHTML = '';
 
-            const filtered = events.filter(e => 
+            const filtered = currentEvents.filter(e => 
                 currentFilter === 'all' || (currentFilter === 'official' && e.isOfficial)
             );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-events">На жаль, для цього року поки немає даних про рухомі свята</div>';
+                return;
+            }
 
             filtered.forEach((event, index) => {
                 const card = document.createElement('div');
@@ -563,10 +689,12 @@
 
         function updateCountdown() {
             const now = new Date();
-            const upcoming = events
+            const upcoming = currentEvents
                 .map(e => ({...e, dateObj: new Date(e.date)}))
                 .filter(e => e.dateObj > now)
                 .sort((a, b) => a.dateObj - b.dateObj);
+
+            const countdownBox = document.getElementById('countdownBox');
 
             if (upcoming.length > 0) {
                 const next = upcoming[0];
@@ -577,8 +705,28 @@
                 
                 document.getElementById('countdown').textContent = `${days} днів ${hours} годин`;
                 document.getElementById('next-event-title').textContent = next.title;
+                countdownBox.style.display = 'inline-block';
+            } else {
+                countdownBox.style.display = 'none';
             }
         }
+
+        function changeYear(year) {
+            currentYear = parseInt(year);
+            document.getElementById('yearDisplay').textContent = currentYear;
+            currentEvents = generateEventsForYear(currentYear);
+            renderEvents();
+            updateCountdown();
+        }
+
+        // Ініціалізація
+        document.getElementById('yearSelect').value = currentYear;
+        changeYear(currentYear);
+
+        // Year selector
+        document.getElementById('yearSelect').addEventListener('change', (e) => {
+            changeYear(e.target.value);
+        });
 
         // View mode buttons
         document.querySelectorAll('[data-view]').forEach(btn => {
@@ -600,8 +748,7 @@
             });
         });
 
-        renderEvents();
-        updateCountdown();
+        // Оновлення таймера кожну хвилину
         setInterval(updateCountdown, 60000);
     </script>
 </body>
