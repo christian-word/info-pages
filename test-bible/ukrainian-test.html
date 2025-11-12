@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний біблійний тест - Українська</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 40px 30px;
+            position: relative;
+            margin-bottom: 100px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(248, 249, 250, 0.95);
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #e9ecef;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .music-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        
+        .music-btn:hover {
+            background-color: #e9ecef;
+        }
+        
+        .volume-slider {
+            width: 80px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .level-selection {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .level-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .level-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .level-btn.beginner {
+            background-color: #27ae60;
+        }
+        
+        .level-btn.advanced {
+            background-color: #e67e22;
+        }
+        
+        .level-btn.expert {
+            background-color: #e74c3c;
+        }
+        
+        .level-info {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .level-info.beginner {
+            border-left-color: #27ae60;
+        }
+        
+        .level-info.advanced {
+            border-left-color: #e67e22;
+        }
+        
+        .level-info.expert {
+            border-left-color: #e74c3c;
+        }
+        
+        .question-container {
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .options {
+            list-style-type: none;
+        }
+        
+        .option {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 18px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .navigation::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e9ecef, transparent);
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .home-btn {
+            background-color: #95a5a6;
+        }
+        
+        .home-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 60vh;
+        }
+        
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+        
+        .result-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .answers-review {
+            text-align: left;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .review-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .incorrect {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-counter {
+            text-align: right;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .level-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .attempts-warning {
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .music-info {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .music-controls {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 12px;
+            }
+            
+            .volume-slider {
+                width: 70px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+                margin-bottom: 80px;
+            }
+            
+            .navigation {
+                margin-top: 30px;
+                margin-bottom: 25px;
+                padding: 15px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .music-controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 6px 10px;
+            }
+            
+            .volume-slider {
+                width: 60px;
+            }
+            
+            .container {
+                padding: 25px 15px;
+                margin-bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="music-controls">
+            <button class="music-btn" id="music-toggle">🔇</button>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="30">
+        </div>
+
+        <h1>Інтерактивний біблійний тест</h1>
+        <p class="description">Перевірте своє розуміння духовних образів Писання</p>
+        
+        <div id="level-selection-screen">
+            <h2>Оберіть рівень складності</h2>
+            <div class="level-selection">
+                <button class="level-btn beginner" data-level="beginner">Початківець</button>
+                <button class="level-btn advanced" data-level="advanced">Просунутий</button>
+                <button class="level-btn expert" data-level="expert">Експертний</button>
+            </div>
+            
+            <div class="level-info beginner">
+                <h3>Рівень для початківців</h3>
+                <p>• Один прохід тесту</p>
+                <p>• Можна побачити правильні відповіді в кінці</p>
+                <p>• Ідеально для першого знайомства з матеріалом</p>
+            </div>
+            
+            <div class="level-info advanced">
+                <h3>Просунутий рівень</h3>
+                <p>• Декілька спроб для покращення результату</p>
+                <p>• Потрібно набрати 80% для завершення</p>
+                <p>• Підсвічування неправильних відповідей</p>
+            </div>
+            
+            <div class="level-info expert">
+                <h3>Експертний рівень</h3>
+                <p>• Тестування до ідеального результату</p>
+                <p>• Потрібно правильно відповісти на всі запитання</p>
+                <p>• Максимальна перевірка знань</p>
+            </div>
+
+            <div class="music-info">
+                🎵 Музика автоматично включиться після вибору рівня
+            </div>
+        </div>
+        
+        <div id="test-screen" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <div class="question-counter" id="question-counter">Запитання 1 з 5</div>
+            
+            <div id="level-stats" class="level-stats" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-label">Спроба</div>
+                    <div class="stat-value" id="attempt-counter">1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Найкращий результат</div>
+                    <div class="stat-value" id="best-score">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Потрібно</div>
+                    <div class="stat-value" id="required-score">80%</div>
+                </div>
+            </div>
+            
+            <div id="question-1" class="question-container">
+                <div class="question">1. Чому Бог вів Ізраїль не коротким шляхом через землю Філістимську, а довгою дорогою через пустелю?</div>
+                <ul class="options">
+                    <li class="option" data-value="a">а) Короткий шлях був заблокований єгипетською армією.</li>
+                    <li class="option" data-value="b">б) Бог хотів, щоб вони навчилися покладатися на Нього і довіряти Йому.</li>
+                    <li class="option" data-value="c">в) Мойсей помилився з напрямком і заблукав.</li>
+                    <li class="option" data-value="d">г) Цей шлях був більш мальовничим і зручним для такої кількості людей.</li>
+                </ul>
+            </div>
+            
+            <div id="question-2" class="question-container">
+                <div class="question">2. Що означає притча про кукіль, посіяний серед пшениці?</div>
+                <ul class="options">
+                    <li class="option" data-value="a">а) Що потрібно завжди бути добрим до своїх ворогів.</li>
+                    <li class="option" data-value="b">б) Що на землі одночасно існують сини Царства і сини лукавого аж до самої жнив (кінця віку).</li>
+                    <li class="option" data-value="c">в) Що не можна сіяти різні культури на одному полі, оскільки це проти законів землеробства.</li>
+                    <li class="option" data-value="d">г) Що Бог негайно карає кожного грішника.</li>
+                </ul>
+            </div>
+            
+            <div id="question-3" class="question-container">
+                <div class="question">3. Чому Яків отримав благословення замість Ісава, хоча був молодшим?</div>
+                <ul class="options">
+                    <li class="option" data-value="a">а) Тому що Яків був сильнішим і розумнішим за свого брата.</li>
+                    <li class="option" data-value="b">б) Тому що Ревекка і Яків обманули Ісаака, і Бог був змушений прийняти цей обман.</li>
+                    <li class="option" data-value="c">в) Це було проявом Божого суверенного вибору і передбачення їх майбутніх характерів.</li>
+                    <li class="option" data-value="d">г) Тому що Ісав добровільно продав своє первородство, показавши зневагу до духовного благословення.</li>
+                </ul>
+            </div>
+            
+            <div id="question-4" class="question-container">
+                <div class="question">4. Що символізує «мідний змій», якого Мойсей підняв у пустелі?</div>
+                <ul class="options">
+                    <li class="option" data-value="a">а) Силу і мудрість Божу, здатну зцілювати від укусів змій.</li>
+                    <li class="option" data-value="b">б) Прообраз майбутнього розп'яття Ісуса Христа, що взяв на себе гріх світу.</li>
+                    <li class="option" data-value="c">в) Язичницький символ, який Бог використав через помилку народу.</li>
+                    <li class="option" data-value="d">г) Нагадування про гріх Адама і Єви в Едемському саду.</li>
+                </ul>
+            </div>
+            
+            <div id="question-5" class="question-container">
+                <div class="question">5. Навіщо Ісусу потрібно було хреститися від Івана в Йордані?</div>
+                <ul class="options">
+                    <li class="option" data-value="a">а) Щоб змити з себе всі гріхи, як і всі інші люди.</li>
+                    <li class="option" data-value="b">б) Щоб виконати всяку правду і показати приклад смирення.</li>
+                    <li class="option" data-value="c">в) Щоб Іван Хреститель визнав у Ньому Месію перед народом.</li>
+                    <li class="option" data-value="d">г) Це був красивий символічний жест, що не мав глибокого сенсу.</li>
+                </ul>
+            </div>
+            
+            <div class="navigation">
+                <button id="home-btn" class="home-btn">На головну</button>
+                <div>
+                    <button id="prev-btn" disabled>Назад</button>
+                    <button id="next-btn">Далі</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h2>Результати тесту</h2>
+            <div class="score" id="score">0 з 5</div>
+            <div class="result-message" id="result-message"></div>
+            
+            <div id="level-result-info"></div>
+            
+            <div class="answers-review">
+                <h3>Правильні відповіді:</h3>
+                <div id="answers-list"></div>
+            </div>
+            
+            <div id="retry-buttons" style="margin-top: 20px;">
+                <button id="retry-btn">Спробувати знову</button>
+                <button id="new-level-btn">Обрати інший рівень</button>
+                <button id="home-btn-2" class="home-btn">На головну</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="background-music" loop preload="auto">
+        <source src="https://cdn.pixabay.com/audio/2025/09/28/audio_7f15e7b80c.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Правильні відповіді
+            const correctAnswers = {
+                1: 'b',
+                2: 'b',
+                3: 'c',
+                4: 'b',
+                5: 'b'
+            };
+            
+            // Пояснення правильних відповідей
+            const explanations = {
+                1: "Правильна відповідь: <span class='correct'>б) Бог хотів, щоб вони навчилися покладатися на Нього і довіряти Йому.</span> (Вихід 13:17-18)",
+                2: "Правильна відповідь: <span class='correct'>б) Що на землі одночасно існують сини Царства і сини лукавого аж до самої жнив (кінця віку).</span> (Матвія 13:24-30, 36-43)",
+                3: "Правильна відповідь: <span class='correct'>в) Це було проявом Божого суверенного вибору і передбачення їх майбутніх характерів.</span> (Римлян 9:10-13)",
+                4: "Правильна відповідь: <span class='correct'>б) Прообраз майбутнього розп'яття Ісуса Христа, що взяв на себе гріх світу.</span> (Івана 3:14-15)",
+                5: "Правильна відповідь: <span class='correct'>б) Щоб виконати всяку правду і показати приклад смирення.</span> (Матвія 3:13-15)"
+            };
+            
+            // Повідомлення про результати
+            const resultMessages = {
+                5: "Відмінне розуміння! Ти не просто читаєш Писання, а бачиш його духовну глибину і зв'язок між Старим і Новим Заповітами.",
+                4: "Дуже хороший результат! Ти впевнено орієнтуєшся в біблійних сюжетах і вловлюєш їх основний духовний сенс.",
+                3: "Непогано! Ти знаєш ключові історії Біблії, але іноді їх символічне значення може втікати.",
+                2: "Є куди рости. Ти знайомий з основними біблійними подіями, але їх внутрішній сенс поки не зовсім ясний.",
+                1: "Є куди рости. Продовжуй вивчати Писання - попереду багато цікавих відкриттів!",
+                0: "Можливо, ти тільки починаєш свій шлях. Не засмучуйся! Біблія - це дивовижна книга, сповнена мудрості."
+            };
+            
+            const totalQuestions = Object.keys(correctAnswers).length;
+            let currentQuestion = 1;
+            let userAnswers = {};
+            let score = 0;
+            let currentLevel = '';
+            let attemptCount = 1;
+            let bestScore = 0;
+            
+            // Елементи музики
+            const backgroundMusic = document.getElementById('background-music');
+            const musicToggle = document.getElementById('music-toggle');
+            const volumeSlider = document.getElementById('volume-slider');
+            let isMusicPlaying = false;
+            let musicStarted = false;
+            
+            // Елементи інтерфейсу
+            const levelSelectionScreen = document.getElementById('level-selection-screen');
+            const testScreen = document.getElementById('test-screen');
+            const resultContainer = document.getElementById('result-container');
+            const progressBar = document.getElementById('progress');
+            const questionCounter = document.getElementById('question-counter');
+            const levelStats = document.getElementById('level-stats');
+            const attemptCounter = document.getElementById('attempt-counter');
+            const bestScoreElement = document.getElementById('best-score');
+            const requiredScoreElement = document.getElementById('required-score');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            const newLevelBtn = document.getElementById('new-level-btn');
+            const homeBtn = document.getElementById('home-btn');
+            const homeBtn2 = document.getElementById('home-btn-2');
+            const levelResultInfo = document.getElementById('level-result-info');
+            const scoreElement = document.getElementById('score');
+            const resultMessageElement = document.getElementById('result-message');
+            const answersListElement = document.getElementById('answers-list');
+            
+            // Налаштування музики
+            backgroundMusic.volume = 0.3;
+            
+            // Функція запуску музики
+            function startMusic() {
+                if (musicStarted) return;
+                
+                const playPromise = backgroundMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        isMusicPlaying = true;
+                        musicStarted = true;
+                        musicToggle.textContent = '🔊';
+                    }).catch(error => {
+                        console.log('Помилка відтворення:', error);
+                        musicToggle.textContent = '🔇';
+                    });
+                }
+            }
+            
+            // Обробник кнопки музики
+            musicToggle.addEventListener('click', function() {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    isMusicPlaying = false;
+                    musicToggle.textContent = '🔇';
+                } else {
+                    startMusic();
+                }
+            });
+            
+            // Обробник гучності
+            volumeSlider.addEventListener('input', function() {
+                const volume = this.value / 100;
+                backgroundMusic.volume = volume;
+            });
+            
+            // Обробники вибору рівня
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentLevel = this.getAttribute('data-level');
+                    
+                    // Запускаємо музику при виборі рівня
+                    startMusic();
+                    
+                    startTest();
+                });
+            });
+            
+            // Обробники кнопок головної сторінки
+            homeBtn.addEventListener('click', goToHomePage);
+            homeBtn2.addEventListener('click', goToHomePage);
+            
+            function goToHomePage() {
+                window.location.href = 'index.html';
+            }
+            
+            // Почати тест
+            function startTest() {
+                levelSelectionScreen.style.display = 'none';
+                testScreen.style.display = 'block';
+                resultContainer.style.display = 'none';
+                
+                // ВІДНОВЛЮЄМО НАВІГАЦІЮ (виправлення багу)
+                document.querySelector('.navigation').style.display = 'flex';
+                
+                currentQuestion = 1;
+                userAnswers = {};
+                
+                // Налаштування для різних рівнів
+                if (currentLevel === 'advanced' || currentLevel === 'expert') {
+                    levelStats.style.display = 'flex';
+                    attemptCounter.textContent = attemptCount;
+                    bestScoreElement.textContent = bestScore + '%';
+                    
+                    if (currentLevel === 'advanced') {
+                        requiredScoreElement.textContent = '80%';
+                    } else {
+                        requiredScoreElement.textContent = '100%';
+                    }
+                } else {
+                    levelStats.style.display = 'none';
+                }
+                
+                // Скинути виділення відповідей
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                showQuestion(1);
+            }
+            
+            // Оновлення прогресс-бару і лічильника запитань
+            function updateProgress() {
+                const progressPercentage = ((currentQuestion - 1) / totalQuestions) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                questionCounter.textContent = `Запитання ${currentQuestion} з ${totalQuestions}`;
+            }
+            
+            // Показати поточне запитання
+            function showQuestion(questionNumber) {
+                // Сховати всі запитання
+                document.querySelectorAll('.question-container').forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                // Показати поточне запитання
+                document.getElementById(`question-${questionNumber}`).classList.add('active');
+                
+                // Оновити стан кнопок
+                prevBtn.disabled = questionNumber === 1;
+                
+                if (questionNumber === totalQuestions) {
+                    nextBtn.textContent = 'Завершити тест';
+                } else {
+                    nextBtn.textContent = 'Далі';
+                }
+                
+                // Відновити обрану відповідь, якщо вона є
+                if (userAnswers[questionNumber]) {
+                    const selectedOption = document.querySelector(`#question-${questionNumber} .option[data-value="${userAnswers[questionNumber]}"]`);
+                    if (selectedOption) {
+                        selectedOption.classList.add('selected');
+                    }
+                }
+                
+                updateProgress();
+            }
+            
+            // Обробник вибору відповіді
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionContainer = this.closest('.question-container');
+                    const questionId = questionContainer.id.split('-')[1];
+                    
+                    // Прибрати виділення з інших варіантів у цьому запитанні
+                    questionContainer.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Виділити обраний варіант
+                    this.classList.add('selected');
+                    
+                    // Зберегти відповідь користувача
+                    userAnswers[questionId] = this.getAttribute('data-value');
+                });
+            });
+            
+            // Обробник кнопки "Назад"
+            prevBtn.addEventListener('click', function() {
+                if (currentQuestion > 1) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            });
+            
+            // Обробник кнопки "Далі"
+            nextBtn.addEventListener('click', function() {
+                if (currentQuestion < totalQuestions) {
+                    currentQuestion++;
+                    showQuestion(currentQuestion);
+                } else {
+                    // Завершити тест
+                    calculateScore();
+                    showResults();
+                }
+            });
+            
+            // Підрахунок результатів
+            function calculateScore() {
+                score = 0;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (userAnswers[i] === correctAnswers[i]) {
+                        score++;
+                    }
+                }
+            }
+            
+            // Показати результати
+            function showResults() {
+                // Сховати контейнер із запитаннями
+                document.querySelectorAll('.question-container').forEach(container => {
+                    container.classList.remove('active');
+                });
+                
+                // НЕ СХОВУЄМО НАВІГАЦІЮ (виправлення багу)
+                // Замість цього просто ховаємо тестовий екран
+                testScreen.style.display = 'none';
+                resultContainer.style.display = 'block';
+                
+                const percentage = Math.round((score / totalQuestions) * 100);
+                
+                // Оновити рахунок
+                scoreElement.textContent = `${score} з ${totalQuestions}`;
+                
+                // Показати повідомлення про результат
+                resultMessageElement.innerHTML = resultMessages[score];
+                
+                // Оновити найкращий результат
+                if (percentage > bestScore) {
+                    bestScore = percentage;
+                }
+                
+                // Інформація про рівень
+                levelResultInfo.innerHTML = '';
+                
+                if (currentLevel === 'beginner') {
+                    levelResultInfo.innerHTML = '<p>Ви завершили тест на початковому рівні.</p>';
+                } 
+                else if (currentLevel === 'advanced') {
+                    if (percentage >= 80) {
+                        levelResultInfo.innerHTML = `
+                            <div class="success-message">
+                                Вітаємо! Ви успішно пройшли просунутий рівень з результатом ${percentage}%
+                            </div>
+                        `;
+                    } else {
+                        levelResultInfo.innerHTML = `
+                            <div class="attempts-warning">
+                                Результат: ${percentage}%. Потрібно набрати мінімум 80% для завершення рівня.
+                            </div>
+                        `;
+                    }
+                }
+                else if (currentLevel === 'expert') {
+                    if (percentage === 100) {
+                        levelResultInfo.innerHTML = `
+                            <div class="success-message">
+                                Вітаємо! Ви успішно пройшли експертний рівень з ідеальним результатом!
+                            </div>
+                        `;
+                    } else {
+                        levelResultInfo.innerHTML = `
+                            <div class="attempts-warning">
+                                Результат: ${percentage}%. Для експертного рівня потрібно правильно відповісти на всі запитання.
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Показати правильні відповіді (тільки для початкового рівня або при завершенні)
+                if (currentLevel === 'beginner' || 
+                    (currentLevel === 'advanced' && percentage >= 80) ||
+                    (currentLevel === 'expert' && percentage === 100)) {
+                    showAnswersReview();
+                } else {
+                    // Для незавершених просунутих/експертних рівнів показуємо тільки неправильні відповіді
+                    showIncorrectAnswersOnly();
+                }
+            }
+            
+            // Показати всі відповіді
+            function showAnswersReview() {
+                answersListElement.innerHTML = '';
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const answerItem = document.createElement('div');
+                    answerItem.className = 'review-item';
+                    
+                    const questionText = document.querySelector(`#question-${i} .question`).textContent;
+                    const userAnswer = userAnswers[i] || 'Не відповіли';
+                    const isCorrect = userAnswers[i] === correctAnswers[i];
+                    
+                    answerItem.innerHTML = `
+                        <p><strong>Запитання ${i}:</strong> ${questionText}</p>
+                        <p>Ваша відповідь: <span class="${isCorrect ? 'correct' : 'incorrect'}">${getAnswerText(i, userAnswer)}</span></p>
+                        <p>${explanations[i]}</p>
+                    `;
+                    
+                    answersListElement.appendChild(answerItem);
+                }
+            }
+            
+            // Показати тільки неправильні відповіді
+            function showIncorrectAnswersOnly() {
+                answersListElement.innerHTML = '<p>Тут показані тільки запитання, на які ви відповіли неправильно:</p>';
+                
+                let hasIncorrect = false;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (userAnswers[i] !== correctAnswers[i]) {
+                        hasIncorrect = true;
+                        const answerItem = document.createElement('div');
+                        answerItem.className = 'review-item';
+                        
+                        const questionText = document.querySelector(`#question-${i} .question`).textContent;
+                        const userAnswer = userAnswers[i] || 'Не відповіли';
+                        
+                        answerItem.innerHTML = `
+                            <p><strong>Запитання ${i}:</strong> ${questionText}</p>
+                            <p>Ваша відповідь: <span class="incorrect">${getAnswerText(i, userAnswer)}</span></p>
+                            <p>${explanations[i]}</p>
+                        `;
+                        
+                        answersListElement.appendChild(answerItem);
+                    }
+                }
+                
+                if (!hasIncorrect) {
+                    answersListElement.innerHTML += '<p>Всі відповіді правильні!</p>';
+                }
+            }
+            
+            // Отримати текст відповіді за її значенням
+            function getAnswerText(questionNumber, answerValue) {
+                const options = document.querySelectorAll(`#question-${questionNumber} .option`);
+                for (let option of options) {
+                    if (option.getAttribute('data-value') === answerValue) {
+                        return option.textContent;
+                    }
+                }
+                return 'Не відповіли';
+            }
+            
+            // Обробник кнопки "Спробувати знову"
+            retryBtn.addEventListener('click', function() {
+                attemptCount++;
+                startTest();
+            });
+            
+            // Обробник кнопки "Обрати інший рівень"
+            newLevelBtn.addEventListener('click', function() {
+                // Скинути стан
+                currentQuestion = 1;
+                userAnswers = {};
+                score = 0;
+                attemptCount = 1;
+                bestScore = 0;
+                
+                // Показати екран вибору рівня
+                levelSelectionScreen.style.display = 'block';
+                testScreen.style.display = 'none';
+                resultContainer.style.display = 'none';
+            });
+            
+            // Ініціалізація
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

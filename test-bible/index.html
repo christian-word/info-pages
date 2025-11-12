@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Біблійний тест - Вибір мови</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .description {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .language-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .language-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 20px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .language-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .language-btn i {
+            font-size: 2rem;
+        }
+        
+        .features {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .features ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 8px 0;
+            color: #5a6c7d;
+        }
+        
+        .features li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Інтерактивний біблійний тест</h1>
+        <p class="description">Оберіть мову для проходження тесту</p>
+        
+        <div class="language-selection">
+            <button class="language-btn" onclick="selectLanguage('ukrainian')">
+                <span>🇺🇦 Українська</span>
+            </button>
+            <button class="language-btn" onclick="selectLanguage('russian')">
+                <span>🇷🇺 Русский</span>
+            </button>
+        </div>
+        
+        <div class="features">
+            <h3>Особливості тесту:</h3>
+            <ul>
+                <li>3 рівні складності</li>
+                <li>Фонова музика з регулюванням гучності</li>
+                <li>Детальна статистика результатів</li>
+                <li>Пояснення правильних відповідей</li>
+                <li>Система прогресу та досягнень</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function selectLanguage(language) {
+            if (language === 'ukrainian') {
+                window.location.href = 'ukrainian-test.html';
+            } else {
+                window.location.href = 'russian-test.html';
+            }
+        }
+    </script>
+</body>
+</html>
