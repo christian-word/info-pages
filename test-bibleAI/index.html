@@ -887,6 +887,12 @@
                             <option value="nature">Nature sounds</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="creativity-slider">Креативність ШІ (Temperature): <span id="creativity-value">0.7</span></label>
+                        <input type="range" id="creativity-slider" min="0.1" max="1.0" step="0.1" value="0.7">
+                        <small style="display:block;margin-top:5px;color:#777;">Вище значення (ближче до 1.0) дає більш різноманітні, але менш точні питання.</small>
+                    </div>
                     
                     <div class="form-group">
                         <label>🔊 Гучність музики</label>
@@ -989,6 +995,8 @@
         const MUSIC_STORAGE_KEY = 'bibleLabiryntAI_Music';
         const DIFFICULTY_STORAGE_KEY = 'bibleLabiryntAI_Difficulty'; 
         const VOLUME_STORAGE_KEY = 'bibleLabiryntAI_Volume'; 
+        // НОВА КОНСТАНТА
+        const CREATIVITY_STORAGE_KEY = 'bibleLabiryntAI_Creativity'; 
 
         const FALLBACK_MODELS = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'gemma2-9b-it', 'mixtral-8x7b-32768'].map(id => ({ id }));
 
@@ -1026,6 +1034,9 @@
         let selectedModel = '';
         let selectedDifficulty = localStorage.getItem(DIFFICULTY_STORAGE_KEY) || 'theology'; 
         let currentVolume = parseFloat(localStorage.getItem(VOLUME_STORAGE_KEY)) || 30; // 30% default
+        // НОВА ЗМІННА СТАНУ
+        let currentCreativity = parseFloat(localStorage.getItem(CREATIVITY_STORAGE_KEY) || '0.7'); 
+
 
         // === DOM elements ===
         const settingsBtn = document.getElementById('settings-btn');
@@ -1072,6 +1083,23 @@
         const difficultySelect = document.getElementById('difficulty-select'); 
         const loadingOverlay = document.getElementById('loading-overlay'); 
         const loadingMessage = document.getElementById('loading-message'); 
+
+        // НОВІ DOM ЕЛЕМЕНТИ
+        const creativitySlider = document.getElementById('creativity-slider');
+        const creativityValueEl = document.getElementById('creativity-value');
+
+        // ==============================================================
+        // ЛОГІКА ДЛЯ СЛАЙДЕРА КРЕАТИВНОСТІ (NEW)
+        // ==============================================================
+        if (creativitySlider && creativityValueEl) {
+            creativitySlider.oninput = () => {
+                currentCreativity = parseFloat(creativitySlider.value);
+                creativityValueEl.textContent = currentCreativity.toFixed(1);
+            };
+            creativitySlider.onchange = () => {
+                localStorage.setItem(CREATIVITY_STORAGE_KEY, creativitySlider.value);
+            };
+        }
         
         // =======================================================
         // ДОПОМІЖНА ФУНКЦІЯ ДЛЯ ВИКЛИКІВ GROQ API
@@ -1087,7 +1115,7 @@
                     model: model,
                     messages: messages,
                     max_tokens: max_tokens,
-                    temperature: temperature
+                    temperature: temperature // Використовуємо змінну temperature
                 })
             });
             
@@ -1250,21 +1278,44 @@
             }
         });
 
+        // ==============================================================
+        // НОВА ФУНКЦІЯ: ЗБІР ТЕМ ДЛЯ ВИКЛЮЧЕННЯ (NEW)
+        // ==============================================================
+        function getExcludedThemes() {
+            // Збираємо теми з історії пройдених тестів (обмежуємо останніми 10)
+            const usedThemes = history.map(item => item.theme); 
+            // Збираємо теми з пресетів, видаляючи емодзі
+            const presetThemes = PRESET_THEMES.map(item => item.theme.replace(/[🌊⚔️🐋🍞]/g, '').trim());
+            
+            // Об'єднуємо та повертаємо унікальні теми у вигляді рядка
+            const recentUsedThemes = usedThemes.slice(-10); // Беремо останні 10 пройдених
+            const allThemes = [...new Set([...recentUsedThemes, ...presetThemes])];
+            return allThemes.join(', ');
+        }
+        
         suggestThemeBtn.onclick = async () => {
             if (!selectedModel) return alert('Обери модель!');
             themeSuggestion.classList.add('show');
             
             toggleLoader(true, '🤔 ІІ думає над темою...');
 
-            const prompt = `Створи коротку цікаву біблійну тему для тесту (1-3 слова), яка містить глибокий богословський сенс. Відповідай лише темою, без лапок і пояснень. Приклад: Вихід з Єгипту`;
+            // ОНОВЛЕНА ЛОГІКА: ВИКЛЮЧЕННЯ ПРОЙДЕНИХ ТЕМ
+            const excludedThemes = getExcludedThemes();
+            // Додаємо інструкцію, тільки якщо є теми для виключення
+            const exclusionInstruction = excludedThemes ? ` (Уникай тем, які вже були, включаючи: ${excludedThemes})` : ''; 
+
+            const systemContent = 'Ти — біблійний експерт. Відповідай коротко, українською.';
+            // Вставляємо інструкцію в промпт для користувача
+            const userPrompt = `Створи коротку цікаву біблійну тему для тесту (1-3 слова), яка містить глибокий богословський сенс${exclusionInstruction}. Відповідай лише темою, без лапок і пояснень. Приклад: Вихід з Єгипту`;
             
             const messages = [
-                { role: 'system', content: 'Ти — біблійний експерт. Відповідай коротко, українською.' },
-                { role: 'user', content: prompt }
+                { role: 'system', content: systemContent },
+                { role: 'user', content: userPrompt }
             ];
 
             try {
-                const suggested = await callGroqAPI(messages, 30, 0.7);
+                // Використовуємо currentCreativity замість фіксованого 0.7
+                const suggested = await callGroqAPI(messages, 30, currentCreativity);
 
                 if (!suggested || suggested.length < 3) {
                     throw new Error('Некоректна відповідь від ІІ');
@@ -1328,7 +1379,8 @@
             ];
 
             try {
-                const jsonStr = await callGroqAPI(messages, 2500, 0.7); 
+                // Використовуємо currentCreativity замість фіксованого 0.7
+                const jsonStr = await callGroqAPI(messages, 2500, currentCreativity); 
 
                 let cleanJsonStr = jsonStr.replace(/```json|```/g, '').trim();
                 const firstBrace = cleanJsonStr.indexOf('{');
@@ -1674,6 +1726,12 @@
             }
             volumeSlider.value = currentVolume;
             music.volume = currentVolume / 100;
+
+            // ЗАВАНТАЖЕННЯ ЗНАЧЕННЯ КРЕАТИВНОСТІ
+            if (creativitySlider && creativityValueEl) {
+                creativitySlider.value = currentCreativity;
+                creativityValueEl.textContent = currentCreativity.toFixed(1);
+            }
 
             loadModels().then(() => renderHistory());
         });
