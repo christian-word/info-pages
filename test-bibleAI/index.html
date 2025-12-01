@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Біблійний Лабіринт 2.0 — ІІ генерує тести</title>
+    <title>Біблійний Лабіринт 3.0 — ІІ генерує тести</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
@@ -56,7 +56,6 @@
             gap: 10px;
         }
 
-        /* УНИФИЦИРОВАННЫЙ СТИЛЬ ДЛЯ КНОПОК ЗАГОЛОВКА */
         .settings-btn, .help-btn {
             background: rgba(255,255,255,0.2);
             border: 2px solid white;
@@ -79,7 +78,7 @@
             padding: 40px 30px;
         }
 
-        /* MODAL (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -328,8 +327,39 @@
             gap: 15px;
             margin-bottom: 20px;
         }
+        
+        .restore-test-banner {
+            background: #f0f3ff;
+            color: #667eea;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border: 1px solid #c8d3f3;
+        }
 
-        /* BIG BUTTONS (НАСЛЕДУЮТ СТИЛИ .btn-primary и .btn-secondary) */
+        .restore-test-banner.show {
+            display: flex;
+        }
+
+        .restore-test-banner button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .restore-test-banner button:hover {
+            background: #764ba2;
+        }
+
+        /* BIG BUTTONS */
         .big-btn {
             padding: 20px;
             border: none;
@@ -338,7 +368,7 @@
             cursor: pointer;
             transition: 0.3s;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Сохраняем тень */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
         }
 
         .big-btn.btn-primary {
@@ -384,16 +414,15 @@
         }
 
         .history-toggle {
-            /* Также делаем эту кнопку более округлой и с аутлайном */
             width: 100%;
             padding: 15px;
             background: white;
-            border: 2px solid #667eea; /* Синий аутлайн */
-            border-radius: 25px; /* Больше скругление */
+            border: 2px solid #667eea; 
+            border-radius: 25px; 
             cursor: pointer;
             font-size: 1rem;
             font-weight: 600;
-            color: #667eea; /* Синий текст */
+            color: #667eea; 
             transition: 0.3s;
         }
 
@@ -428,6 +457,12 @@
             transform: translateY(-3px);
             box-shadow: 0 5px 20px rgba(102,126,234,0.2);
         }
+        
+        /* ЦВЕТОВАЯ КОДИРОВКА КАРТОЧЕК */
+        .history-card.insight-5 { border: 2px solid #28a745; background: #d4edda; }
+        .history-card.insight-4 { border: 2px solid #ffc107; background: #fff3cd; }
+        .history-card.insight-1, .history-card.insight-2 { border: 2px solid #dc3545; background: #f8d7da; }
+
 
         .history-card.preset {
             background: linear-gradient(135deg, #f5f7fa 0%, #e8eef7 100%);
@@ -452,7 +487,7 @@
             margin-top: 5px;
         }
 
-        /* TEST SCREEN (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        /* TEST SCREEN */
         .test-header {
             text-align: center;
             margin-bottom: 30px;
@@ -563,7 +598,7 @@
             gap: 10px;
         }
 
-        /* RESULT SCREEN (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        /* RESULT SCREEN */
         .result-container {
             display: none;
             text-align: center;
@@ -644,7 +679,7 @@
             display: block;
         }
 
-        /* MUSIC CONTROLS - ТОЛЬКО КНОПКА ВКЛ/ВЫКЛ */
+        /* MUSIC CONTROLS */
         .music-controls {
             position: fixed;
             bottom: 30px;
@@ -652,7 +687,6 @@
             z-index: 999;
         }
         
-        /* Кнопка музыки теперь в стиле кнопок заголовка */
         .music-btn {
             background: rgba(255,255,255,0.2);
             border: 2px solid white;
@@ -662,7 +696,7 @@
             transition: 0.3s;
             backdrop-filter: blur(10px);
             padding: 0;
-            border-radius: 50%; /* Сделать круглой */
+            border-radius: 50%; 
             width: 50px;
             height: 50px;
             display: flex;
@@ -735,7 +769,7 @@
             }
             
             .content {
-                padding: 30px 10px 100px; /* Уменьшен нижний отступ, так как нет слайдера */
+                padding: 30px 10px 100px; 
             }
             
             .action-buttons { 
@@ -779,7 +813,7 @@
 </div>
 
 <style>
-    /* Стилі для спіннера, додайте їх у ваш <style> блок */
+    /* Стилі для спіннера */
     .loading-overlay {
         position: fixed;
         top: 0;
@@ -817,7 +851,7 @@
                 <button class="help-btn" id="help-btn">❓ Допомога</button>
                 <button class="settings-btn" id="settings-btn">⚙️ Налаштування</button>
             </div>
-            <h1>📖 Біблійний Лабіринт 2.0</h1>
+            <h1>📖 Біблійний Лабіринт 3.0</h1>
             <p class="subtitle">ІІ сам створює тест на твою тему!</p>
         </div>
 
@@ -828,17 +862,18 @@
                     <button class="close-btn" id="close-help-modal">×</button>
                 </div>
                 <div class="modal-body help-section">
-                    <h3>Що таке "Біблійний Лабіринт 2.0"?</h3>
-                    <p>Це інтерактивний інструмент, який використовує передові моделі штучного інтелекту (Groq) для створення унікальних тестів із множинним вибором на будь-яку біблійну тему, яку ви введете.</p>
+                    <h3>Що таке "Біблійний Лабіринт 3.0"?</h3>
+                    <p>Це інтерактивний інструмент, який використовує передові моделі штучного інтелекту (Groq) для створення унікальних тестів із множинним вибором на будь-яку біблійну тему, яку ви введете. **Версія 3.0** має підвищену надійність, автоматично підлаштовує креативність ІІ та зберігає ваш прогрес!</p>
                     
                     <h3>Навіщо мені API ключ Groq?</h3>
                     <p>Ця програма працює повністю на потужностях Groq, а не на Google. Для генерації питань та підказок потрібен ваш особистий **API ключ** від платформи <a href="https://console.groq.com/" target="_blank" style="color: #667eea;">console.groq.com</a>. Ваш ключ зберігається лише у вашому браузері і нікуди не передається. <strong>Зверніть увагу: Groq не надає безкоштовний доступ, вам потрібно буде його придбати.</strong></p>
                     
-                    <h3>Рівні Складності</h3>
+                    <h3>Рівні Складності та Креативність ШІ</h3>
+                    <p>Рівень складності автоматично підлаштовує креативність (Temperature) ІІ для кращого результату, але ви можете змінити це вручну в налаштуваннях:</p>
                     <ul>
-                        <li><strong>1. Факти:</strong> Прості питання про імена, місця та послідовність подій.</li>
-                        <li><strong>2. Тлумачення:</strong> Питання, що вимагають розуміння значення та контексту подій.</li>
-                        <li><strong>3. Богослов'я:</strong> Глибокі питання про духовний, символічний та богословський сенс біблійних уривків.</li>
+                        <li>**1. Факти (Низька Temperature):** Прості питання про імена, місця та послідовність подій.</li>
+                        <li>**2. Тлумачення (Середня Temperature):** Питання, що вимагають розуміння значення та контексту подій.</li>
+                        <li>**3. Богослов'я (Висока Temperature):** Глибокі питання про духовний, символічний та богословський сенс біблійних уривків.</li>
                     </ul>
 
                     <h3>Що таке Підказки ІІ?</h3>
@@ -888,9 +923,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="creativity-slider">Креативність ШІ (Temperature): <span id="creativity-value">1.0</span></label>
-                        <input type="range" id="creativity-slider" min="0.1" max="1.0" step="0.1" value="1.0">
-                        <small style="display:block;margin-top:5px;color:#777;">Вище значення (ближче до 1.0) дає більш різноманітні, але менш точні питання.</small>
+                        <label for="creativity-slider">Креативність ШІ (Temperature): <span id="creativity-value">0.7</span></label>
+                        <input type="range" id="creativity-slider" min="0.1" max="1.0" step="0.1" value="0.7">
+                        <small style="display:block;margin-top:5px;color:#777;">Вище значення (ближче до 1.0) дає більш різноманітні, але менш точні питання. Рекомендовано: 0.7-0.8.</small>
                     </div>
                     
                     <div class="form-group">
@@ -906,7 +941,11 @@
 
         <div class="content" id="start-screen">
 
-
+            <div class="restore-test-banner" id="restore-test-banner">
+                <span>↩️ Є незавершений тест: <span id="restored-theme-name"></span></span>
+                <button id="restore-btn">Продовжити</button>
+            </div>
+            
             <div class="form-group" style="margin-bottom: 20px;">
                 <label for="difficulty-select">Оберіть Рівень Складності Тесту:</label>
                 <select id="difficulty-select" class="input-field"></select>
@@ -983,7 +1022,7 @@
         <source src="https://cdn.pixabay.com/audio/2025/09/28/audio_7f15e7b80c.mp3" type="audio/mp3">
     </audio>
     <footer class="footer">
-        © верс. 2.0 Біблійний Лабіринт | м. Суми, © 2025 р.
+        © верс. 3.0 Біблійний Лабіринт | м. Суми, © 2025 р.
     </footer>
 <script>
         const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -994,16 +1033,21 @@
         const MUSIC_STORAGE_KEY = 'bibleLabiryntAI_Music';
         const DIFFICULTY_STORAGE_KEY = 'bibleLabiryntAI_Difficulty'; 
         const VOLUME_STORAGE_KEY = 'bibleLabiryntAI_Volume'; 
-        // НОВА КОНСТАНТА
         const CREATIVITY_STORAGE_KEY = 'bibleLabiryntAI_Creativity'; 
+        // НОВЫЕ КОНСТАНТЫ ДЛЯ СОХРАНЕНИЯ ПРОГРЕССА
+        const CURRENT_TEST_STORAGE = 'bibleLabiryntAI_CurrentTest';
+        const CURRENT_QUESTION_STORAGE = 'bibleLabiryntAI_CurrentQuestion';
+        const USER_ANSWERS_STORAGE = 'bibleLabiryntAI_UserAnswers';
+        const WRONG_CHOICES_STORAGE = 'bibleLabiryntAI_WrongChoices';
+
 
         const FALLBACK_MODELS = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'gemma2-9b-it', 'mixtral-8x7b-32768'].map(id => ({ id }));
 
-        // КОНФІГУРАЦІЯ РІВНІВ СКЛАДНОСТІ
+        // КОНФІГУРАЦІЯ РІВНІВ СКЛАДНОСТІ (С ДОБАВЛЕННОЙ TEMPERATURE ПО УМОЛЧАНИЮ)
         const DIFFICULTIES = [
-            { id: 'fact', name: '1. Факти (Елементарно)', system: 'Ти — біблійний експерт. Створюй питання, які перевіряють знання ключових фактів, подій та імен. Відповіді мають бути простими та прямими. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Питання мають стосуватися простих фактів і подій. ' },
-            { id: 'interpretation', name: '2. Тлумачення (Середньо)', system: 'Ти — біблійний богослов. Створюй питання, які вимагають розуміння значення та контексту подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися тлумачення біблійних подій та їх значення. ' },
-            { id: 'theology', name: '3. Богослов\'я (Глибоко)', system: 'Ти — **богослов** і **біблійний екзегет**. Створюй питання, які вимагають **глибокого розуміння, символічного тлумачення та богословського сенсу** біблійних подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися богословського, духовного чи пророчого сенсу події, а не простого факту. ' }
+            { id: 'fact', name: '1. Факти (Елементарно)', temp: 0.3, system: 'Ти — біблійний експерт. Створюй питання, які перевіряють знання ключових фактів, подій та імен. Відповіді мають бути простими та прямими. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Питання мають стосуватися простих фактів і подій. ' },
+            { id: 'interpretation', name: '2. Тлумачення (Середньо)', temp: 0.7, system: 'Ти — біблійний богослов. Створюй питання, які вимагають розуміння значення та контексту подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися тлумачення біблійних подій та їх значення. ' },
+            { id: 'theology', name: '3. Богослов\'я (Глибоко)', temp: 0.9, system: 'Ти — **богослов** і **біблійний екзегет**. Створюй питання, які вимагають **глибокого розуміння, символічного тлумачення та богословського сенсу** біблійних подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися богословського, духовного чи пророчого сенсу події, а не простого факту. ' }
         ];
 
         // ДОСТУПНА ФОНОВА МУЗИКА
@@ -1032,10 +1076,11 @@
         let models = [];
         let selectedModel = '';
         let selectedDifficulty = localStorage.getItem(DIFFICULTY_STORAGE_KEY) || 'theology'; 
-        let currentVolume = parseFloat(localStorage.getItem(VOLUME_STORAGE_KEY)) || 30; // 30% default
-        // НОВА ЗМІННА СТАНУ
-        let currentCreativity = parseFloat(localStorage.getItem(CREATIVITY_STORAGE_KEY) || '1.0'); 
-
+        let currentVolume = parseFloat(localStorage.getItem(VOLUME_STORAGE_KEY)) || 30; 
+        let currentCreativity = parseFloat(localStorage.getItem(CREATIVITY_STORAGE_KEY) || '0.7'); 
+        
+        // Переменная для отслеживания того, что пользователь вручную изменил креативность
+        let creativityManuallyChanged = false;
 
         // === DOM elements ===
         const settingsBtn = document.getElementById('settings-btn');
@@ -1083,17 +1128,24 @@
         const loadingOverlay = document.getElementById('loading-overlay'); 
         const loadingMessage = document.getElementById('loading-message'); 
 
-        // НОВІ DOM ЕЛЕМЕНТИ
         const creativitySlider = document.getElementById('creativity-slider');
         const creativityValueEl = document.getElementById('creativity-value');
+        
+        // Элементы для восстановления прогресса
+        const restoreTestBanner = document.getElementById('restore-test-banner');
+        const restoreThemeName = document.getElementById('restored-theme-name');
+        const restoreBtn = document.getElementById('restore-btn');
+
 
         // ==============================================================
-        // ЛОГІКА ДЛЯ СЛАЙДЕРА КРЕАТИВНОСТІ (NEW)
+        // ЛОГІКА ДЛЯ СЛАЙДЕРА КРЕАТИВНОСТІ
         // ==============================================================
         if (creativitySlider && creativityValueEl) {
             creativitySlider.oninput = () => {
                 currentCreativity = parseFloat(creativitySlider.value);
                 creativityValueEl.textContent = currentCreativity.toFixed(1);
+                // Помечаем, что пользователь изменил значение
+                creativityManuallyChanged = true;
             };
             creativitySlider.onchange = () => {
                 localStorage.setItem(CREATIVITY_STORAGE_KEY, creativitySlider.value);
@@ -1114,7 +1166,7 @@
                     model: model,
                     messages: messages,
                     max_tokens: max_tokens,
-                    temperature: temperature // Використовуємо змінну temperature
+                    temperature: temperature 
                 })
             });
             
@@ -1126,6 +1178,57 @@
             const data = await res.json();
             return data.choices[0].message.content.trim();
         }
+
+        /**
+         * Улучшенная функция для безопасного парсинга JSON
+         * с автоматической повторной попыткой генерации
+         */
+        async function parseAndValidateTest(jsonStr, messages) {
+            let cleanJsonStr = jsonStr.replace(/```json|```/g, '').trim();
+            const firstBrace = cleanJsonStr.indexOf('{');
+            const lastBrace = cleanJsonStr.lastIndexOf('}');
+
+            if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
+            }
+            
+            try {
+                const parsed = JSON.parse(cleanJsonStr);
+                // Базовая проверка, что это похоже на тестовый объект
+                if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
+                    throw new Error("JSON не содержит поля 'questions' или оно пустое.");
+                }
+                return parsed;
+            } catch (e) {
+                console.warn(`Первая попытка парсинга JSON провалилась: ${e.message}. Повторная попытка генерации.`);
+                
+                // --- ЛОГИКА АВТОМАТИЧЕСКОЙ ПОВТОРНОЙ ПОПЫТКИ ---
+                loadingMessage.textContent = '⚠️ Помилка формату. Спроба перегенерації...';
+
+                // Добавляем к текущему сообщению (messages) строгий промпт
+                const retryMessages = [
+                    ...messages,
+                    { role: 'system', content: 'Твій попередній відповідь була некоректною JSON-структурою. Відповідай СТРОГО ТІЛЬКИ JSON і нічого більше. Повтори генерацію тесту.' }
+                ];
+
+                // Повторный вызов API с теми же параметрами, но со строгим промптом
+                const secondAttemptStr = await callGroqAPI(retryMessages, 2500, currentCreativity);
+                let cleanSecondAttempt = secondAttemptStr.replace(/```json|```/g, '').trim();
+                
+                const secondFirstBrace = cleanSecondAttempt.indexOf('{');
+                const secondLastBrace = cleanSecondAttempt.lastIndexOf('}');
+
+                if (secondFirstBrace !== -1 && secondLastBrace !== -1 && secondLastBrace > secondFirstBrace) {
+                    cleanSecondAttempt = cleanSecondAttempt.substring(secondFirstBrace, secondLastBrace + 1);
+                } else {
+                    throw new Error("Некоректна відповідь Groq після двох спроб.");
+                }
+
+                // Вторая попытка парсинга
+                return JSON.parse(cleanSecondAttempt);
+            }
+        }
+
 
         // =======================================================
         // УПРАВЛІННЯ СПІННЕРОМ
@@ -1197,11 +1300,9 @@
 
             const savedModel = localStorage.getItem(MODEL_STORAGE_KEY);
             if (savedModel && models.some(m => m.id === savedModel)) {
-                // Якщо є збережена модель - використовуємо її
                 modelSelect.value = savedModel;
                 selectedModel = savedModel;
             } else if (models.length > 0) {
-                // За замовчуванням обираємо llama-3.3-70b-versatile (найпотужнішу)
                 const defaultModel = models.find(m => m.id === 'llama-3.3-70b-versatile') || models[0];
                 selectedModel = defaultModel.id;
                 modelSelect.value = selectedModel;
@@ -1242,10 +1343,22 @@
             });
             difficultySelect.value = selectedDifficulty;
         }
+        
+        // --- ДИНАМИЧЕСКАЯ НАСТРОЙКА TEMPERATURE (Пункт 2) ---
+        function updateCreativityFromDifficulty() {
+            const config = DIFFICULTIES.find(d => d.id === selectedDifficulty);
+            if (config && !creativityManuallyChanged) {
+                currentCreativity = config.temp;
+                creativitySlider.value = currentCreativity;
+                creativityValueEl.textContent = currentCreativity.toFixed(1);
+                localStorage.setItem(CREATIVITY_STORAGE_KEY, currentCreativity);
+            }
+        }
 
         difficultySelect.addEventListener('change', () => {
             selectedDifficulty = difficultySelect.value;
             localStorage.setItem(DIFFICULTY_STORAGE_KEY, selectedDifficulty);
+            updateCreativityFromDifficulty(); // Обновляем креативность
         });
 
         testKeyBtn.onclick = testKey;
@@ -1257,13 +1370,11 @@
             localStorage.setItem(MUSIC_STORAGE_KEY, musicSelect.value);
             
             if (selectedTrack.id === 'none') {
-                // Вимкнути музику
+                const wasPlaying = playing;
                 music.pause();
-                playing = false;
-                musicToggle.textContent = '🔇';
                 music.src = '';
+                if(wasPlaying) musicToggle.textContent = '🔇';
             } else {
-                // Змінити трек
                 const wasPlaying = playing;
                 music.pause();
                 music.src = selectedTrack.url;
@@ -1278,16 +1389,13 @@
         });
 
         // ==============================================================
-        // НОВА ФУНКЦІЯ: ЗБІР ТЕМ ДЛЯ ВИКЛЮЧЕННЯ (NEW)
+        // НОВА ФУНКЦІЯ: ЗБІР ТЕМ ДЛЯ ВИКЛЮЧЕННЯ
         // ==============================================================
         function getExcludedThemes() {
-            // Збираємо теми з історії пройдених тестів (обмежуємо останніми 10)
             const usedThemes = history.map(item => item.theme); 
-            // Збираємо теми з пресетів, видаляючи емодзі
             const presetThemes = PRESET_THEMES.map(item => item.theme.replace(/[🌊⚔️🐋🍞]/g, '').trim());
             
-            // Об'єднуємо та повертаємо унікальні теми у вигляді рядка
-            const recentUsedThemes = usedThemes.slice(-10); // Беремо останні 10 пройдених
+            const recentUsedThemes = usedThemes.slice(-10); 
             const allThemes = [...new Set([...recentUsedThemes, ...presetThemes])];
             return allThemes.join(', ');
         }
@@ -1298,13 +1406,10 @@
             
             toggleLoader(true, '🤔 ІІ думає над темою...');
 
-            // ОНОВЛЕНА ЛОГІКА: ВИКЛЮЧЕННЯ ПРОЙДЕНИХ ТЕМ
             const excludedThemes = getExcludedThemes();
-            // Додаємо інструкцію, тільки якщо є теми для виключення
             const exclusionInstruction = excludedThemes ? ` (Уникай тем, які вже були, включаючи: ${excludedThemes})` : ''; 
 
             const systemContent = 'Ти — біблійний експерт. Відповідай коротко, українською.';
-            // Вставляємо інструкцію в промпт для користувача
             const userPrompt = `Створи коротку цікаву біблійну тему для тесту (1-3 слова), яка містить глибокий богословський сенс${exclusionInstruction}. Відповідай лише темою, без лапок і пояснень. Приклад: Вихід з Єгипту`;
             
             const messages = [
@@ -1313,7 +1418,6 @@
             ];
 
             try {
-                // Використовуємо currentCreativity замість фіксованого 0.7
                 const suggested = await callGroqAPI(messages, 30, currentCreativity);
 
                 if (!suggested || suggested.length < 3) {
@@ -1324,7 +1428,6 @@
                 themeSuggestion.textContent = `💡 Спробуй: "${cleanSuggested}"`;
                 themeInput.value = cleanSuggested;
             } catch (e) {
-                // ОНОВЛЕНЕ ПОВІДОМЛЕННЯ ПРО ПОМИЛКУ ГЕНЕРАЦІЇ ТЕМИ
                 themeSuggestion.innerHTML = `
                     <span style="color:red; font-weight: bold;">❌ Помилка:</span> Не вдалося згенерувати тему.
                     <span style="display: block; margin-top: 5px;">Спробуйте знову, а якщо помилка повториться — змініть модель ІІ в налаштуваннях ⚙️.</span>
@@ -1337,8 +1440,8 @@
 
         async function generateTest(theme, isRetry = false) {
             if (!selectedModel) return alert('Обери модель!');
-            const existing = history.find(h => h.theme === theme);
             
+            const existing = history.find(h => h.theme === theme);
             if (existing && !isRetry) {
                 if (!confirm(`Тема "${theme}" вже була. Продовжити чи створити нову?`)) {
                     themeInput.value = '';
@@ -1346,7 +1449,11 @@
                 }
             }
 
-            // Запуск музики (тільки якщо не "без музики")
+            // ОЧИСТКА СОХРАНЕННОГО ПРОГРЕССА ПРИ НАЧАЛЕ НОВОГО ТЕСТА
+            clearSavedProgress(); 
+            restoreTestBanner.classList.remove('show');
+            
+            // Запуск музыки
             const currentMusicId = localStorage.getItem(MUSIC_STORAGE_KEY) || 'default';
             if (!playing && currentMusicId !== 'none' && music.src) {
                 music.play().catch(e => console.log('Автозапуск музики заблоковано браузером'));
@@ -1363,14 +1470,12 @@
             
             document.querySelector('.nav-btn-group').style.visibility = 'hidden';
 
-            userWrongChoices = {}; 
-
             const difficultyConfig = DIFFICULTIES.find(d => d.id === selectedDifficulty) || DIFFICULTIES[DIFFICULTIES.length - 1]; 
             
             const systemPrompt = difficultyConfig.system + 'Відповідай лише JSON, українською.';
             const userPromptTemplate = difficultyConfig.user_template;
             
-            const userPrompt = userPromptTemplate + `4 варіанти (a,b,c,d), один правильний. Додай до кожного питання три поля: **explanation** (детальне пояснення), **verse** (біблійний вірш) та **hint** (коротка навідна думка без відповіді, якщо користувач вагається). Формат JSON (без markdown): {"questions": [{"q": "Питання?","options": {"a":"варіант","b":"..."},"correct":"b", "explanation": "Тут пояснення.", "verse": "Приклад 1:1", "hint": "Навідна думка"}]} Тільки JSON, без пояснень.`;
+            const userPrompt = userPromptTemplate + `4 варіанти (a,b,c,d), один правильний. Додай до кожного питання три поля: **explanation** (детальне пояснення), **verse** (біблійний вірш) та **hint** (коротка навідна думка без відповіді, якщо користувач вагається). Формат JSON: {"questions": [{"q": "Питання?","options": {"a":"варіант","b":"..."},"correct":"b", "explanation": "Тут пояснення.", "verse": "Приклад 1:1", "hint": "Навідна думка"}]} Тільки JSON, без пояснень, і без markdown в тілі JSON (без \`\`\`json).`;
 
             const messages = [
                 { role: 'system', content: systemPrompt },
@@ -1378,35 +1483,31 @@
             ];
 
             try {
-                // Використовуємо currentCreativity замість фіксованого 0.7
+                // Вызов API
                 const jsonStr = await callGroqAPI(messages, 2500, currentCreativity); 
+                
+                // УЛУЧШЕННАЯ ОБРАБОТКА JSON (Пункт 1)
+                const parsedTest = await parseAndValidateTest(jsonStr, messages);
 
-                let cleanJsonStr = jsonStr.replace(/```json|```/g, '').trim();
-                const firstBrace = cleanJsonStr.indexOf('{');
-                const lastBrace = cleanJsonStr.lastIndexOf('}');
-
-                if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-                    cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
-                } else {
-                    throw new Error("Відповідь Groq не містить коректної JSON-структури.");
-                }
-
-                currentTest = JSON.parse(cleanJsonStr);
-
+                currentTest = parsedTest;
                 currentTest.theme = theme;
                 currentTest.date = new Date().toLocaleDateString('uk-UA');
+                
                 currentQuestion = 0;
                 userAnswers = {};
+                userWrongChoices = {};
+                
                 renderQuestion();
                 updateProgress();
-
+                saveProgress(); // Сохраняем начальное состояние
+                
             } catch (e) {
                 const failedTheme = theme;
                 
                 questionsContainer.innerHTML = `
                     <div style="text-align: center; padding: 20px; background: #f8d7da; border-radius: 10px; border: 1px solid #f5c6cb;">
                         <p style="color: #721c24; font-weight: 600; margin-bottom: 15px;">❌ Помилка генерації питань:</p>
-                        <p style="color: #721c24; margin-bottom: 20px;">Можливо, ІІ не зміг створити коректний JSON або стався збій API. Спробуйте повторити або змінити модель.</p>
+                        <p style="color: #721c24; margin-bottom: 20px;">Не вдалося отримати коректний тест навіть після повторної спроби. Спробуйте змінити тему або модель ІІ в налаштуваннях ⚙️.</p>
                         <button class="btn btn-primary" id="retry-generation-btn">🔄 Повторити генерацію</button>
                     </div>
                 `;
@@ -1423,6 +1524,66 @@
             }
         }
 
+        // --- ЛОГИКА СОХРАНЕНИЯ ПРОГРЕССА (Пункт 3) ---
+        function saveProgress() {
+            if (currentTest) {
+                localStorage.setItem(CURRENT_TEST_STORAGE, JSON.stringify(currentTest));
+                localStorage.setItem(CURRENT_QUESTION_STORAGE, currentQuestion);
+                localStorage.setItem(USER_ANSWERS_STORAGE, JSON.stringify(userAnswers));
+                localStorage.setItem(WRONG_CHOICES_STORAGE, JSON.stringify(Array.from(Object.entries(userWrongChoices).map(([k, set]) => [k, Array.from(set)]))));
+            }
+        }
+
+        function loadProgress() {
+            const savedTestStr = localStorage.getItem(CURRENT_TEST_STORAGE);
+            const savedQ = localStorage.getItem(CURRENT_QUESTION_STORAGE);
+            const savedAnswersStr = localStorage.getItem(USER_ANSWERS_STORAGE);
+            const savedWrongChoicesStr = localStorage.getItem(WRONG_CHOICES_STORAGE);
+
+            if (savedTestStr && savedQ !== null) {
+                try {
+                    currentTest = JSON.parse(savedTestStr);
+                    currentQuestion = parseInt(savedQ);
+                    userAnswers = JSON.parse(savedAnswersStr);
+                    
+                    // Восстановление Set из массива пар [ключ, массив]
+                    const wrongChoicesArray = JSON.parse(savedWrongChoicesStr || '[]');
+                    userWrongChoices = Object.fromEntries(wrongChoicesArray.map(([k, arr]) => [k, new Set(arr)]));
+
+                    // Показываем баннер восстановления на стартовом экране
+                    restoreThemeName.textContent = currentTest.theme;
+                    restoreTestBanner.classList.add('show');
+                    
+                    return true;
+                } catch (e) {
+                    console.error("Ошибка при восстановлении прогресса:", e);
+                    clearSavedProgress();
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function clearSavedProgress() {
+            localStorage.removeItem(CURRENT_TEST_STORAGE);
+            localStorage.removeItem(CURRENT_QUESTION_STORAGE);
+            localStorage.removeItem(USER_ANSWERS_STORAGE);
+            localStorage.removeItem(WRONG_CHOICES_STORAGE);
+        }
+
+        restoreBtn.onclick = () => {
+            // Запускаем режим теста с восстановленными данными
+            testScreen.style.display = 'block';
+            startScreen.style.display = 'none';
+            resultContainer.classList.remove('show');
+            currentThemeTitle.textContent = currentTest.theme;
+            
+            renderQuestion();
+            updateProgress();
+            restoreTestBanner.classList.remove('show');
+        };
+        // --- КОНЕЦ ЛОГИКИ СОХРАНЕНИЯ ПРОГРЕССА ---
+        
         function renderQuestion() {
             if (!currentTest || currentQuestion >= currentTest.questions.length) return;
             const q = currentTest.questions[currentQuestion];
@@ -1449,18 +1610,15 @@
                             userWrongChoices[currentQuestion] = new Set(); 
                         }
                         
-                        // Додаємо тільки унікальні неправильні відповіді
                         if (!userWrongChoices[currentQuestion].has(selectedValue)) {
                             userWrongChoices[currentQuestion].add(selectedValue);
                         }
 
                         if (AI_HINTS) {
                             if (userWrongChoices[currentQuestion].size === 1) {
-                                // НОВА ЛОГІКА: Інформуємо користувача, коли з'явиться підказка
                                 aiHelper.classList.add('show');
                                 aiHelper.innerHTML = '⚠️ Перша спроба невдала. **Навідна думка ІІ з\'явиться після другої неправильної відповіді.**';
                             } else if (userWrongChoices[currentQuestion].size >= 2) {
-                                // Показуємо фактичну підказку після 2-х або більше унікальних неправильних відповідей
                                 const hintText = q.hint || 'Подумай про біблійний контекст...';
                                 aiHelper.classList.add('show');
                                 aiHelper.innerHTML = `<strong>💡 Навідна думка:</strong> ${hintText}`;
@@ -1470,6 +1628,7 @@
                         aiHelper.classList.remove('show');
                         delete userWrongChoices[currentQuestion];
                     }
+                    saveProgress(); // Сохранение прогресса при каждом ответе
                 };
             });
             
@@ -1504,11 +1663,11 @@
                 currentQuestion--; 
                 renderQuestion(); 
                 updateProgress(); 
+                saveProgress(); // Сохранение прогресса
             } 
         };
         
         nextBtn.onclick = () => {
-            // Перевірка, чи вибрана відповідь
             if (!userAnswers.hasOwnProperty(currentQuestion)) {
                 alert('Будь ласка, оберіть варіант відповіді.');
                 return;
@@ -1518,12 +1677,15 @@
                 currentQuestion++;
                 renderQuestion();
                 updateProgress();
+                saveProgress(); // Сохранение прогресса
             } else {
                 finishTest();
             }
         };
 
         function finishTest() {
+            clearSavedProgress(); // Удаляем прогресс после завершения
+            
             const score = currentTest.questions.filter((q, i) => userAnswers[i] === q.correct).length;
             const total = currentTest.questions.length;
             const insight = Math.min(5, Math.floor((score / total) * 5) + 1);
@@ -1572,7 +1734,8 @@
 
         function loadTestFromHistory(index) {
             const item = history[index];
-            generateTest(item.theme, true);
+            // При загрузке из истории не нужно беспокоиться о прогрессе, так как это новый проход
+            generateTest(item.theme, true); 
         }
 
         function saveHistory() { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); }
@@ -1580,7 +1743,7 @@
         function renderHistory() {
             historyList.innerHTML = '';
             
-            const allItems = [...PRESET_THEMES, ...history];
+            const allItems = [...PRESET_THEMES, ...history.map(h => ({ ...h, isPreset: false }))];
             
             if (allItems.length === 0) {
                 historyList.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Немає доступних тем</p>';
@@ -1591,7 +1754,7 @@
                 const div = document.createElement('div');
                 
                 if (item.isPreset) {
-                    div.className = 'history-card new-test'; 
+                    div.className = 'history-card preset'; 
                     div.innerHTML = `
                         <div class="history-card-title">${item.theme}</div>
                         <div class="history-card-score" style="color: #667eea;">✨ Новий тест</div>
@@ -1599,11 +1762,11 @@
                     `;
                     div.onclick = () => {
                         const cleanTheme = item.theme.replace(/[🌊⚔️🐋🍞]/g, '').trim();
+                        themeInput.value = cleanTheme;
                         generateTest(cleanTheme, false);
                     };
                 } else {
-                    const insightClass = item.insight >= 4 ? 'success' : item.insight >= 2 ? 'average' : 'fail';
-                    div.className = `history-card ${insightClass}`;
+                    div.className = `history-card insight-${item.insight}`;
                     
                     div.innerHTML = `
                         <div class="history-card-title">${item.theme}</div>
@@ -1611,7 +1774,8 @@
                         <div class="history-card-date">${item.date}</div>
                     `;
                     div.onclick = () => {
-                        const historyIndex = allItems.slice(PRESET_THEMES.length).indexOf(item);
+                        // Индекс в массиве history (без учета пресетов)
+                        const historyIndex = i - PRESET_THEMES.length; 
                         loadTestFromHistory(historyIndex);
                     };
                 }
@@ -1626,11 +1790,13 @@
         };
         
         clearHistoryBtn.onclick = () => {
-            if (confirm('Очистити всю історію?')) {
+            if (confirm('Очистити всю історію та незавершений прогрес?')) {
                 history = [];
                 saveHistory();
+                clearSavedProgress();
                 renderHistory();
                 settingsModal.classList.remove('show');
+                restoreTestBanner.classList.remove('show');
                 alert('✅ Історія очищена!');
             }
         };
@@ -1659,7 +1825,6 @@
             }
         });
         
-        // Лисенер для сохранения громкости в настройках
         volumeSlider.addEventListener('input', () => {
             const newVolume = volumeSlider.value;
             music.volume = newVolume / 100;
@@ -1682,7 +1847,8 @@
             currentQuestion = 0; 
             currentTest = null; 
             userAnswers = {}; 
-
+            clearSavedProgress(); 
+            
             themeInput.value = '';
             questionsContainer.innerHTML = '';
             
@@ -1690,6 +1856,9 @@
             testScreen.style.display = 'none';   
             resultContainer.classList.remove('show'); 
             hiddenVerse.classList.remove('show'); 
+            
+            // Проверяем, есть ли сохраненный прогресс при возврате на главный экран
+            loadProgress(); 
         }
 
         document.getElementById('home-btn').onclick = showStartScreen;
@@ -1718,7 +1887,6 @@
                 music.src = '';
             }
             
-            // Установка сохраненной громкости
             const savedVolume = localStorage.getItem(VOLUME_STORAGE_KEY);
             if (savedVolume !== null) {
                 currentVolume = parseFloat(savedVolume);
@@ -1726,11 +1894,22 @@
             volumeSlider.value = currentVolume;
             music.volume = currentVolume / 100;
 
-            // ЗАВАНТАЖЕННЯ ЗНАЧЕННЯ КРЕАТИВНОСТІ
+            const savedCreativity = localStorage.getItem(CREATIVITY_STORAGE_KEY);
+            if (savedCreativity !== null) {
+                currentCreativity = parseFloat(savedCreativity);
+                creativityManuallyChanged = true; // Считаем, что если есть сохраненное, то пользователь менял
+            } else {
+                // Если нет сохраненного значения, устанавливаем дефолтное на основе сложности
+                updateCreativityFromDifficulty();
+            }
+
             if (creativitySlider && creativityValueEl) {
                 creativitySlider.value = currentCreativity;
                 creativityValueEl.textContent = currentCreativity.toFixed(1);
             }
+
+            // ПРОВЕРКА И ВОССТАНОВЛЕНИЕ ПРОГРЕССА
+            loadProgress();
 
             loadModels().then(() => renderHistory());
         });
