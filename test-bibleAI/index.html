@@ -1,0 +1,1681 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Біблійний Лабіринт 2.0 — ІІ генерує тести</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px; 
+            color: #333;
+        }
+
+        .container { 
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 30px 40px; 
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex; 
+            gap: 10px;
+        }
+
+        /* УНИФИЦИРОВАННЫЙ СТИЛЬ ДЛЯ КНОПОК ЗАГОЛОВКА */
+        .settings-btn, .help-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        .settings-btn:hover, .help-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        /* MODAL (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s;
+        }
+
+        @keyframes modalSlide {
+            from { transform: scale(0.9) translateY(-20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .help-section h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        .help-section p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .help-section ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .help-section li {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* СТИЛЬ ДЛЯ ВСЕХ ОСНОВНЫХ КНОПОК */
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none; 
+            border-radius: 25px; 
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* --- НОВЫЙ УНИФИЦИРОВАННЫЙ СТИЛЬ КНОПОК С ОКАНТОВКОЙ --- */
+        
+        /* PRIMARY BUTTONS (ОКАНТОВКА) */
+        .btn-primary {
+            background: white; 
+            color: #667eea; 
+            border: 2px solid #667eea; 
+        }
+
+        .btn-primary:hover {
+            background: #f0f3ff; /* Светло-синяя заливка при наведении */
+            transform: translateY(-2px);
+            box-shadow: none;
+        }
+
+        /* SECONDARY BUTTONS (ОКАНТОВКА) */
+        .btn-secondary {
+            background: white; 
+            color: #667eea; 
+            border: 2px solid #667eea; 
+        }
+
+        .btn-secondary:hover {
+            background: #f0f3ff;
+            transform: translateY(-2px);
+        }
+        
+        /* DANGER BUTTONS (СОХРАНЯЕМ SOLID ДЛЯ ВИЗУАЛЬНОГО РАЗДЕЛЕНИЯ) */
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+            border-radius: 25px;
+            border: 2px solid #ff6b6b; /* Добавляем бордер для консистенции толщины */
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa !important;
+            color: #999 !important;
+            border-color: #e0e0e0 !important;
+        }
+
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            display: block;
+        }
+
+        /* START SCREEN */
+        .theme-input-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .theme-input-section input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .theme-input-section input:focus {
+            outline: none;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.3);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* BIG BUTTONS (НАСЛЕДУЮТ СТИЛИ .btn-primary и .btn-secondary) */
+        .big-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 25px; 
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Сохраняем тень */
+        }
+
+        .big-btn.btn-primary {
+            background: white; 
+            color: #667eea; 
+            border: 2px solid #667eea;
+        }
+
+        .big-btn.btn-secondary {
+            background: white; 
+            color: #667eea; 
+            border: 2px solid #667eea;
+        }
+
+        .big-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            background: #f0f3ff;
+        }
+
+        .big-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .theme-suggestion {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 1.05rem;
+            display: none;
+        }
+
+        .theme-suggestion.show {
+            display: block;
+        }
+
+        /* HISTORY */
+        .history-section {
+            margin-top: 30px;
+        }
+
+        .history-toggle {
+            /* Также делаем эту кнопку более округлой и с аутлайном */
+            width: 100%;
+            padding: 15px;
+            background: white;
+            border: 2px solid #667eea; /* Синий аутлайн */
+            border-radius: 25px; /* Больше скругление */
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea; /* Синий текст */
+            transition: 0.3s;
+        }
+
+        .history-toggle:hover {
+            background: #f0f3ff;
+            transform: translateY(-2px);
+        }
+
+        .history-list {
+            display: none;
+            margin-top: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .history-list.show {
+            display: grid;
+        }
+
+        .history-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px; 
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .history-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.2);
+        }
+
+        .history-card.preset {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef7 100%);
+            border: 2px dashed #667eea;
+        }
+
+        .history-card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .history-card-score {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .history-card-date {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* TEST SCREEN (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .insight-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .progress-section {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .question-counter {
+            text-align: right;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option {
+            background: white;
+            padding: 18px 20px;
+            margin: 12px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+            font-size: 1.05rem;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .ai-helper {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .ai-helper.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .nav-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* RESULT SCREEN (СТИЛИ НЕ ИЗМЕНЕНЫ) */
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 10px 40px rgba(102,126,234,0.3);
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .answers-review {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border-left: 4px solid #e0e0e0;
+        }
+
+        .review-item.correct {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .correct-text { color: #28a745; font-weight: 600; }
+        .incorrect-text { color: #dc3545; font-weight: 600; }
+
+        .hidden-verse {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #155724;
+            display: none;
+        }
+
+        .hidden-verse.show {
+            display: block;
+        }
+
+        /* MUSIC CONTROLS - ТОЛЬКО КНОПКА ВКЛ/ВЫКЛ */
+        .music-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+        
+        /* Кнопка музыки теперь в стиле кнопок заголовка */
+        .music-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+            padding: 0;
+            border-radius: 50%; /* Сделать круглой */
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .ai-toggle-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .ai-toggle-section label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .ai-toggle-section input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            color: #fff;
+            padding: 20px 0;
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 30px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header { 
+                padding: 80px 15px 30px; 
+            }
+            
+            .header h1 { 
+                font-size: 1.8rem; 
+            }
+            
+            .header-actions {
+                top: 15px;
+                right: 15px;
+                gap: 8px;
+            }
+
+            .settings-btn, .help-btn {
+                padding: 8px 15px;
+            }
+            
+            .content {
+                padding: 30px 10px 100px; /* Уменьшен нижний отступ, так как нет слайдера */
+            }
+            
+            .action-buttons { 
+                grid-template-columns: 1fr; 
+                gap: 10px;
+            }
+            
+            .history-list { 
+                grid-template-columns: 1fr; 
+                gap: 10px;
+            }
+            
+            .navigation { 
+                flex-direction: column; 
+                gap: 10px;
+            }
+            
+            .nav-btn-group { 
+                width: 100%;
+                gap: 10px;
+            }
+            
+            .music-controls { 
+                bottom: 10px;
+                right: 10px; 
+            }
+            
+            .music-btn {
+                font-size: 1.2rem;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <p id="loading-message">🤖 ІІ генерує тест...</p>
+</div>
+
+<style>
+    /* Стилі для спіннера, додайте їх у ваш <style> блок */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        display: none; 
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        color: #764ba2;
+        font-size: 1.2em;
+        transition: opacity 0.3s;
+    }
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #764ba2;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-actions">
+                <button class="help-btn" id="help-btn">❓ Допомога</button>
+                <button class="settings-btn" id="settings-btn">⚙️ Налаштування</button>
+            </div>
+            <h1>📖 Біблійний Лабіринт 2.0</h1>
+            <p class="subtitle">ІІ сам створює тест на твою тему!</p>
+        </div>
+
+        <div class="modal" id="help-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>❓ Допомога та FAQ</h2>
+                    <button class="close-btn" id="close-help-modal">×</button>
+                </div>
+                <div class="modal-body help-section">
+                    <h3>Що таке "Біблійний Лабіринт 2.0"?</h3>
+                    <p>Це інтерактивний інструмент, який використовує передові моделі штучного інтелекту (Groq) для створення унікальних тестів із множинним вибором на будь-яку біблійну тему, яку ви введете.</p>
+                    
+                    <h3>Навіщо мені API ключ Groq?</h3>
+                    <p>Ця програма працює повністю на потужностях Groq, а не на Google. Для генерації питань та підказок потрібен ваш особистий **API ключ** від платформи <a href="https://console.groq.com/" target="_blank" style="color: #667eea;">console.groq.com</a>. Ваш ключ зберігається лише у вашому браузері і нікуди не передається. <strong>Зверніть увагу: Groq не надає безкоштовний доступ, вам потрібно буде його придбати.</strong></p>
+                    
+                    <h3>Рівні Складності</h3>
+                    <ul>
+                        <li><strong>1. Факти:</strong> Прості питання про імена, місця та послідовність подій.</li>
+                        <li><strong>2. Тлумачення:</strong> Питання, що вимагають розуміння значення та контексту подій.</li>
+                        <li><strong>3. Богослов'я:</strong> Глибокі питання про духовний, символічний та богословський сенс біблійних уривків.</li>
+                    </ul>
+
+                    <h3>Що таке Підказки ІІ?</h3>
+                    <p>Якщо опція <span style="font-weight:bold;">💡 Підказки ІІ</span> увімкнена, після двох неправильних спроб у питанні з'явиться навідна думка, що допоможе вам вибрати правильний варіант. Підказки генеруються ІІ разом із питанням.</p>
+
+                    <h3>Контакти</h3>
+                    <p>Цей проект був створений у м. Суми, © 2025 р. З питань та пропозицій звертайтеся до розробника.</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="settings-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚙️ Налаштування</h2>
+                    <button class="close-btn" id="close-modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>🔑 API ключ Groq</label>
+                        <input type="password" id="api-key" placeholder="Введи ключ з console.groq.com" value="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">
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" id="test-key-btn">🧪 Тест ключа</button>
+                        </div>
+                        <div id="key-status" class="status"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🤖 Модель ІІ</label>
+                        <select id="model-select" disabled>
+                            <option>Завантаження моделей...</option>
+                        </select>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" id="refresh-models" disabled>🔄 Оновити</button>
+                        </div>
+                        <div id="model-status" class="status"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🎵 Фонова музика</label>
+                        <select id="music-select">
+                            <option value="none">Без музики</option>
+                            <option value="default" selected>Спокійна (за замовчуванням)</option>
+                            <option value="ambient">Ambient meditation</option>
+                            <option value="piano">Peaceful piano</option>
+                            <option value="nature">Nature sounds</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🔊 Гучність музики</label>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="30">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-danger" id="clear-history" style="width: 100%;">🗑️ Очистити історію</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" id="start-screen">
+
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="difficulty-select">Оберіть Рівень Складності Тесту:</label>
+                <select id="difficulty-select" class="input-field"></select>
+            </div>
+            <div class="theme-input-section">
+                <input type="text" id="theme-input" placeholder="Введи тему тесту (наприклад: Вихід з Єгипту)">
+                <div class="action-buttons">
+                    <button class="big-btn btn-primary" id="generate-test" disabled>✨ Створити тест</button>
+                    <button class="big-btn btn-secondary" id="suggest-theme" disabled>🎲 Випадкова тема</button>
+                </div>
+                <div class="theme-suggestion" id="theme-suggestion"></div>
+            </div>
+
+            <div class="history-section">
+                <button class="history-toggle" id="show-history">📚 Мої пройдені теми</button>
+                <div class="history-list" id="history-list"></div>
+            </div>
+        </div>
+
+        <div class="content" id="test-screen" style="display: none;">
+            <div class="test-header">
+                <h2 class="test-title" id="current-theme-title"></h2>
+                <div class="insight-badge" id="insight-badge">Рівень: 1 (Дитина)</div>
+            </div>
+
+            <div class="ai-toggle-section">
+                <label>
+                    <input type="checkbox" id="ai-hints-toggle">
+                    💡 Підказки ІІ (показувати при помилці)
+                </label>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="question-counter" id="question-counter">Запитання 1 з 1</div>
+            </div>
+
+            <div class="question-card" id="questions-container"></div>
+            <div class="ai-helper" id="ai-helper"></div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" id="home-btn">🏠 На головну</button>
+                <div class="nav-btn-group">
+                    <button class="btn btn-secondary" id="prev-btn" disabled>⬅️ Назад</button>
+                    <button class="btn btn-primary" id="next-btn">Далі ➡️</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content result-container" id="result-container">
+            <h2>🎉 Результати</h2>
+            <div class="score-circle">
+                <div class="score-number" id="score">0/0</div>
+                <div class="score-label">правильних</div>
+            </div>
+            <div class="result-message" id="result-message"></div>
+            <div class="insight-badge" id="result-insight">Рівень: 1</div>
+            <div class="hidden-verse" id="hidden-verse"></div>
+            <div class="answers-review" id="answers-review"></div>
+            <div class="btn-group" style="max-width: 400px; margin: 30px auto 0;">
+                <button class="btn btn-primary" id="retry-btn">🔄 Пройти ще раз</button>
+                <button class="btn btn-secondary" id="home-btn-2">🏠 На головну</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="music-controls">
+        <button class="music-btn" id="music-toggle">🎵</button>
+    </div>
+
+    <audio id="background-music" loop preload="auto">
+        <source src="https://cdn.pixabay.com/audio/2025/09/28/audio_7f15e7b80c.mp3" type="audio/mp3">
+    </audio>
+    <footer class="footer">
+        © верс. 2.0 Біблійний Лабіринт | м. Суми, © 2025 р.
+    </footer>
+<script>
+        const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+        const MODELS_URL = 'https://api.groq.com/openai/v1/models';
+        const STORAGE_KEY = 'bibleLabiryntAI_History';
+        const MODEL_STORAGE_KEY = 'bibleLabiryntAI_Model';
+        const KEY_STORAGE_KEY = 'bibleLabiryntAI_Key';
+        const MUSIC_STORAGE_KEY = 'bibleLabiryntAI_Music';
+        const DIFFICULTY_STORAGE_KEY = 'bibleLabiryntAI_Difficulty'; 
+        const VOLUME_STORAGE_KEY = 'bibleLabiryntAI_Volume'; 
+
+        const FALLBACK_MODELS = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'gemma2-9b-it', 'mixtral-8x7b-32768'].map(id => ({ id }));
+
+        // КОНФІГУРАЦІЯ РІВНІВ СКЛАДНОСТІ
+        const DIFFICULTIES = [
+            { id: 'fact', name: '1. Факти (Елементарно)', system: 'Ти — біблійний експерт. Створюй питання, які перевіряють знання ключових фактів, подій та імен. Відповіді мають бути простими та прямими. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Питання мають стосуватися простих фактів і подій. ' },
+            { id: 'interpretation', name: '2. Тлумачення (Середньо)', system: 'Ти — біблійний богослов. Створюй питання, які вимагають розуміння значення та контексту подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися тлумачення біблійних подій та їх значення. ' },
+            { id: 'theology', name: '3. Богослов\'я (Глибоко)', system: 'Ти — **богослов** і **біблійний екзегет**. Створюй питання, які вимагають **глибокого розуміння, символічного тлумачення та богословського сенсу** біблійних подій. ', user_template: 'Створи біблійний тест на тему: "${theme}". 5-10 питань. Кожне питання має стосуватися богословського, духовного чи пророчого сенсу події, а не простого факту. ' }
+        ];
+
+        // ДОСТУПНА ФОНОВА МУЗИКА
+        const MUSIC_TRACKS = [
+            { id: 'none', name: 'Без музики', url: '' },
+            { id: 'default', name: 'Спокійна (за замовчуванням)', url: 'https://cdn.pixabay.com/audio/2025/09/28/audio_7f15e7b80c.mp3' },
+            { id: 'ambient', name: 'Ambient meditation', url: 'https://cdn.pixabay.com/audio/2022/03/10/audio_4c527d6e8b.mp3' },
+            { id: 'piano', name: 'Peaceful piano', url: 'https://cdn.pixabay.com/audio/2022/05/13/audio_1e0e2cffc8.mp3' },
+            { id: 'nature', name: 'Nature sounds', url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_18f3c11bf6.mp3' }
+        ];
+
+        // ПРЕСЕТИ ТЕМ
+        const PRESET_THEMES = [
+            { theme: '🌊 Вихід з Єгипту', isPreset: true },
+            { theme: '⚔️ Давид і Голіаф', isPreset: true },
+            { theme: '🐋 Йона і кит', isPreset: true },
+            { theme: '🍞 Чудеса Ісуса', isPreset: true }
+        ];
+
+        let history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let currentTest = null;
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let userWrongChoices = {};
+        let AI_HINTS = localStorage.getItem('aiHintsEnabled') === 'true';
+        let models = [];
+        let selectedModel = '';
+        let selectedDifficulty = localStorage.getItem(DIFFICULTY_STORAGE_KEY) || 'theology'; 
+        let currentVolume = parseFloat(localStorage.getItem(VOLUME_STORAGE_KEY)) || 30; // 30% default
+
+        // === DOM elements ===
+        const settingsBtn = document.getElementById('settings-btn');
+        const helpBtn = document.getElementById('help-btn'); 
+        const settingsModal = document.getElementById('settings-modal');
+        const helpModal = document.getElementById('help-modal'); 
+        const closeModal = document.getElementById('close-modal');
+        const closeHelpModal = document.getElementById('close-help-modal'); 
+        const apiKeyInput = document.getElementById('api-key');
+        const testKeyBtn = document.getElementById('test-key-btn');
+        const keyStatus = document.getElementById('key-status');
+        const modelSelect = document.getElementById('model-select');
+        const refreshModelsBtn = document.getElementById('refresh-models');
+        const modelStatus = document.getElementById('model-status');
+        const musicSelect = document.getElementById('music-select');
+        
+        // Елементи для керування екранами
+        const startScreen = document.getElementById('start-screen');
+        const testScreen = document.getElementById('test-screen');
+        const resultContainer = document.getElementById('result-container');
+        const questionsContainer = document.getElementById('questions-container'); 
+        const hiddenVerse = document.getElementById('hidden-verse'); 
+        
+        const themeInput = document.getElementById('theme-input');
+        const generateTestBtn = document.getElementById('generate-test');
+        const suggestThemeBtn = document.getElementById('suggest-theme');
+        const themeSuggestion = document.getElementById('theme-suggestion');
+        const showHistoryBtn = document.getElementById('show-history');
+        const clearHistoryBtn = document.getElementById('clear-history');
+        const historyList = document.getElementById('history-list');
+        const currentThemeTitle = document.getElementById('current-theme-title');
+        const aiHelper = document.getElementById('ai-helper');
+        const aiHintsToggle = document.getElementById('ai-hints-toggle');
+        const progress = document.getElementById('progress');
+        const questionCounter = document.getElementById('question-counter');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const scoreEl = document.getElementById('score');
+        const resultMsg = document.getElementById('result-message');
+        const answersReview = document.getElementById('answers-review');
+        const music = document.getElementById('background-music');
+        const musicToggle = document.getElementById('music-toggle');
+        const volumeSlider = document.getElementById('volume-slider'); 
+        const difficultySelect = document.getElementById('difficulty-select'); 
+        const loadingOverlay = document.getElementById('loading-overlay'); 
+        const loadingMessage = document.getElementById('loading-message'); 
+        
+        // =======================================================
+        // ДОПОМІЖНА ФУНКЦІЯ ДЛЯ ВИКЛИКІВ GROQ API
+        // =======================================================
+        async function callGroqAPI(messages, max_tokens, temperature, model = selectedModel) {
+            const apiKey = apiKeyInput.value.trim();
+            if (!apiKey) throw new Error("API ключ не встановлено.");
+
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    max_tokens: max_tokens,
+                    temperature: temperature
+                })
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                const errorMessage = errorData.error ? errorData.error.message : `HTTP ${res.status}`;
+                throw new Error(`Помилка Groq API: ${errorMessage}`);
+            }
+            const data = await res.json();
+            return data.choices[0].message.content.trim();
+        }
+
+        // =======================================================
+        // УПРАВЛІННЯ СПІННЕРОМ
+        // =======================================================
+        function toggleLoader(show, msg = '🤖 ІІ генерує тест...') {
+            loadingMessage.textContent = msg;
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+
+        // Логіка відкриття/закриття модальних вікон
+        settingsBtn.onclick = () => settingsModal.classList.add('show');
+        closeModal.onclick = () => settingsModal.classList.remove('show');
+        settingsModal.onclick = (e) => { if (e.target === settingsModal) settingsModal.classList.remove('show'); };
+        
+        helpBtn.onclick = () => helpModal.classList.add('show');
+        closeHelpModal.onclick = () => helpModal.classList.remove('show');
+        helpModal.onclick = (e) => { if (e.target === helpModal) helpModal.classList.remove('show'); };
+        
+
+        async function testKey() {
+            const key = apiKeyInput.value.trim();
+            if (!key) return showStatus(keyStatus, 'Введи ключ!', 'error');
+            showStatus(keyStatus, 'Тест ключа...', 'loading');
+            try {
+                const res = await fetch(MODELS_URL, { headers: { 'Authorization': `Bearer ${key}` } });
+                if (res.ok) {
+                    showStatus(keyStatus, '✅ Ключ валідний!', 'success');
+                    return await loadModels(true);
+                } else throw new Error(`HTTP ${res.status}`);
+            } catch (e) {
+                showStatus(keyStatus, `❌ ${e.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function loadModels(force = false) {
+            const key = apiKeyInput.value.trim();
+            if (!key) return showStatus(modelStatus, 'Введи ключ!', 'error');
+            if (!force && models.length > 0) return true;
+
+            showStatus(modelStatus, 'Завантаження...', 'loading');
+            try {
+                const res = await fetch(MODELS_URL, { headers: { 'Authorization': `Bearer ${key}` } });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                models = data.data || [];
+                populateModelSelect();
+                showStatus(modelStatus, `✅ ${models.length} моделей`, 'success');
+                enableUI();
+                return true;
+            } catch (e) {
+                console.error(e);
+                showStatus(modelStatus, '⚠️ Використовую резервний список', 'error');
+                models = FALLBACK_MODELS;
+                populateModelSelect();
+                enableUI();
+                return false;
+            }
+        }
+
+        function populateModelSelect() {
+            modelSelect.innerHTML = '';
+            models.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = m.id;
+                modelSelect.appendChild(opt);
+            });
+
+            const savedModel = localStorage.getItem(MODEL_STORAGE_KEY);
+            if (savedModel && models.some(m => m.id === savedModel)) {
+                // Якщо є збережена модель - використовуємо її
+                modelSelect.value = savedModel;
+                selectedModel = savedModel;
+            } else if (models.length > 0) {
+                // За замовчуванням обираємо llama-3.3-70b-versatile (найпотужнішу)
+                const defaultModel = models.find(m => m.id === 'llama-3.3-70b-versatile') || models[0];
+                selectedModel = defaultModel.id;
+                modelSelect.value = selectedModel;
+                localStorage.setItem(MODEL_STORAGE_KEY, selectedModel);
+            }
+        }
+
+        function enableUI() {
+            modelSelect.disabled = false;
+            refreshModelsBtn.disabled = false;
+            generateTestBtn.disabled = false;
+            suggestThemeBtn.disabled = false;
+        }
+
+        function showStatus(el, msg, type) {
+            el.textContent = msg;
+            el.className = `status ${type}`;
+        }
+
+        apiKeyInput.addEventListener('change', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) localStorage.setItem(KEY_STORAGE_KEY, key);
+        });
+
+        modelSelect.addEventListener('change', () => {
+            selectedModel = modelSelect.value;
+            localStorage.setItem(MODEL_STORAGE_KEY, selectedModel);
+        });
+
+        // Логіка для селектора складності
+        function populateDifficultySelect() {
+            difficultySelect.innerHTML = '';
+            DIFFICULTIES.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = d.name;
+                difficultySelect.appendChild(opt);
+            });
+            difficultySelect.value = selectedDifficulty;
+        }
+
+        difficultySelect.addEventListener('change', () => {
+            selectedDifficulty = difficultySelect.value;
+            localStorage.setItem(DIFFICULTY_STORAGE_KEY, selectedDifficulty);
+        });
+
+        testKeyBtn.onclick = testKey;
+        refreshModelsBtn.onclick = () => loadModels(true);
+
+        // Вибір музики
+        musicSelect.addEventListener('change', () => {
+            const selectedTrack = MUSIC_TRACKS.find(t => t.id === musicSelect.value);
+            localStorage.setItem(MUSIC_STORAGE_KEY, musicSelect.value);
+            
+            if (selectedTrack.id === 'none') {
+                // Вимкнути музику
+                music.pause();
+                playing = false;
+                musicToggle.textContent = '🔇';
+                music.src = '';
+            } else {
+                // Змінити трек
+                const wasPlaying = playing;
+                music.pause();
+                music.src = selectedTrack.url;
+                music.load();
+                
+                if (wasPlaying) {
+                    music.play().catch(e => console.log('Помилка відтворення:', e));
+                    playing = true;
+                    musicToggle.textContent = '🎵';
+                }
+            }
+        });
+
+        suggestThemeBtn.onclick = async () => {
+            if (!selectedModel) return alert('Обери модель!');
+            themeSuggestion.classList.add('show');
+            
+            toggleLoader(true, '🤔 ІІ думає над темою...');
+
+            const prompt = `Створи коротку цікаву біблійну тему для тесту (1-3 слова), яка містить глибокий богословський сенс. Відповідай лише темою, без лапок і пояснень. Приклад: Вихід з Єгипту`;
+            
+            const messages = [
+                { role: 'system', content: 'Ти — біблійний експерт. Відповідай коротко, українською.' },
+                { role: 'user', content: prompt }
+            ];
+
+            try {
+                const suggested = await callGroqAPI(messages, 30, 0.7);
+
+                if (!suggested || suggested.length < 3) {
+                    throw new Error('Некоректна відповідь від ІІ');
+                }
+
+                const cleanSuggested = suggested.replace(/['"]/g, '').trim();
+                themeSuggestion.textContent = `💡 Спробуй: "${cleanSuggested}"`;
+                themeInput.value = cleanSuggested;
+            } catch (e) {
+                // ОНОВЛЕНЕ ПОВІДОМЛЕННЯ ПРО ПОМИЛКУ ГЕНЕРАЦІЇ ТЕМИ
+                themeSuggestion.innerHTML = `
+                    <span style="color:red; font-weight: bold;">❌ Помилка:</span> Не вдалося згенерувати тему.
+                    <span style="display: block; margin-top: 5px;">Спробуйте знову, а якщо помилка повториться — змініть модель ІІ в налаштуваннях ⚙️.</span>
+                `;
+                console.error(e);
+            } finally {
+                toggleLoader(false);
+            }
+        };
+
+        async function generateTest(theme, isRetry = false) {
+            if (!selectedModel) return alert('Обери модель!');
+            const existing = history.find(h => h.theme === theme);
+            
+            if (existing && !isRetry) {
+                if (!confirm(`Тема "${theme}" вже була. Продовжити чи створити нову?`)) {
+                    themeInput.value = '';
+                    return; 
+                }
+            }
+
+            // Запуск музики (тільки якщо не "без музики")
+            const currentMusicId = localStorage.getItem(MUSIC_STORAGE_KEY) || 'default';
+            if (!playing && currentMusicId !== 'none' && music.src) {
+                music.play().catch(e => console.log('Автозапуск музики заблоковано браузером'));
+                playing = true;
+                musicToggle.textContent = '🎵';
+            }
+
+            toggleLoader(true, '🤖 ІІ генерує тест. Це може зайняти до 15 секунд...');
+            
+            testScreen.style.display = 'block';
+            startScreen.style.display = 'none';
+            resultContainer.classList.remove('show'); 
+            currentThemeTitle.textContent = theme;
+            
+            document.querySelector('.nav-btn-group').style.visibility = 'hidden';
+
+            userWrongChoices = {}; 
+
+            const difficultyConfig = DIFFICULTIES.find(d => d.id === selectedDifficulty) || DIFFICULTIES[DIFFICULTIES.length - 1]; 
+            
+            const systemPrompt = difficultyConfig.system + 'Відповідай лише JSON, українською.';
+            const userPromptTemplate = difficultyConfig.user_template;
+            
+            const userPrompt = userPromptTemplate + `4 варіанти (a,b,c,d), один правильний. Додай до кожного питання три поля: **explanation** (детальне пояснення), **verse** (біблійний вірш) та **hint** (коротка навідна думка без відповіді, якщо користувач вагається). Формат JSON (без markdown): {"questions": [{"q": "Питання?","options": {"a":"варіант","b":"..."},"correct":"b", "explanation": "Тут пояснення.", "verse": "Приклад 1:1", "hint": "Навідна думка"}]} Тільки JSON, без пояснень.`;
+
+            const messages = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt.replace('${theme}', theme) }
+            ];
+
+            try {
+                const jsonStr = await callGroqAPI(messages, 2500, 0.7); 
+
+                let cleanJsonStr = jsonStr.replace(/```json|```/g, '').trim();
+                const firstBrace = cleanJsonStr.indexOf('{');
+                const lastBrace = cleanJsonStr.lastIndexOf('}');
+
+                if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                    cleanJsonStr = cleanJsonStr.substring(firstBrace, lastBrace + 1);
+                } else {
+                    throw new Error("Відповідь Groq не містить коректної JSON-структури.");
+                }
+
+                currentTest = JSON.parse(cleanJsonStr);
+
+                currentTest.theme = theme;
+                currentTest.date = new Date().toLocaleDateString('uk-UA');
+                currentQuestion = 0;
+                userAnswers = {};
+                renderQuestion();
+                updateProgress();
+
+            } catch (e) {
+                const failedTheme = theme;
+                
+                questionsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: #f8d7da; border-radius: 10px; border: 1px solid #f5c6cb;">
+                        <p style="color: #721c24; font-weight: 600; margin-bottom: 15px;">❌ Помилка генерації питань:</p>
+                        <p style="color: #721c24; margin-bottom: 20px;">Можливо, ІІ не зміг створити коректний JSON або стався збій API. Спробуйте повторити або змінити модель.</p>
+                        <button class="btn btn-primary" id="retry-generation-btn">🔄 Повторити генерацію</button>
+                    </div>
+                `;
+                
+                document.getElementById('retry-generation-btn').onclick = () => {
+                    generateTest(failedTheme, true);
+                };
+                
+                document.querySelector('.nav-btn-group').style.visibility = 'hidden';
+
+                console.error(e);
+            } finally {
+                toggleLoader(false);
+            }
+        }
+
+        function renderQuestion() {
+            if (!currentTest || currentQuestion >= currentTest.questions.length) return;
+            const q = currentTest.questions[currentQuestion];
+            questionsContainer.innerHTML = `
+                <div class="question-text">${q.q}</div>
+                <ul class="options-list">
+                    ${Object.entries(q.options).map(([k, v]) => `<li class="option" data-value="${k}">${k}) ${v}</li>`).join('')}
+                </ul>
+            `;
+            
+            const savedAnswer = userAnswers[currentQuestion];
+            document.querySelectorAll('.option').forEach(opt => {
+                if (opt.dataset.value === savedAnswer) {
+                    opt.classList.add('selected');
+                }
+                opt.onclick = () => {
+                    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    const selectedValue = opt.dataset.value;
+                    userAnswers[currentQuestion] = selectedValue;
+
+                    if (selectedValue !== q.correct) {
+                        if (!userWrongChoices[currentQuestion]) {
+                            userWrongChoices[currentQuestion] = new Set(); 
+                        }
+                        
+                        // Додаємо тільки унікальні неправильні відповіді
+                        if (!userWrongChoices[currentQuestion].has(selectedValue)) {
+                            userWrongChoices[currentQuestion].add(selectedValue);
+                        }
+
+                        if (AI_HINTS) {
+                            if (userWrongChoices[currentQuestion].size === 1) {
+                                // НОВА ЛОГІКА: Інформуємо користувача, коли з'явиться підказка
+                                aiHelper.classList.add('show');
+                                aiHelper.innerHTML = '⚠️ Перша спроба невдала. **Навідна думка ІІ з\'явиться після другої неправильної відповіді.**';
+                            } else if (userWrongChoices[currentQuestion].size >= 2) {
+                                // Показуємо фактичну підказку після 2-х або більше унікальних неправильних відповідей
+                                const hintText = q.hint || 'Подумай про біблійний контекст...';
+                                aiHelper.classList.add('show');
+                                aiHelper.innerHTML = `<strong>💡 Навідна думка:</strong> ${hintText}`;
+                            }
+                        }
+                    } else {
+                        aiHelper.classList.remove('show');
+                        delete userWrongChoices[currentQuestion];
+                    }
+                };
+            });
+            
+            // Оновлення підказки при завантаженні питання
+            if (AI_HINTS && userWrongChoices[currentQuestion]) {
+                if (userWrongChoices[currentQuestion].size >= 2) {
+                    const hintText = q.hint || 'Подумай про біблійний контекст...';
+                    aiHelper.classList.add('show');
+                    aiHelper.innerHTML = `<strong>💡 Навідна думка:</strong> ${hintText}`;
+                } else if (userWrongChoices[currentQuestion].size === 1) {
+                    aiHelper.classList.add('show');
+                    aiHelper.innerHTML = '⚠️ Перша спроба невдала. **Навідна думка ІІ з\'явиться після другої неправильної відповіді.**';
+                }
+            } else {
+                aiHelper.classList.remove('show');
+            }
+            
+            document.querySelector('.nav-btn-group').style.visibility = 'visible';
+
+            questionCounter.textContent = `Запитання ${currentQuestion + 1} з ${currentTest.questions.length}`;
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === currentTest.questions.length - 1 ? 'Завершити ✅' : 'Далі ➡️';
+        }
+
+        function updateProgress() {
+            const perc = ((currentQuestion) / currentTest.questions.length) * 100;
+            progress.style.width = `${perc}%`;
+        }
+
+        prevBtn.onclick = () => { 
+            if (currentQuestion > 0) { 
+                currentQuestion--; 
+                renderQuestion(); 
+                updateProgress(); 
+            } 
+        };
+        
+        nextBtn.onclick = () => {
+            // Перевірка, чи вибрана відповідь
+            if (!userAnswers.hasOwnProperty(currentQuestion)) {
+                alert('Будь ласка, оберіть варіант відповіді.');
+                return;
+            }
+            
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                updateProgress();
+            } else {
+                finishTest();
+            }
+        };
+
+        function finishTest() {
+            const score = currentTest.questions.filter((q, i) => userAnswers[i] === q.correct).length;
+            const total = currentTest.questions.length;
+            const insight = Math.min(5, Math.floor((score / total) * 5) + 1);
+            
+            const levels = ['Дитина', 'Учень', 'Випускник', 'Експерт', 'Друг Божий'];
+
+            const existingIndex = history.findIndex(h => h.theme === currentTest.theme);
+            const result = { theme: currentTest.theme, score, total, date: currentTest.date, insight };
+            if (existingIndex >= 0) history[existingIndex] = result;
+            else history.push(result);
+            saveHistory();
+
+            testScreen.style.display = 'none';
+            resultContainer.classList.add('show');
+            scoreEl.textContent = `${score}/${total}`;
+            resultMsg.textContent = score === total ? '🎉 Ідеально! Ти — Майстер!' : score >= total * 0.7 ? '👏 Добре, але є куди рости!' : '💪 Продовжуй вчитися!';
+            document.getElementById('result-insight').textContent = `Рівень: ${insight} (${levels[insight-1]})`;
+            
+            if (insight >= 3) {
+                const verses = ['Ів. 3:16', 'Рим. 8:28', 'Флп. 4:13', 'Пс. 23:1', 'Ів. 14:6'];
+                hiddenVerse.textContent = `🌟 Віршик дня: ${verses[Math.floor(Math.random()*verses.length)]}`;
+                hiddenVerse.classList.add('show');
+            }
+
+            answersReview.innerHTML = currentTest.questions.map((q, i) => {
+                const user = userAnswers[i] || '—';
+                const correct = q.correct;
+                const isOk = user === correct;
+                
+                const explanation = q.explanation || 'Пояснення відсутнє.';
+                const verse = q.verse || 'Вірш відсутній.';
+
+                return `<div class="review-item ${isOk ? 'correct' : 'incorrect'}">
+                    <p><strong>Питання ${i+1}:</strong> ${q.q}</p>
+                    <p>Твоя відповідь: <span class="${isOk?'correct-text':'incorrect-text'}">${q.options[user] || 'не вибрано'}</span></p>
+                    
+                    ${!isOk ? `<p>Правильна: <span class="correct-text">${q.options[correct]}</span></p>` : ''}
+                    
+                    <div class="explanation-box">
+                        <p><strong>Пояснення:</strong> ${explanation}</p>
+                        <p><strong>📚 Біблія:</strong> ${verse}</p>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function loadTestFromHistory(index) {
+            const item = history[index];
+            generateTest(item.theme, true);
+        }
+
+        function saveHistory() { localStorage.setItem(STORAGE_KEY, JSON.stringify(history)); }
+        
+        function renderHistory() {
+            historyList.innerHTML = '';
+            
+            const allItems = [...PRESET_THEMES, ...history];
+            
+            if (allItems.length === 0) {
+                historyList.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Немає доступних тем</p>';
+                return;
+            }
+            
+            allItems.forEach((item, i) => {
+                const div = document.createElement('div');
+                
+                if (item.isPreset) {
+                    div.className = 'history-card new-test'; 
+                    div.innerHTML = `
+                        <div class="history-card-title">${item.theme}</div>
+                        <div class="history-card-score" style="color: #667eea;">✨ Новий тест</div>
+                        <div class="history-card-date">Натисни щоб почати</div>
+                    `;
+                    div.onclick = () => {
+                        const cleanTheme = item.theme.replace(/[🌊⚔️🐋🍞]/g, '').trim();
+                        generateTest(cleanTheme, false);
+                    };
+                } else {
+                    const insightClass = item.insight >= 4 ? 'success' : item.insight >= 2 ? 'average' : 'fail';
+                    div.className = `history-card ${insightClass}`;
+                    
+                    div.innerHTML = `
+                        <div class="history-card-title">${item.theme}</div>
+                        <div class="history-card-score">${item.score}/${item.total}</div>
+                        <div class="history-card-date">${item.date}</div>
+                    `;
+                    div.onclick = () => {
+                        const historyIndex = allItems.slice(PRESET_THEMES.length).indexOf(item);
+                        loadTestFromHistory(historyIndex);
+                    };
+                }
+                
+                historyList.appendChild(div);
+            });
+        }
+        
+        showHistoryBtn.onclick = () => {
+            historyList.classList.toggle('show');
+            renderHistory();
+        };
+        
+        clearHistoryBtn.onclick = () => {
+            if (confirm('Очистити всю історію?')) {
+                history = [];
+                saveHistory();
+                renderHistory();
+                settingsModal.classList.remove('show');
+                alert('✅ Історія очищена!');
+            }
+        };
+
+        let playing = false;
+        
+        musicToggle.addEventListener('click', () => {
+            const currentMusicId = localStorage.getItem(MUSIC_STORAGE_KEY) || 'default';
+            
+            if (currentMusicId === 'none') {
+                alert('Музика вимкнена. Обери трек в налаштуваннях ⚙️');
+                return;
+            }
+            
+            if (playing) { 
+                music.pause(); 
+                playing = false; 
+                musicToggle.textContent = '🔇'; 
+            } else { 
+                music.play().catch(e => {
+                    alert('Не вдалося відтворити музику. Спробуй ще раз.');
+                    console.log(e);
+                }); 
+                playing = true; 
+                musicToggle.textContent = '🎵'; 
+            }
+        });
+        
+        // Лисенер для сохранения громкости в настройках
+        volumeSlider.addEventListener('input', () => {
+            const newVolume = volumeSlider.value;
+            music.volume = newVolume / 100;
+            localStorage.setItem(VOLUME_STORAGE_KEY, newVolume);
+        });
+
+        generateTestBtn.onclick = () => {
+            const theme = themeInput.value.trim();
+            if (theme) generateTest(theme);
+            else alert('Введи тему!');
+        };
+
+        aiHintsToggle.checked = AI_HINTS;
+        aiHintsToggle.onchange = () => {
+            AI_HINTS = aiHintsToggle.checked;
+            localStorage.setItem('aiHintsEnabled', AI_HINTS);
+        };
+
+        function showStartScreen() {
+            currentQuestion = 0; 
+            currentTest = null; 
+            userAnswers = {}; 
+
+            themeInput.value = '';
+            questionsContainer.innerHTML = '';
+            
+            startScreen.style.display = 'block'; 
+            testScreen.style.display = 'none';   
+            resultContainer.classList.remove('show'); 
+            hiddenVerse.classList.remove('show'); 
+        }
+
+        document.getElementById('home-btn').onclick = showStartScreen;
+        document.getElementById('home-btn-2').onclick = showStartScreen;
+
+        document.getElementById('retry-btn').onclick = () => {
+            if (currentTest && currentTest.theme) {
+                resultContainer.classList.remove('show');
+                hiddenVerse.classList.remove('show');
+                generateTest(currentTest.theme, true);
+            }
+        };
+
+        window.addEventListener('load', () => {
+            const savedKey = localStorage.getItem(KEY_STORAGE_KEY);
+            if (savedKey) apiKeyInput.value = savedKey;
+            
+            populateDifficultySelect();
+
+            const savedMusic = localStorage.getItem(MUSIC_STORAGE_KEY) || 'default';
+            musicSelect.value = savedMusic;
+            const selectedTrack = MUSIC_TRACKS.find(t => t.id === savedMusic);
+            if (selectedTrack && selectedTrack.url) {
+                music.src = selectedTrack.url;
+            } else if (savedMusic === 'none') {
+                music.src = '';
+            }
+            
+            // Установка сохраненной громкости
+            const savedVolume = localStorage.getItem(VOLUME_STORAGE_KEY);
+            if (savedVolume !== null) {
+                currentVolume = parseFloat(savedVolume);
+            }
+            volumeSlider.value = currentVolume;
+            music.volume = currentVolume / 100;
+
+            loadModels().then(() => renderHistory());
+        });
+    </script>
+</body>
+</html>
