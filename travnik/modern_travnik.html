@@ -26,7 +26,7 @@
   --info: #2196f3;
   --shadow: 0 2px 8px rgba(0,0,0,0.08);
   --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-  /* --- НОВІ КОЛЬОРИ --- */
+  /* --- НОВІ КОЛЬОРИ (З попередньої ітерації) --- */
   --color-1: #42a5f5; /* Синій */
   --color-2: #ffb300; /* Помаранчевий */
   --color-3: #8e24aa; /* Фіолетовий */
@@ -832,8 +832,8 @@ const RECIPES = [
     name: 'При менструальних болях',
     problem: 'menstrual_pain',
     herbs: [
-      { id: 'melisa', amount: 2 },
-      { id: 'romashka', amount: 3 },
+      { id: 'melisa', amount: 3 },
+      { id: 'romashka', amount: 2 },
       { id: 'myata', amount: 2 },
       { id: 'kryshyna', amount: 2 }
     ],
@@ -947,11 +947,89 @@ const CONDITION_MAPPING = {
 
 // --- ДОДАНО: Функція для отримання посилання на пошук ---
 function getSearchLink(herbName) {
-    // Енкодимо назву трави для коректного пошуку
     const encodedName = encodeURIComponent(`купити траву ${herbName}`);
     return `https://www.google.com/search?q=${encodedName}`;
 }
 // --------------------------------------------------------
+
+// --- ДОДАНО: Функція для розрахунку пропорцій в частинах (ч.л.) ---
+function getRecipeSpoonRatio(recipe) {
+    // Приблизна щільність (грам на 1 умовну 'частину' об'єму ≈ 1 ч.л. без верху)
+    const SPOON_DENSITY = {
+        'листя': 1, 'квіти': 1, 'трава': 1, // Легкі
+        'плоди': 1.5, 'кора': 1.5, // Середні
+        'корінь': 2, 'насіння': 2, 'збір': 1.5 // Важкі/середні
+    };
+    
+    // 1. Розрахунок "сирих" частин (грам / щільність)
+    const rawParts = recipe.herbs.map(herbData => {
+        const herb = HERBS.find(h => h.id === herbData.id);
+        if (!herb) return null;
+        
+        let ratioPart;
+        let note = '';
+
+        if (herb.dosage.unit === 'ст.л.') {
+             ratioPart = herbData.amount; // Зберігаємо як є, але не включаємо в нормалізацію
+             note = ` (вимірюється в ст.л.)`;
+        } else {
+            const density = SPOON_DENSITY[herb.part] || 1;
+            // Округлення до 0.5 для кращої точності/читабельності
+            ratioPart = Math.round((herbData.amount / density) * 2) / 2; 
+            note = ' (ч.л. частин)';
+        }
+
+        return {
+            name: herb.name,
+            part: ratioPart,
+            unit: herb.dosage.unit, 
+            herbPart: herb.part,
+            note: note
+        };
+    }).filter(p => p !== null);
+
+    // 2. Нормалізація до найпростішого цілого співвідношення
+    const numericParts = rawParts.filter(p => p.unit === 'г' && p.part > 0).map(p => p.part);
+    
+    let normalizedParts = [...rawParts];
+    
+    if (numericParts.length > 0) {
+        const minPart = Math.min(...numericParts);
+        
+        normalizedParts = rawParts.map(p => {
+            if (p.unit === 'г' && p.part > 0) {
+                // Ділимо на найменшу частину і округлюємо до найближчого цілого
+                let normalized = Math.round(p.part / minPart);
+                
+                if (normalized < 1) normalized = 1; 
+
+                p.normalizedPart = normalized;
+                p.note = ''; 
+            } else {
+                p.normalizedPart = null; 
+                p.note = ` (вимірюється в ${p.unit}, не змішувати)`;
+            }
+            return p;
+        });
+    } else {
+        // Якщо тільки один компонент або всі в ст.л., частину прирівнюємо до 1
+        normalizedParts = rawParts.map(p => ({ ...p, normalizedPart: 1 }));
+    }
+
+    const totalNormalizedParts = normalizedParts.reduce((sum, p) => sum + (p.normalizedPart || 0), 0);
+    
+    // 3. Витягуємо, скільки Ч.Л. *готової суміші* потрібно для заварювання (з інструкції)
+    const totalSpoonMeasure = recipe.instructions.match(/(\d+)\sч\.л\.\sсуміші/); 
+    const brewingTotal = totalSpoonMeasure ? totalSpoonMeasure[1] : null;
+
+    return {
+        parts: normalizedParts,
+        totalNormalizedParts: totalNormalizedParts,
+        brewingTotal: brewingTotal
+    };
+}
+// -----------------------------------------------------------------------------
+
 
 // Ініціалізація
 function init() {
@@ -1136,7 +1214,7 @@ function showResults(recipes, params) {
 }
 
 function renderRecipeCard(recipe, isSuitable) {
-  // --- ЗМІНЕНО: Додано посилання навколо тегу трави ---
+  // --- Генерація посилань та тегів (із попередньої ітерації) ---
   const herbsList = recipe.herbs.map(h => {
     const herb = HERBS.find(herb => herb.id === h.id);
     if (!herb) return ''; 
@@ -1148,6 +1226,47 @@ function renderRecipeCard(recipe, isSuitable) {
     `;
   }).join('');
   // ----------------------------------------------------
+
+  // --- ДОДАНО: Розрахунок та HTML для пропорцій в частинах ---
+  const ratioData = getRecipeSpoonRatio(recipe);
+  let ratioHtml = '';
+  
+  if (ratioData.parts.length > 0) {
+    const partsList = ratioData.parts.map(p => `
+      <tr style="border-bottom: 1px dashed var(--border);">
+        <td style="color: var(--text); padding: 0.5rem 0; font-weight: 500;">${p.name} (${p.herbPart})</td>
+        <td style="font-weight: 600; text-align: right; color: var(--color-3); padding: 0.5rem 0;">
+          ${p.normalizedPart !== null ? p.normalizedPart : p.part} ${p.normalizedPart !== null ? 'частин' : p.unit}
+        </td>
+      </tr>
+    `).join('');
+
+    const totalInfo = ratioData.brewingTotal ? `
+        <p style="margin-top: 1rem; font-size: 0.9em; color: var(--text-light); border-top: 1px solid var(--border); padding-top: 0.75rem;">
+            *Для приготування суміші змішайте ${ratioData.totalNormalizedParts} отриманих частин.
+        </p>
+        <p style="font-weight: 600; margin-top: 0.75rem; color: var(--color-1);">
+            <span style="background: #e3f2fd; padding: 0.4rem 0.75rem; border-radius: 4px; display: inline-block;">
+              Для заварювання: ${ratioData.brewingTotal} ч.л. фінальної суміші (як в інструкції).
+            </span>
+        </p>
+        ` : `<p style="margin-top: 0.5rem; font-size: 0.9em; color: var(--color-4); font-weight: 500;">
+            *Цей рецепт містить компоненти у столових ложках (ст.л.) і/або має особливості вимірювання (насіння), тому його частини не можна змішувати. Дотримуйтесь інструкції!
+        </p>`;
+
+    ratioHtml = `
+      <div class="recipe-section" style="background: #f4f6f8; padding: 1.25rem; border-radius: 8px;">
+        <div class="recipe-section-title" style="color: var(--color-3);">⚖️ Пропорції в чайних ложках (ЧАСТИНАХ)</div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+            <tbody>
+                ${partsList}
+            </tbody>
+        </table>
+        ${totalInfo}
+      </div>
+    `;
+  }
+  // --------------------------------------------------------------------
 
   let warningsHtml = '';
   if (recipe.warnings.critical.length > 0) {
@@ -1175,7 +1294,6 @@ function renderRecipeCard(recipe, isSuitable) {
     `;
   }
 
-  // --- ЗМІНЕНО: Встановлення кольору лінії картки ---
   const cardBorderColor = isSuitable ? 'var(--color-1)' : 'var(--color-4)';
   
   return `
@@ -1188,6 +1306,7 @@ function renderRecipeCard(recipe, isSuitable) {
         <div class="recipe-section-title">🌿 Склад (натисніть для пошуку)</div>
         <div class="herbs-list">${herbsList}</div>
       </div>
+      ${ratioHtml}
       <div class="recipe-section">
         <div class="recipe-section-title">📋 Приготування та застосування</div>
         <div class="instructions">${recipe.instructions}</div>
