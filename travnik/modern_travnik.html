@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Травник - Підбір Збору</title>
 <style>
+/* ... (СТИЛИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ) ... */
 * {
   margin: 0;
   padding: 0;
@@ -26,7 +27,6 @@
   --info: #2196f3;
   --shadow: 0 2px 8px rgba(0,0,0,0.08);
   --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-  /* --- НОВІ КОЛЬОРИ (З попередньої ітерації) --- */
   --color-1: #42a5f5; /* Синій */
   --color-2: #ffb300; /* Помаранчевий */
   --color-3: #8e24aa; /* Фіолетовий */
@@ -63,7 +63,6 @@ body {
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1.5rem;
-  /* Десктопний макет */
   display: grid; 
   grid-template-columns: 380px 1fr;
   gap: 2rem;
@@ -197,7 +196,6 @@ body {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: var(--shadow);
-  /* --- ЗМІНЕНО: Колір лінії за замовчуванням --- */
   border-left: 4px solid var(--color-1); 
   transition: all 0.2s;
 }
@@ -214,11 +212,9 @@ body {
 .recipe-title {
   font-size: 1.2rem;
   font-weight: 600;
-  /* --- ЗМІНЕНО: Заголовок іншого кольору --- */
   color: var(--color-3);
 }
 .recipe-score {
-  /* --- ЗМІНЕНО: Стиль оцінки --- */
   background: var(--color-2);
   color: white;
   padding: 0.25rem 0.75rem;
@@ -232,7 +228,6 @@ body {
 .recipe-section-title {
   font-size: 0.85rem;
   font-weight: 600;
-  /* --- ЗМІНЕНО: Колір підзаголовка --- */
   color: var(--color-1); 
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -243,15 +238,22 @@ body {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-/* --- ДОДАНО: Стилі посилань на трави --- */
+/* --- ЗМІНА: Стилі для клікабельних елементів --- */
+.clickable-herb {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.clickable-herb:hover {
+    opacity: 0.8;
+}
+
 .herb-tag-link {
     text-decoration: none;
     color: inherit;
-    display: flex; /* Для коректного відображення span всередині a */
+    display: flex; 
     align-items: center;
 }
 .herb-tag {
-  /* --- ЗМІНЕНО: Фон тегу трави --- */
   background: #e3f2fd; /* Light Blue */
   color: var(--text);
   padding: 0.4rem 0.8rem;
@@ -263,9 +265,9 @@ body {
   transition: background 0.2s;
 }
 .herb-tag:hover {
-    /* --- ДОДАНО: Ефект при наведенні для тегу-посилання --- */
     background: #bbdefb;
 }
+/* ----------------------------------------------- */
 .instructions {
   background: #f8f9fa;
   padding: 1rem;
@@ -335,7 +337,6 @@ body {
   flex: 1;
   text-align: center;
 }
-/* --- ЗМІНЕНО: Колір статистики --- */
 .stat-value {
   font-size: 1.5rem;
   font-weight: 600;
@@ -360,9 +361,63 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* --- АДАПТАЦІЯ ДЛЯ МОБІЛЬНИХ (ДОДАНО/ЗМІНЕНО) --- */
+/* --- СТИЛІ МОДАЛЬНОГО ВІКНА ДЕТАЛЕЙ --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    animation: fadeIn 0.3s;
+}
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    line-height: 1;
+}
+.modal-close:hover {
+    color: var(--color-4);
+}
+.modal-content h3 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+.modal-section-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+/* --------------------------------------- */
+
+/* --- АДАПТАЦІЯ ДЛЯ МОБІЛЬНИХ --- */
 @media (max-width: 968px) {
-  /* Перехід на одноколонковий макет */
   .container {
     grid-template-columns: 1fr; 
     gap: 1.5rem;
@@ -370,7 +425,6 @@ body {
     padding: 0 1rem; 
   }
 
-  /* Забезпечення повної ширини кнопок у групах */
   .btn-group {
     flex-direction: column;
   }
@@ -378,14 +432,12 @@ body {
     width: 100%;
   }
 
-  /* Довідник трав тепер займає повну ширину на мобільному */
   .container > .card:last-child {
     grid-column: 1 / -1; 
   }
 }
 
 @media (max-width: 600px) {
-  /* Зменшення загального padding та розмірів шрифтів */
   .header h1 {
     font-size: 1.3rem;
   }
@@ -395,11 +447,10 @@ body {
     border-radius: 8px;
   }
 
-  .recipe-card {
-    padding: 1rem;
+  .modal-content {
+      padding: 1.5rem 1rem;
   }
-
-  /* Адаптація сітки симптомів */
+  
   .symptoms-grid {
     grid-template-columns: repeat(2, 1fr); 
     gap: 0.5rem;
@@ -408,30 +459,11 @@ body {
     font-size: 0.8rem;
     padding: 0.5rem;
   }
-  
-  /* Зменшення розмірів та відступів у секціях результатів */
-  .recipe-title {
-    font-size: 1.1rem;
-  }
-  .stat-value {
-    font-size: 1.2rem;
-  }
-  .stat-label {
-    font-size: 0.7rem;
-  }
 
-  /* Адаптація тегів трав, щоб вони не виходили за межі */
   .herb-tag {
     font-size: 0.85rem;
     padding: 0.3rem 0.6rem;
     white-space: normal; 
-  }
-
-  /* Зменшення розміру полів вводу */
-  .form-input,
-  .form-select {
-    padding: 0.6rem;
-    font-size: 0.9rem;
   }
 }
 
@@ -439,6 +471,11 @@ body {
   .symptoms-grid {
     grid-template-columns: 1fr; 
   }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 </style>
 </head>
@@ -473,6 +510,7 @@ body {
           <option value="skin_issues">Шкірні проблеми</option>
           <option value="fatigue">Постійна втома</option>
           <option value="immune">Зміцнення імунітету</option>
+          <option value="heart_support">Підтримка серця/судин</option>
         </select>
       </div>
       <div class="form-group">
@@ -526,7 +564,10 @@ body {
       </div>
       <div class="btn-group">
         <button id="findRecipes" class="btn btn-primary">
-          Підібрати збори
+          Підібрати готові збори
+        </button>
+        <button id="generateRecipe" class="btn btn-primary" style="background: var(--color-3);">
+            Персональний рецепт
         </button>
         <button id="resetBtn" class="btn btn-secondary">
           Скинути
@@ -552,416 +593,776 @@ body {
     <div class="herb-reference" id="herbReference"></div>
   </div>
 </main>
+
+<div id="herbDetailsModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeHerbDetails()">×</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalContent"></div>
+  </div>
+</div>
 <script>
-// База даних трав
+// --- 1. ГЛОБАЛЬНІ ЗМІННІ З ДАНИМИ (ЛОКАЛЬНИЙ РЕЖИМ) ---
 const HERBS = [
-  {
-    id: 'shipshina',
-    name: 'Шипшина',
-    part: 'плоди',
-    effects: ['immune', 'recovery'],
-    contra: ['ulcer', 'gallstones'],
-    interactions: [],
-    dosage: { min: 5, max: 15, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'shalfei',
-    name: 'Шавлія',
-    part: 'листя',
-    effects: ['dry_cough', 'sore_throat', 'anti_inflammatory', 'acid_reflux'],
-    contra: ['pregnancy', 'thyroid_overactive'],
-    interactions: [],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 4
-  },
-  {
-    id: 'myata',
-    name: "М'ята перцева",
-    part: 'листя',
-    effects: ['dry_cough', 'nervous', 'digestive', 'liver_support'],
-    contra: ['hypotension', 'children_under_3'],
-    interactions: [],
-    dosage: { min: 1, max: 3, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'zvirobiy',
-    name: 'Звіробій',
-    part: 'трава',
-    effects: ['nervous', 'immune', 'anti_inflammatory'],
-    contra: ['antidepressants', 'photosensitivity', 'hypertension'],
-    interactions: ['solodka'],
-    dosage: { min: 2, max: 4, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'devyasil',
-    name: 'Оман',
-    part: 'корінь',
-    effects: ['wet_cough', 'expectorant'],
-    contra: ['pregnancy', 'heart_disease'],
-    interactions: ['solodka'],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 5
-  },
-  {
-    id: 'solodka',
-    name: 'Солодка',
-    part: 'корінь',
-    effects: ['dry_cough', 'expectorant', 'anti_inflammatory', 'acid_reflux'],
-    contra: ['hypertension', 'edema', 'kidney_disease'],
-    interactions: ['zvirobiy', 'devyasil'],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 5
-  },
-  {
-    id: 'altay',
-    name: 'Алтей',
-    part: 'корінь',
-    effects: ['dry_cough', 'soothing', 'acid_reflux'],
-    contra: ['diabetes'],
-    interactions: ['solodka'],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 5
-  },
-  {
-    id: 'kalendula',
-    name: 'Календула',
-    part: 'квітка',
-    effects: ['anti_inflammatory', 'sore_throat', 'skin_issues'],
-    contra: ['aster_allergy'],
-    interactions: [],
-    dosage: { min: 1, max: 3, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'shporish',
-    name: 'Шпориш',
-    part: 'трава',
-    effects: ['wet_cough', 'expectorant', 'liver_support'],
-    contra: ['kidney_stones'],
-    interactions: ['devyasil'],
-    dosage: { min: 2, max: 4, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'cikoriy',
-    name: 'Цикорій',
-    part: 'корінь',
-    effects: ['digestive', 'liver_support', 'fatigue'],
-    contra: ['varicose', 'thrombosis'],
-    interactions: [],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 3
-  },
-  // Нові трави
-  {
-    id: 'polin',
-    name: 'Полин',
-    part: 'трава',
-    effects: ['liver_support', 'digestive'],
-    contra: ['pregnancy', 'epilepsy', 'ulcer', 'gastritis_high_acid'],
-    interactions: [],
-    dosage: { min: 0.3, max: 0.5, unit: 'г' }, // мікродоза!
-    strength: 4
-  },
-  {
-    id: 'melisa',
-    name: 'Меліса',
-    part: 'листя',
-    effects: ['insomnia', 'nervous', 'digestive'],
-    contra: ['hypotension'],
-    interactions: [],
-    dosage: { min: 2, max: 4, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'kropiva',
-    name: 'Кропива',
-    part: 'листя',
-    effects: ['allergy', 'fatigue', 'immune'],
-    contra: ['hypertension', 'kidney_disease', 'thrombosis'],
-    interactions: [],
-    dosage: { min: 2, max: 5, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'chyistotel',
-    name: 'Чистотіл',
-    part: 'трава',
-    effects: ['skin_issues', 'liver_support'],
-    contra: ['pregnancy', 'hypotension', 'epilepsy'],
-    interactions: ['zvirobiy'],
-    dosage: { min: 0.5, max: 1, unit: 'г' }, // короткий курс!
-    strength: 4
-  },
-  {
-    id: 'kryshyna',
-    name: 'Крушина',
-    part: 'кора',
-    effects: ['menstrual_pain', 'constipation'],
-    contra: ['pregnancy', 'intestinal_obstruction'],
-    interactions: [],
-    dosage: { min: 2, max: 4, unit: 'г' },
-    strength: 4
-  },
-  {
-    id: 'romashka',
-    name: 'Ромашка',
-    part: 'квіти',
-    effects: ['allergy', 'skin_issues', 'digestive', 'menstrual_pain'],
-    contra: ['allergy'],
-    interactions: [],
-    dosage: { min: 2, max: 4, unit: 'г' },
-    strength: 3
-  },
-  {
-    id: 'fito_prostatit',
-    name: 'Фітосуміш №11 (простатит)',
-    part: 'збір',
-    effects: ['prostatitis', 'anti_inflammatory', 'urinary'],
-    contra: [],
-    interactions: [],
-    dosage: { min: 2, max: 3, unit: 'ст.л.' },
-    strength: 5
-  },
-  {
-    id: 'lin',
-    name: 'Льон (насіння)',
-    part: 'насіння',
-    effects: ['acid_reflux', 'soothing', 'digestive'],
-    contra: ['intestinal_obstruction'],
-    interactions: [],
-    dosage: { min: 1, max: 2, unit: 'ст.л.' },
-    strength: 4
-  }
+    {
+      id: 'shipshina',
+      name: 'Шипшина',
+      part: 'плоди',
+      effects: ['immune', 'recovery', 'fatigue'],
+      contra: ['ulcer', 'gallstones'],
+      interactions: [],
+      dosage: { min: 5, max: 15, unit: 'г' },
+      strength: 3,
+      roles: ['vitamin', 'base', 'booster'],
+      flavor: 'sweet',
+      description: {
+        properties: "Багате джерело **вітаміну С** та потужний антиоксидант. Сприяє швидкому відновленню після хвороб, зміцнює стінки судин та стимулює імунну систему, допомагає при загальній слабкості та втомі.",
+        contraindications: "Через високу кислотність, протипоказана при виразковій хворобі шлунка та гастритах з підвищеною кислотністю. Обережно при жовчнокам'яній хворобі (може спровокувати рух каменів)."
+      }
+    },
+    {
+      id: 'shalfei',
+      name: 'Шавлія',
+      part: 'листя',
+      effects: ['dry_cough', 'sore_throat', 'anti_inflammatory', 'acid_reflux'],
+      contra: ['pregnancy', 'thyroid_overactive'],
+      interactions: [],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 4,
+      roles: ['main', 'anti_inflam'],
+      flavor: 'sharp',
+      description: {
+        properties: "Має сильні **протизапальні та антисептичні** властивості. Ефективна для полоскання при ангінах та фарингітах. Використовується для полегшення сухого кашлю та зменшення нічної пітливості.",
+        contraindications: "Суворо заборонено під час вагітності та годування груддю. Не рекомендовано при епілепсії та підвищеній функції щитоподібної залози."
+      }
+    },
+    {
+      id: 'myata',
+      name: "М'ята перцева",
+      part: 'листя',
+      effects: ['dry_cough', 'nervous', 'digestive', 'liver_support', 'headache'],
+      contra: ['hypotension', 'children_under_3'],
+      interactions: [],
+      dosage: { min: 1, max: 3, unit: 'г' },
+      strength: 3,
+      roles: ['balancer', 'flavor'],
+      flavor: 'mint',
+      description: {
+        properties: "М'який спазмолітик та заспокійливий засіб. Покращує травлення, зменшує здуття, допомагає при головному болю та нервовому напруженні. Має жовчогінні властивості.",
+        contraindications: "Обережно при низькому тиску (гіпотонії), не рекомендована дітям до 3 років."
+      }
+    },
+    {
+      id: 'zvirobiy',
+      name: 'Звіробій',
+      part: 'трава',
+      effects: ['nervous', 'immune', 'anti_inflammatory'],
+      contra: ['antidepressants', 'photosensitivity', 'hypertension'],
+      interactions: ['solodka'],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 3,
+      roles: ['balancer', 'immune', 'booster'],
+      flavor: 'tart',
+      description: {
+        properties: "Природний антидепресант, що покращує настрій і знімає легку тривожність. Має протизапальні та імуностимулюючі властивості. Використовується для підтримки травної системи.",
+        contraindications: "Категорично заборонений при прийомі антидепресантів (ризик серотонінового синдрому). Підвищує чутливість шкіри до сонця (фотосенсибілізація). Обережно при гіпертонії."
+      }
+    },
+    {
+      id: 'devyasil',
+      name: 'Оман',
+      part: 'корінь',
+      effects: ['wet_cough', 'expectorant'],
+      contra: ['pregnancy', 'heart_disease'],
+      interactions: ['solodka'],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 5,
+      roles: ['main'],
+      flavor: 'bitter',
+      description: {
+        properties: "Потужний відхаркувальний засіб, ефективний при вологому кашлі та бронхітах. Сприяє розрідженню та виведенню мокротиння. Має протимікробну та протизапальну дію.",
+        contraindications: "Вагітність та годування груддю. Обережно при серцево-судинних захворюваннях, а також при хворобах нирок."
+      }
+    },
+    {
+      id: 'solodka',
+      name: 'Солодка',
+      part: 'корінь',
+      effects: ['dry_cough', 'expectorant', 'anti_inflammatory', 'acid_reflux', 'soothing'],
+      contra: ['hypertension', 'edema', 'kidney_disease'],
+      interactions: ['zvirobiy', 'devyasil'],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 5,
+      roles: ['main', 'soothing', 'flavor'],
+      flavor: 'sweet',
+      description: {
+        properties: "Обволікаючий засіб при сухому кашлі, допомагає при печії та підвищеній кислотності. Має сильні протизапальні властивості та помірну гормональну дію (кортикостероїдоподібну).",
+        contraindications: "Протипоказана при високому артеріальному тиску (гіпертонія), набряках та тяжких захворюваннях нирок. Тривале використання може спричинити виведення калію."
+      }
+    },
+    {
+      id: 'altay',
+      name: 'Алтей',
+      part: 'корінь',
+      effects: ['dry_cough', 'soothing', 'acid_reflux'],
+      contra: ['diabetes'],
+      interactions: ['solodka'],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 5,
+      roles: ['main', 'soothing'],
+      flavor: 'neutral',
+      description: {
+        properties: "Створює захисну плівку на слизових оболонках горла та шлунка завдяки високому вмісту слизу. Ідеальний для пом'якшення сухого кашлю, лікування гастриту та печії.",
+        contraindications: "Обережність при діабеті (через вміст полісахаридів, хоча прямих протипоказань немає). Заважає засвоєнню інших ліків, тому приймати за 1-2 години до або після інших засобів."
+      }
+    },
+    {
+      id: 'kalendula',
+      name: 'Календула',
+      part: 'квітка',
+      effects: ['anti_inflammatory', 'sore_throat', 'skin_issues', 'immune'],
+      contra: ['aster_allergy'],
+      interactions: [],
+      dosage: { min: 1, max: 3, unit: 'г' },
+      strength: 3,
+      roles: ['balancer', 'anti_inflam'],
+      flavor: 'neutral',
+      description: {
+        properties: "Потужний протизапальний та ранозагоювальний засіб. Використовується внутрішньо для підтримки імунітету та зовнішньо для лікування шкірних проблем (висипання, подразнення).",
+        contraindications: "Алергія на рослини сімейства Айстрових (ромашка, хризантема, календула)."
+      }
+    },
+    {
+      id: 'shporish',
+      name: 'Шпориш',
+      part: 'трава',
+      effects: ['wet_cough', 'expectorant', 'liver_support'],
+      contra: ['kidney_stones'],
+      interactions: ['devyasil'],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 3,
+      roles: ['booster'],
+      flavor: 'tart',
+      description: {
+        properties: "Має сечогінну, відхаркувальну та протизапальну дію. Сприяє виведенню дрібних солей та піску з нирок та жовчного міхура. Підтримує функцію печінки.",
+        contraindications: "Наявність великих каменів у нирках або жовчному міхурі (може спровокувати ниркову коліку)."
+      }
+    },
+    {
+      id: 'cikoriy',
+      name: 'Цикорій',
+      part: 'корінь',
+      effects: ['digestive', 'liver_support', 'fatigue'],
+      contra: ['varicose', 'thrombosis'],
+      interactions: [],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 3,
+      roles: ['booster', 'base'],
+      flavor: 'bitter',
+      description: {
+        properties: "Багатий інуліном (пребіотик), покращує мікрофлору кишківника та травлення. Має жовчогінну дію, підтримує печінку та додає енергії при втомі.",
+        contraindications: "Варикозне розширення вен, геморой та інші проблеми, пов'язані з тромбозом (через ризик згущення крові)."
+      }
+    },
+    {
+      id: 'polin',
+      name: 'Полин',
+      part: 'трава',
+      effects: ['liver_support', 'digestive'],
+      contra: ['pregnancy', 'epilepsy', 'ulcer', 'gastritis_high_acid'],
+      interactions: [],
+      dosage: { min: 0.3, max: 0.5, unit: 'г' }, // мікродоза!
+      strength: 4,
+      roles: ['booster'],
+      flavor: 'bitter',
+      description: {
+        properties: "Сильний гіркота, стимулює виділення травних соків, жовчі та ферментів. Використовується для покращення апетиту та підтримки печінки. Антипаразитарна дія.",
+        contraindications: "Суворо заборонено при вагітності. Небезпечний при епілепсії. Протипоказаний при виразці шлунка та гастритах з підвищеною кислотністю. Тільки короткі курси!"
+      }
+    },
+    {
+      id: 'melisa',
+      name: 'Меліса',
+      part: 'листя',
+      effects: ['insomnia', 'nervous', 'digestive'],
+      contra: ['hypotension'],
+      interactions: [],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 3,
+      roles: ['main', 'balancer', 'flavor'],
+      flavor: 'citrus',
+      description: {
+        properties: "М'який заспокійливий засіб, ефективний при безсонні та нервовому напруженні. Має спазмолітичну дію, допомагає при нетравленні та метеоризмі. Приємний цитрусовий аромат.",
+        contraindications: "Обережно при зниженому тиску (гіпотонії)."
+      }
+    },
+    {
+      id: 'kropiva',
+      name: 'Кропива',
+      part: 'листя',
+      effects: ['allergy', 'fatigue', 'immune', 'recovery'],
+      contra: ['hypertension', 'kidney_disease', 'thrombosis'],
+      interactions: [],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 3,
+      roles: ['booster', 'base'],
+      flavor: 'neutral',
+      description: {
+        properties: "Багата вітамінами та мінералами. Використовується як протиалергічний засіб. Підвищує гемоглобін, допомагає при втомі та зміцнює імунітет. Має легку сечогінну дію.",
+        contraindications: "Схильність до тромбоутворення та тромбоз. Обережно при гіпертонії та важких захворюваннях нирок."
+      }
+    },
+    {
+      id: 'chyistotel',
+      name: 'Чистотіл',
+      part: 'трава',
+      effects: ['skin_issues', 'liver_support'],
+      contra: ['pregnancy', 'hypotension', 'epilepsy'],
+      interactions: ['zvirobiy'],
+      dosage: { min: 0.5, max: 1, unit: 'г' }, // короткий курс!
+      strength: 4,
+      roles: ['main'],
+      flavor: 'bitter',
+      description: {
+        properties: "Потужний жовчогінний, протизапальний та протипухлинний засіб. Використовується для підтримки печінки (у малих дозах) та зовнішньо для лікування шкірних проблем (бородавки, псоріаз).",
+        contraindications: "Сильнодіюча (отруйна) трава. Категорично заборонено при вагітності, епілепсії та важкій гіпотонії. Тільки короткі курси та мінімальні дози!"
+      }
+    },
+    {
+      id: 'kryshyna',
+      name: 'Крушина',
+      part: 'кора',
+      effects: ['menstrual_pain', 'constipation'],
+      contra: ['pregnancy', 'intestinal_obstruction'],
+      interactions: [],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 4,
+      roles: ['main'],
+      flavor: 'bitter',
+      description: {
+        properties: "Слабка проносна дія. Допомагає при атонічних запорах. Використовується для зменшення болю та спазмів при менструації.",
+        contraindications: "Вагітність, кишкова непрохідність, гострі запальні процеси в черевній порожнині."
+      }
+    },
+    {
+      id: 'romashka',
+      name: 'Ромашка',
+      part: 'квіти',
+      effects: ['allergy', 'skin_issues', 'digestive', 'menstrual_pain', 'soothing'],
+      contra: ['allergy'],
+      interactions: [],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 3,
+      roles: ['balancer', 'soothing', 'flavor'],
+      flavor: 'neutral',
+      description: {
+        properties: "М'який протизапальний, спазмолітичний та заспокійливий засіб. Зменшує алергічні реакції, допомагає при проблемах із травленням, коліках та менструальних болях.",
+        contraindications: "Алергія на рослини сімейства Айстрових (рідко, але трапляється)."
+      }
+    },
+    {
+      id: 'fito_prostatit',
+      name: 'Фітосуміш №11 (простатит)',
+      part: 'збір',
+      effects: ['prostatitis', 'anti_inflammatory', 'urinary'],
+      contra: [],
+      interactions: [],
+      dosage: { min: 2, max: 3, unit: 'ст.л.' },
+      strength: 5,
+      roles: ['main'],
+      flavor: 'mixed',
+      description: {
+        properties: "Спеціалізований збір для чоловічого здоров'я. Має протизапальну та сечогінну дію, сприяє нормалізації функції простати та зменшенню симптомів простатиту.",
+        contraindications: "Індивідуальна непереносимість компонентів. Рекомендована консультація лікаря."
+      }
+    },
+    {
+      id: 'lin',
+      name: 'Льон (насіння)',
+      part: 'насіння',
+      effects: ['acid_reflux', 'soothing', 'digestive'],
+      contra: ['intestinal_obstruction'],
+      interactions: [],
+      dosage: { min: 1, max: 2, unit: 'ст.л.' },
+      strength: 4,
+      roles: ['main', 'soothing'],
+      flavor: 'neutral',
+      description: {
+        properties: "При заварюванні утворює слиз, який обволікає стінки шлунка та кишківника. Ефективний при печії, підвищеній кислотності та для захисту слизової. Джерело Омега-3.",
+        contraindications: "Кишкова непрохідність та гострі запальні процеси. Необхідно вживати багато рідини."
+      }
+    },
+    // ===================================================================
+    // НОВІ ТРАВИ (ДОДАНО ЗА ВАШИМ ЗАПИТОМ)
+    // ===================================================================
+    {
+      id: 'valeriana',
+      name: 'Валеріана лікарська',
+      part: 'корінь',
+      effects: ['nervous', 'insomnia', 'calming'],
+      contra: ['pregnancy', 'drowsiness', 'hypotension'],
+      interactions: [],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 5,
+      roles: ['main', 'balancer'],
+      flavor: 'earthy',
+      description: {
+        properties: "Потужний седативний та снодійний засіб. Зменшує нервову збудливість та полегшує засинання. Сприяє зняттю спазмів.",
+        contraindications: "Вагітність. Обережно при низькому тиску (гіпотонії) та роботі, що вимагає підвищеної уваги (через сонливість)."
+      }
+    },
+    {
+      id: 'glid',
+      name: 'Глід',
+      part: 'плоди, цвіт',
+      effects: ['heart_support', 'vasodilator', 'calming', 'hypertension'],
+      contra: ['hypotension', 'bradycardia'],
+      interactions: [],
+      dosage: { min: 3, max: 7, unit: 'г' },
+      strength: 4,
+      roles: ['main', 'balancer', 'booster'],
+      flavor: 'sweet',
+      description: {
+        properties: "Кардіотонічна дія, покращує кровообіг у судинах серця. Знижує артеріальний тиск. Має м'яку заспокійливу дію. Підходить для тривалого курсу.",
+        contraindications: "Обмежено при низькому тиску (гіпотонії) та низькому пульсі (брадикардії)."
+      }
+    },
+    {
+      id: 'lypa',
+      name: 'Липа',
+      part: 'цвіт',
+      effects: ['diaphoretic', 'cough', 'anti_inflammatory', 'soothing', 'calming'],
+      contra: [],
+      interactions: [],
+      dosage: { min: 2, max: 5, unit: 'г' },
+      strength: 3,
+      roles: ['balancer', 'soothing', 'flavor'],
+      flavor: 'floral',
+      description: {
+        properties: "Сильний потогінний та протизапальний засіб. Пом’якшує кашель, заспокоює горло. Чудовий смаковий компонент і легкий релаксант.",
+        contraindications: "Індивідуальна непереносимість. Не застосовувати щоденно тривалий час (понад місяць) без консультації."
+      }
+    },
+    {
+      id: 'pustyrnyk',
+      name: 'Пустирник',
+      part: 'трава',
+      effects: ['nervous', 'calming', 'hypotensive', 'insomnia'],
+      contra: ['hypotension', 'bradycardia', 'pregnancy'],
+      interactions: [],
+      dosage: { min: 2, max: 4, unit: 'г' },
+      strength: 4,
+      roles: ['main', 'balancer'],
+      flavor: 'bitter',
+      description: {
+        properties: "Ефективний заспокійливий засіб, сильніший за валеріану. Знижує артеріальний тиск. Ідеальний при безсонні, спричиненому тривогою чи гіпертонією.",
+        contraindications: "Вагітність. Обережно при низькому тиску (гіпотонії) та низькому пульсі (брадикардії)."
+    }
+    }
 ];
 
-// Готові рецепти
 const RECIPES = [
-  // Респіраторні
-  {
-    id: 'dry_cough_classic',
-    name: 'Класичний при сухому кашлі',
-    problem: 'dry_cough',
-    herbs: [
-      { id: 'altay', amount: 3 },
-      { id: 'solodka', amount: 2 },
-      { id: 'shalfei', amount: 2 }
-    ],
-    instructions: 'Змішати всі компоненти. 1 ст.л. суміші залити 250 мл гарячої води (85-90°C), настоювати 20 хв під кришкою. Процідити. Пити теплим по 1/2 склянки 2-3 рази на день за 30 хв до їди.',
-    duration: '7-10 днів'
-  },
-  {
-    id: 'wet_cough_expectorant',
-    name: 'Відхаркувальний при вологому кашлі',
-    problem: 'wet_cough',
-    herbs: [
-      { id: 'devyasil', amount: 3 },
-      { id: 'shporish', amount: 2 },
-      { id: 'solodka', amount: 2 }
-    ],
-    instructions: 'Суміш залити 300 мл холодної води, довести до кипіння і варити на слабкому вогні 10 хв. Зняти з вогню, настоювати 15 хв. Процідити. Пити теплим по 1/3 склянки 3 рази на день після їди.',
-    duration: '10-14 днів'
-  },
-  {
-    id: 'sore_throat_antiseptic',
-    name: 'Антисептичний полоскун для горла',
-    problem: 'sore_throat_infection',
-    herbs: [
-      { id: 'kalendula', amount: 2 },
-      { id: 'shalfei', amount: 2 },
-      { id: 'zvirobiy', amount: 1 }
-    ],
-    instructions: 'Суміш залити 300 мл окропу, настоювати 20 хв. Використовувати для полоскання горла 4–5 разів на день. Не ковтати при виразковому стоматиті.',
-    duration: '5–7 днів'
-  },
-  // Нервова система
-  {
-    id: 'nervous_calming',
-    name: 'Заспокійливий збір',
-    problem: 'nervous',
-    herbs: [
-      { id: 'zvirobiy', amount: 2 },
-      { id: 'myata', amount: 3 }
-    ],
-    instructions: '1 ст.л. суміші залити склянкою окропу, настоювати 15 хв. Пити як чай перед сном або двічі на день при стресі. Курс 2-3 тижні.',
-    duration: '14-21 день'
-  },
-  {
-    id: 'insomnia_deep',
-    name: 'Для глибокого сну',
-    problem: 'insomnia',
-    herbs: [
-      { id: 'melisa', amount: 3 },
-      { id: 'myata', amount: 2 },
-      { id: 'romashka', amount: 2 },
-      { id: 'zvirobiy', amount: 1 }
-    ],
-    instructions: '2 ч.л. суміші залити 250 мл окропу, настоювати 20 хв. Пити теплим за 1 год до сну. Не приймати при прийомі антидепресантів.',
-    duration: '10–14 днів'
-  },
-  // ЖКТ
-  {
-    id: 'digestive_support',
-    name: 'Для покращення травлення',
-    problem: 'digestive',
-    herbs: [
-      { id: 'cikoriy', amount: 3 },
-      { id: 'myata', amount: 2 }
-    ],
-    instructions: '1 ч.л. суміші залити склянкою окропу, настоювати 10 хв. Пити за 20 хв до їди 2-3 рази на день.',
-    duration: '14 днів'
-  },
-  {
-    id: 'acid_reflux_soothing',
-    name: 'При підвищеній кислотності',
-    problem: 'acid_reflux',
-    herbs: [
-      { id: 'altay', amount: 2 },
-      { id: 'lin', amount: 1 },
-      { id: 'shalfei', amount: 1 }
-    ],
-    instructions: 'Насіння льону заварити окремо (1 ст.л. на 200 мл, настоювати 30 хв). Інші трави — 1 ч.л. на 200 мл, 15 хв. Приймати: спочатку трав’яний настій, через 15 хв — лляний кисіль. 2 рази на день після їди. Не при виразці!',
-    duration: '7–10 днів'
-  },
-  // Жіноче здоров’я
-  {
-    id: 'menstrual_relief',
-    name: 'При менструальних болях',
-    problem: 'menstrual_pain',
-    herbs: [
-      { id: 'melisa', amount: 3 },
-      { id: 'romashka', amount: 2 },
-      { id: 'myata', amount: 2 },
-      { id: 'kryshyna', amount: 2 }
-    ],
-    instructions: '2 ч.л. суміші залити 300 мл окропу, настоювати 20 хв. Пити по 100 мл 3 рази на день під час болю. Не застосовувати під час вагітності.',
-    duration: '3–5 днів'
-  },
-  // Чоловіче здоров’я
-  {
-    id: 'prostatitis_support',
-    name: 'При простатиті',
-    problem: 'prostatitis',
-    herbs: [
-      { id: 'fito_prostatit', amount: 2 }
-    ],
-    instructions: '2 ст.л. суміші залити 500 мл окропу в термосі, настоювати 8–10 год. Процідити. Пити по 150 мл 3 рази на день за 30 хв до їди. Курс — 3–4 тижні.',
-    duration: '21–28 днів'
-  },
-  // Печінка
-  {
-    id: 'liver_detox',
-    name: 'Печінковий детокс (5 трав)',
-    problem: 'liver_support',
-    herbs: [
-      { id: 'cikoriy', amount: 2 },
-      { id: 'shporish', amount: 1.5 },
-      { id: 'myata', amount: 1.5 },
-      { id: 'polin', amount: 0.4 },
-      { id: 'kalendula', amount: 1 }
-    ],
-    instructions: '2 ч.л. суміші залити 400 мл окропу, варити 3 хв, настоювати 30 хв. Пити по 100 мл 3 рази на день за 20 хв до їди. Курс — 10 днів. Не при виразці, епілепсії, вагітності!',
-    duration: '10 днів'
-  },
-  // Алергія
-  {
-    id: 'allergy_calm',
-    name: 'Антиалергійний збір',
-    problem: 'allergy',
-    herbs: [
-      { id: 'kropiva', amount: 3 },
-      { id: 'romashka', amount: 2 },
-      { id: 'kalendula', amount: 2 }
-    ],
-    instructions: '2 ч.л. суміші залити 300 мл окропу, настоювати 20 хв. Пити по 100 мл 3 рази на день. Ефект — через 2–3 дні.',
-    duration: '14 днів'
-  },
-  // Шкіра
-  {
-    id: 'skin_clear',
-    name: 'Для чистої шкіри',
-    problem: 'skin_issues',
-    herbs: [
-      { id: 'chyistotel', amount: 0.8 },
-      { id: 'romashka', amount: 2 },
-      { id: 'kalendula', amount: 2 }
-    ],
-    instructions: 'Внутрішньо: 1 ч.л. на 250 мл, настій 15 хв, пити 2 рази на день. Зовнішньо: кріпкий настій для примочок. Курс — не більше 10 днів!',
-    duration: '7–10 днів'
-  },
-  // Енергія
-  {
-    id: 'energy_boost',
-    name: 'Енергія вранці',
-    problem: 'fatigue',
-    herbs: [
-      { id: 'kropiva', amount: 3 },
-      { id: 'shipshina', amount: 4 },
-      { id: 'cikoriy', amount: 2 }
-    ],
-    instructions: '2 ч.л. суміші залити 400 мл окропу в термосі, настоювати 2 год. Пити замість ранкового чаю. Не після 16:00 — може заважати сну.',
-    duration: '14 днів'
-  },
-  // Імунітет
-  {
-    id: 'immune_support',
-    name: 'Для підтримки імунітету',
-    problem: 'immune',
-    herbs: [
-      { id: 'shipshina', amount: 5 },
-      { id: 'zvirobiy', amount: 2 },
-      { id: 'kalendula', amount: 1 }
-    ],
-    instructions: 'Плоди шипшини подрібнити. Всю суміш залити 400 мл окропу в термосі, настоювати 2-3 години. Процідити. Пити по 100-150 мл 2 рази на день. Курс 3-4 тижні.',
-    duration: '21-28 днів'
-  }
+    {
+      id: 'dry_cough_classic',
+      name: 'Класичний при сухому кашлі (ОНОВЛЕНО)',
+      problem: 'dry_cough',
+      herbs: [
+        { id: 'altay', amount: 3 },
+        { id: 'solodka', amount: 2 },
+        { id: 'lypa', amount: 2 }, // ДОДАНО
+        { id: 'shalfei', amount: 1 } // ЗМЕНШЕНО
+      ],
+      instructions: 'Змішати всі компоненти. 1 ст.л. суміші залити 250 мл гарячої води (85-90°C), настоювати 20 хв під кришкою. Процідити. Пити теплим по 1/2 склянки 2-3 рази на день за 30 хв до їди.',
+      duration: '7-10 днів'
+    },
+    {
+      id: 'wet_cough_expectorant',
+      name: 'Відхаркувальний при вологому кашлі',
+      problem: 'wet_cough',
+      herbs: [
+        { id: 'devyasil', amount: 3 },
+        { id: 'shporish', amount: 2 },
+        { id: 'solodka', amount: 2 }
+      ],
+      instructions: 'Суміш залити 300 мл холодної води, довести до кипіння і варити на слабкому вогні 10 хв. Зняти з вогню, настоювати 15 хв. Процідити. Пити теплим по 1/3 склянки 3 рази на день після їди.',
+      duration: '10-14 днів'
+    },
+    {
+      id: 'sore_throat_antiseptic',
+      name: 'Антисептичний полоскун для горла',
+      problem: 'sore_throat_infection',
+      herbs: [
+        { id: 'kalendula', amount: 2 },
+        { id: 'shalfei', amount: 2 },
+        { id: 'zvirobiy', amount: 1 }
+      ],
+      instructions: 'Суміш залити 300 мл окропу, настоювати 20 хв. Використовувати для полоскання горла 4–5 разів на день. Не ковтати при виразковому стоматиті.',
+      duration: '5–7 днів'
+    },
+    // Нервова система (ОНОВЛЕНО)
+    {
+      id: 'nervous_calming',
+      name: 'Заспокійливий збір (Пустирник)',
+      problem: 'nervous',
+      herbs: [
+        { id: 'pustyrnyk', amount: 3 }, // ОНОВЛЕНО
+        { id: 'myata', amount: 2 },
+        { id: 'romashka', amount: 1 } // ДОДАНО
+      ],
+      instructions: '1 ст.л. суміші залити склянкою окропу, настоювати 15 хв. Пити як чай перед сном або двічі на день при стресі. Обережно при низькому тиску. Курс 2-3 тижні.',
+      duration: '14-21 день'
+    },
+    {
+      id: 'insomnia_deep',
+      name: 'Для глибокого сну (Валеріана)',
+      problem: 'insomnia',
+      herbs: [
+        { id: 'valeriana', amount: 3 }, // ОНОВЛЕНО
+        { id: 'melisa', amount: 3 },
+        { id: 'romashka', amount: 2 }
+      ],
+      instructions: '2 ч.л. суміші залити 250 мл окропу, настоювати 20 хв. Пити теплим за 1 год до сну. Курс 10–14 днів. Не приймати перед керуванням авто.',
+      duration: '10–14 днів'
+    },
+    // ЖКТ
+    {
+      id: 'digestive_support',
+      name: 'Для покращення травлення',
+      problem: 'digestive',
+      herbs: [
+        { id: 'cikoriy', amount: 3 },
+        { id: 'myata', amount: 2 }
+      ],
+      instructions: '1 ч.л. суміші залити склянкою окропу, настоювати 10 хв. Пити за 20 хв до їди 2-3 рази на день.',
+      duration: '14 днів'
+    },
+    {
+      id: 'acid_reflux_soothing',
+      name: 'При підвищеній кислотності',
+      problem: 'acid_reflux',
+      herbs: [
+        { id: 'altay', amount: 2 },
+        { id: 'lin', amount: 1 },
+        { id: 'shalfei', amount: 1 }
+      ],
+      instructions: 'Насіння льону заварити окремо (1 ст.л. на 200 мл, настоювати 30 хв). Інші трави — 1 ч.л. на 200 мл, 15 хв. Приймати: спочатку трав’яний настій, через 15 хв — лляний кисіль. 2 рази на день після їди. Не при виразці!',
+      duration: '7–10 днів'
+    },
+    // Жіноче здоров’я
+    {
+      id: 'menstrual_relief',
+      name: 'При менструальних болях',
+      problem: 'menstrual_pain',
+      herbs: [
+        { id: 'melisa', amount: 3 },
+        { id: 'romashka', amount: 2 },
+        { id: 'myata', amount: 2 },
+        { id: 'kryshyna', amount: 2 }
+      ],
+      instructions: '2 ч.л. суміші залити 300 мл окропу, настоювати 20 хв. Пити по 100 мл 3 рази на день під час болю. Не застосовувати під час вагітності.',
+      duration: '3–5 днів'
+    },
+    // Чоловіче здоров’я
+    {
+      id: 'prostatitis_support',
+      name: 'При простатиті',
+      problem: 'prostatitis',
+      herbs: [
+        { id: 'fito_prostatit', amount: 2 }
+      ],
+      instructions: '2 ст.л. суміші залити 500 мл окропу в термосі, настоювати 8–10 год. Процідити. Пити по 150 мл 3 рази на день за 30 хв до їди. Курс — 3–4 тижні.',
+      duration: '21–28 днів'
+    },
+    // Печінка
+    {
+      id: 'liver_detox',
+      name: 'Печінковий детокс (5 трав)',
+      problem: 'liver_support',
+      herbs: [
+        { id: 'cikoriy', amount: 2 },
+        { id: 'shporish', amount: 1.5 },
+        { id: 'myata', amount: 1.5 },
+        { id: 'polin', amount: 0.4 },
+        { id: 'kalendula', amount: 1 }
+      ],
+      instructions: '2 ч.л. суміші залити 400 мл окропу, варити 3 хв, настоювати 30 хв. Пити по 100 мл 3 рази на день за 20 хв до їди. Курс — 10 днів. Не при виразці, епілепсії, вагітності!',
+      duration: '10 днів'
+    },
+    // Алергія
+    {
+      id: 'allergy_calm',
+      name: 'Антиалергійний збір',
+      problem: 'allergy',
+      herbs: [
+        { id: 'kropiva', amount: 3 },
+        { id: 'romashka', amount: 2 },
+        { id: 'kalendula', amount: 2 }
+      ],
+      instructions: '2 ч.л. суміші залити 300 мл окропу, настоювати 20 хв. Пити по 100 мл 3 рази на день. Ефект — через 2–3 дні.',
+      duration: '14 днів'
+    },
+    // Шкіра
+    {
+      id: 'skin_clear',
+      name: 'Для чистої шкіри',
+      problem: 'skin_issues',
+      herbs: [
+        { id: 'chyistotel', amount: 0.8 },
+        { id: 'romashka', amount: 2 },
+        { id: 'kalendula', amount: 2 }
+      ],
+      instructions: 'Внутрішньо: 1 ч.л. на 250 мл, настій 15 хв, пити 2 рази на день. Зовнішньо: кріпкий настій для примочок. Курс — не більше 10 днів!',
+      duration: '7–10 днів'
+    },
+    // Енергія
+    {
+      id: 'energy_boost',
+      name: 'Енергія вранці',
+      problem: 'fatigue',
+      herbs: [
+        { id: 'kropiva', amount: 3 },
+        { id: 'shipshina', amount: 4 },
+        { id: 'cikoriy', amount: 2 }
+      ],
+      instructions: '2 ч.л. суміші залити 400 мл окропу в термосі, настоювати 2 год. Пити замість ранкового чаю. Не після 16:00 — може заважати сну.',
+      duration: '14 днів'
+    },
+    // Імунітет
+    {
+      id: 'immune_support',
+      name: 'Для підтримки імунітету',
+      problem: 'immune',
+      herbs: [
+        { id: 'shipshina', amount: 5 },
+        { id: 'zvirobiy', amount: 2 },
+        { id: 'kalendula', amount: 1 }
+      ],
+      instructions: 'Плоди шипшини подрібнити. Всю суміш залити 400 мл окропу в термосі, настоювати 2-3 години. Процідити. Пити по 100-150 мл 2 рази на день. Курс 3-4 тижні.',
+      duration: '21-28 днів'
+    },
+    // ===================================================================
+    // НОВИЙ РЕЦЕПТ (ДОДАНО ЗА ВАШИМ ЗАПИТОМ)
+    // ===================================================================
+    {
+      id: 'heart_support_glid',
+      name: 'Для підтримки серця та судин (Глід)',
+      problem: 'heart_support',
+      herbs: [
+        { id: 'glid', amount: 4 }, // НОВА ТРАВА
+        { id: 'pustyrnyk', amount: 2 }, // НОВА ТРАВА
+        { id: 'myata', amount: 1 }
+      ],
+      instructions: 'Змішати всі компоненти. 1 ст.л. суміші залити 250 мл окропу, настоювати 20 хв. Пити по 1/2 склянки двічі на день, незалежно від їжі. Обережно при низькому тиску та пульсі. Курс тривалий.',
+      duration: '4-6 тижнів'
+    }
 ];
 
-// Додаткові симптоми
 const ADDITIONAL_SYMPTOMS = [
-  { id: 'sore_throat', label: 'Біль у горлі' },
-  { id: 'fever', label: 'Температура' },
-  { id: 'fatigue', label: 'Слабкість' },
-  { id: 'headache', label: 'Головний біль' },
-  { id: 'heartburn', label: 'Печія' },
-  { id: 'itching', label: 'Свербіж шкіри' },
-  { id: 'runny_nose', label: 'Нежить' },
-  { id: 'abdominal_pain', label: 'Біль у животі' }
+    { id: 'sore_throat', label: 'Біль у горлі' },
+    { id: 'fever', label: 'Температура' },
+    { id: 'fatigue', label: 'Слабкість' },
+    { id: 'headache', label: 'Головний біль' },
+    { id: 'heartburn', label: 'Печія' },
+    { id: 'itching', label: 'Свербіж шкіри' },
+    { id: 'runny_nose', label: 'Нежить' },
+    { id: 'abdominal_pain', label: 'Біль у животі' }
 ];
 
-// Відповідність станів і протипоказань
+let ALL_RECIPES = [...RECIPES]; 
+
+// --- 2. СТАТИЧНІ ДАНІ (МАПІНГИ) ---
 const CONDITION_MAPPING = {
   pregnancy: ['pregnancy'],
   hypertension: ['hypertension', 'edema'],
   diabetes: ['diabetes'],
-  kidney_stones: ['kidney_stones'],
+  kidney_stones: ['kidney_stones', 'gallstones'], // Додано gallstones для шипшини
   antidepressants: ['antidepressants'],
-  ulcer: ['ulcer'],
+  ulcer: ['ulcer', 'gastritis_high_acid'], // Посилення перевірки
   gastritis_high_acid: ['gastritis_high_acid', 'ulcer'],
   epilepsy: ['epilepsy'],
-  varicose: ['varicose', 'thrombosis']
+  varicose: ['varicose', 'thrombosis'],
+  edema: ['edema'], 
+  thrombosis: ['thrombosis'], 
+  gallstones: ['gallstones'],
+  thyroid_overactive: ['thyroid_overactive'],
+  heart_disease: ['heart_disease'],
+  intestinal_obstruction: ['intestinal_obstruction'],
+  // НОВІ МАПІНГИ ДЛЯ НОВИХ ТРАВ:
+  hypotension_risk: ['hypotension', 'bradycardia'], // Групуємо низький тиск і пульс для обережності
+  drowsiness_risk: ['drowsiness'] // Ризик сонливості (Валеріана)
 };
 
-// --- ДОДАНО: Функція для отримання посилання на пошук ---
-function getSearchLink(herbName) {
-    const encodedName = encodeURIComponent(`купити траву ${herbName}`);
-    return `https://www.google.com/search?q=${encodedName}`;
+function getConditionName(condition) {
+  const names = {
+    pregnancy: 'вагітності',
+    hypertension: 'гіпертонії',
+    diabetes: 'діабеті',
+    kidney_stones: 'камінні в нирках',
+    antidepressants: 'прийомі антидепресантів',
+    ulcer: 'виразці',
+    gastritis_high_acid: 'підвищеній кислотності',
+    epilepsy: 'епілепсії',
+    varicose: 'варикозі',
+    edema: 'набряках',
+    thrombosis: 'тромбозі',
+    gallstones: 'камінні у жовчному міхурі', 
+    thyroid_overactive: 'гіперфункції щитоподібної залози', 
+    heart_disease: 'захворюваннях серця', 
+    intestinal_obstruction: 'кишковій непрохідності',
+    hypotension: 'низькому тиску (гіпотонії)', 
+    bradycardia: 'низькому пульсі (брадикардії)', 
+    drowsiness: 'сонливості (при керуванні)', 
+  };
+  return names[condition] || condition;
 }
-// --------------------------------------------------------
 
-// --- ДОДАНО: Функція для розрахунку пропорцій в частинах (ч.л.) ---
-function getRecipeSpoonRatio(recipe) {
-    // Приблизна щільність (грам на 1 умовну 'частину' об'єму ≈ 1 ч.л. без верху)
-    const SPOON_DENSITY = {
-        'листя': 1, 'квіти': 1, 'трава': 1, // Легкі
-        'плоди': 1.5, 'кора': 1.5, // Середні
-        'корінь': 2, 'насіння': 2, 'збір': 1.5 // Важкі/середні
+// Допоміжна функція для отримання назви симптому для summary
+function getSymptomName(id) {
+    const symptom = ADDITIONAL_SYMPTOMS.find(s => s.id === id);
+    return symptom ? symptom.label : id;
+}
+
+
+// --- 3. ФУНКЦІЯ: ГЕНЕРАЦІЯ ЗБОРУ (ОНОВЛЕНО) ---
+function generateNewRecipe(params) {
+    const problem = params.mainProblem;
+    // Фільтруємо трави, які КРИТИЧНО протипоказані 
+    const criticalConditions = params.conditions.filter(c => 
+        ['pregnancy', 'antidepressants', 'ulcer', 'gastritis_high_acid', 'epilepsy'].includes(c)
+    );
+    
+    // ВРАХОВУЄМО НОВІ ПРОТИПОКАЗАННЯ (hypotension, bradycardia, drowsiness)
+    const herblist = HERBS.filter(h => {
+        // Перевіряємо, чи має трава критичне протипоказання, що збігається з протипоказанням користувача
+        const hasCriticalContra = h.contra.some(c => 
+            criticalConditions.some(cc => CONDITION_MAPPING[cc] && CONDITION_MAPPING[cc].includes(c))
+        );
+        // Додаткова перевірка на критичні, але не пов'язані з check-box протипоказання
+        if (h.id === 'pustyrnyk' && params.conditions.includes('hypertension')) return true; // Пустирник - для гіпертонії
+        
+        return !hasCriticalContra;
+    });
+    
+    if (!problem || herblist.length === 0) return null;
+
+    // 1. Вибір основної трави (Main) - гнучкий вибір
+    let mainHerb = herblist
+        .filter(h => h.effects.includes(problem) && h.roles.includes('main'))
+        .sort((a, b) => b.strength - a.strength)[0];
+
+    if (!mainHerb) {
+        mainHerb = herblist
+            .filter(h => h.effects.includes(problem) && (h.roles.includes('booster') || h.roles.includes('base')))
+            .sort((a, b) => b.strength - a.strength)[0];
+    }
+
+    if (!mainHerb) return null;
+
+    let selectedHerbs = [{ id: mainHerb.id, amount: 4 }];
+    const selectedIds = [mainHerb.id];
+    
+    // 2. Вибір балансира (Balancer)
+    if (params.symptoms.includes('nervous') || params.symptoms.includes('headache')) {
+        const balancer = herblist
+            .filter(h => h.roles.includes('balancer') && h.effects.some(e => ['nervous', 'headache'].includes(e)) && !selectedIds.includes(h.id))[0];
+        if (balancer) {
+            selectedHerbs.push({ id: balancer.id, amount: 2 });
+            selectedIds.push(balancer.id);
+        }
+    }
+    
+    // 3. Вибір бустера/базового (Booster)
+    const immuneBooster = herblist
+        .filter(h => h.roles.includes('booster') && h.effects.includes('immune') && !selectedIds.includes(h.id))[0];
+    if (immuneBooster) {
+        selectedHerbs.push({ id: immuneBooster.id, amount: 1 });
+        selectedIds.push(immuneBooster.id);
+    }
+    
+    // 4. Додаткове пом'якшення
+    if (problem === 'dry_cough' || problem === 'acid_reflux' || params.symptoms.includes('heartburn')) {
+        const soother = herblist
+            .filter(h => h.roles.includes('soothing') && !selectedIds.includes(h.id))[0];
+        if (soother) {
+            selectedHerbs.push({ id: soother.id, amount: 1.5 }); 
+            selectedIds.push(soother.id);
+        }
+    }
+    
+    if (selectedHerbs.length < 2) return null;
+
+    // СТВОРЕННЯ ПЕРСОНАЛЬНОГО SUMMARY
+    const problemName = getProblemName(problem);
+    const symptomLabels = params.symptoms.length > 0 ? params.symptoms.map(id => getSymptomName(id)).join(', ') : 'не вказано';
+    const conditionLabels = params.conditions.length > 0 ? params.conditions.map(id => getConditionName(id)).join(', ') : 'немає';
+    
+    const personalSummary = `
+        <p>Цей рецепт був **сгенерований індивідуально** для вас на основі наступних даних:</p>
+        <ul style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>**Основна проблема**: <strong style="color: var(--color-3);">${problemName}</strong></li>
+            <li>**Додаткові симптоми**: ${symptomLabels}</li>
+            <li>**Вік**: ${params.age} років</li>
+            <li>**Враховані протипоказання**: ${conditionLabels}</li>
+        </ul>
+        <p style="margin-top: 0.75rem;">Трави були підібрані для синергічної дії, з урахуванням усіх обмежень, які ви вказали.</p>
+    `;
+    // КІНЕЦЬ СТВОРЕННЯ SUMMARY
+
+    const newRecipe = {
+        id: `gen_${Date.now()}`,
+        name: `Персональний збір (для ${problemName})`, // ОНОВЛЕНО НАЗВУ
+        problem: problem,
+        herbs: selectedHerbs,
+        instructions: 'ІНСТРУКЦІЯ: Змішати всі компоненти у вказаних пропорціях. 2 ч.л. суміші залити 300 мл окропу, настоювати 20 хв. Проконсультуйтесь з лікарем перед вживанням.',
+        duration: '10–14 днів',
+        isGenerated: true,
+        personal_summary: personalSummary // ДОДАНО SUMMARY
     };
     
-    // 1. Розрахунок "сирих" частин (грам / щільність)
+    const warnings = checkContraindications(newRecipe, params.conditions);
+    const interactions = checkInteractions(newRecipe);
+
+    return {
+        ...newRecipe,
+        warnings,
+        interactions,
+        score: 95, 
+        suitable: warnings.critical.length === 0
+    };
+}
+
+function getProblemName(problemId) {
+    const names = {
+        dry_cough: 'сухого кашлю',
+        wet_cough: 'вологого кашлю',
+        sore_throat_infection: 'інфекції горла',
+        nervous: 'стресу/тривоги',
+        insomnia: 'безсоння',
+        digestive: 'покращення травлення',
+        acid_reflux: 'кислотного рефлюксу',
+        menstrual_pain: 'менструальних болей',
+        prostatitis: 'простатиту',
+        liver_support: 'підтримки печінки',
+        allergy: 'алергії',
+        skin_issues: 'шкірних проблем',
+        fatigue: 'втоми',
+        immune: 'підтримки імунітету',
+        heart_support: 'підтримки серця/судин', 
+    };
+    return names[problemId] || problemId;
+}
+
+
+// --- 4. ОСНОВНА ЛОГІКА ТА ІНІЦІАЛІЗАЦІЯ ---
+
+const SPOON_DENSITY = {
+    'листя': 1, 'квіти': 1, 'трава': 1, 
+    'плоди': 1.5, 'кора': 1.5, 
+    'корінь': 2, 'насіння': 2, 'збір': 1.5 
+};
+
+function getRecipeSpoonRatio(recipe) {
+    
     const rawParts = recipe.herbs.map(herbData => {
         const herb = HERBS.find(h => h.id === herbData.id);
         if (!herb) return null;
@@ -969,12 +1370,11 @@ function getRecipeSpoonRatio(recipe) {
         let ratioPart;
         let note = '';
 
-        if (herb.dosage.unit === 'ст.л.') {
-             ratioPart = herbData.amount; // Зберігаємо як є, але не включаємо в нормалізацію
-             note = ` (вимірюється в ст.л.)`;
+        if (herb.dosage.unit === 'ст.л.' || herb.part === 'насіння') {
+             ratioPart = herbData.amount; 
+             note = ` (вимірюється в ${herb.dosage.unit})`;
         } else {
             const density = SPOON_DENSITY[herb.part] || 1;
-            // Округлення до 0.5 для кращої точності/читабельності
             ratioPart = Math.round((herbData.amount / density) * 2) / 2; 
             note = ' (ч.л. частин)';
         }
@@ -988,7 +1388,6 @@ function getRecipeSpoonRatio(recipe) {
         };
     }).filter(p => p !== null);
 
-    // 2. Нормалізація до найпростішого цілого співвідношення
     const numericParts = rawParts.filter(p => p.unit === 'г' && p.part > 0).map(p => p.part);
     
     let normalizedParts = [...rawParts];
@@ -998,7 +1397,6 @@ function getRecipeSpoonRatio(recipe) {
         
         normalizedParts = rawParts.map(p => {
             if (p.unit === 'г' && p.part > 0) {
-                // Ділимо на найменшу частину і округлюємо до найближчого цілого
                 let normalized = Math.round(p.part / minPart);
                 
                 if (normalized < 1) normalized = 1; 
@@ -1012,13 +1410,11 @@ function getRecipeSpoonRatio(recipe) {
             return p;
         });
     } else {
-        // Якщо тільки один компонент або всі в ст.л., частину прирівнюємо до 1
         normalizedParts = rawParts.map(p => ({ ...p, normalizedPart: 1 }));
     }
 
     const totalNormalizedParts = normalizedParts.reduce((sum, p) => sum + (p.normalizedPart || 0), 0);
     
-    // 3. Витягуємо, скільки Ч.Л. *готової суміші* потрібно для заварювання (з інструкції)
     const totalSpoonMeasure = recipe.instructions.match(/(\d+)\sч\.л\.\sсуміші/); 
     const brewingTotal = totalSpoonMeasure ? totalSpoonMeasure[1] : null;
 
@@ -1028,18 +1424,26 @@ function getRecipeSpoonRatio(recipe) {
         brewingTotal: brewingTotal
     };
 }
-// -----------------------------------------------------------------------------
 
 
-// Ініціалізація
 function init() {
   renderSymptoms();
   renderHerbReference();
-  document.getElementById('findRecipes').addEventListener('click', findRecipes);
+  document.getElementById('findRecipes').addEventListener('click', () => findRecipes(false));
+  document.getElementById('generateRecipe').addEventListener('click', () => findRecipes(true));
   document.getElementById('resetBtn').addEventListener('click', reset);
+  
+  document.getElementById('mainProblem').addEventListener('change', () => {
+      document.getElementById('resultsContainer').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">🌿</div>
+          <h3>Оберіть параметри та натисніть "Підібрати збори"</h3>
+          <p>Система підбере оптимальні рецепти з урахуванням ваших індивідуальних потреб</p>
+        </div>
+      `;
+  });
 }
 
-// Рендер додаткових симптомів
 function renderSymptoms() {
   const grid = document.getElementById('symptomsGrid');
   grid.innerHTML = ADDITIONAL_SYMPTOMS.map(s => 
@@ -1052,50 +1456,117 @@ function renderSymptoms() {
   });
 }
 
-// Рендер довідника трав
+// --- ЗМІНЕНО: Рендер довідника трав (додано клікабельність) ---
 function renderHerbReference() {
   const container = document.getElementById('herbReference');
   container.innerHTML = HERBS.map(h => `
     <div class="herb-item">
       <div>
-        <div class="herb-name">${h.name}</div>
+        <div class="herb-name clickable-herb" onclick="showHerbDetails('${h.id}')" title="Детальніше">${h.name}</div>
         <div class="herb-details">${h.part} • ${h.effects.map(e => e.replace(/_/g, ' ')).join(', ')}</div>
       </div>
       <div class="herb-dosage">${h.dosage.min}-${h.dosage.max} ${h.dosage.unit}</div>
     </div>
   `).join('');
 }
+// -----------------------------------------------------------
 
-// Основна функція підбору
-function findRecipes() {
-  const btn = document.getElementById('findRecipes');
+// --- НОВІ ФУНКЦІЇ ДЛЯ МОДАЛЬНОГО ВІКНА ---
+function getHerbDetailsHtml(herb) {
+    if (!herb.description || (!herb.description.properties && !herb.description.contraindications)) {
+        return `<p style="color: var(--text-light); text-align: center;">Детальна інформація про властивості та протипоказання поки що відсутня для цієї трави.</p>`;
+    }
+    return `
+        <div style="margin-bottom: 1.5rem;">
+            <div class="modal-section-title" style="color: var(--color-1);">💊 Властивості:</div>
+            <p>${herb.description.properties || 'Інформація відсутня.'}</p>
+        </div>
+        <div>
+            <div class="modal-section-title" style="color: var(--color-4);">🛑 Протипоказання:</div>
+            <p>${herb.description.contraindications || 'Інформація відсутня.'}</p>
+        </div>
+        <div style="margin-top: 1.5rem; border-top: 1px dashed var(--border); padding-top: 1rem;">
+            <div class="modal-section-title" style="color: var(--color-3);">⚖️ Дозування:</div>
+            <p>Рекомендована добова доза: <strong>${herb.dosage.min}-${herb.dosage.max} ${herb.dosage.unit}</strong>.</p>
+            <p style="font-size: 0.9em; color: var(--text-light); margin-top: 0.5rem;">(Ці дані є довідковими. Завжди консультуйтеся з фахівцем.)</p>
+        </div>
+    `;
+}
+
+function showHerbDetails(herbId) {
+    const herb = HERBS.find(h => h.id === herbId);
+    if (!herb) return;
+
+    document.getElementById('modalTitle').textContent = herb.name;
+    document.getElementById('modalContent').innerHTML = getHerbDetailsHtml(herb);
+    document.getElementById('herbDetailsModal').style.display = 'flex';
+}
+
+function closeHerbDetails() {
+    document.getElementById('herbDetailsModal').style.display = 'none';
+}
+// ------------------------------------------
+
+function findRecipes(isGenerationMode) {
+  const btn = isGenerationMode ? document.getElementById('generateRecipe') : document.getElementById('findRecipes');
+  const originalText = btn.innerHTML;
   btn.innerHTML = '<span class="loading"></span> Підбираю...';
-  btn.disabled = true;
+  document.getElementById('findRecipes').disabled = true;
+  document.getElementById('generateRecipe').disabled = true;
+  
   setTimeout(() => {
     const params = getParams();
     if (!params.mainProblem) {
       showResults([]);
-      btn.innerHTML = 'Підібрати збори';
-      btn.disabled = false;
+      document.getElementById('findRecipes').disabled = false;
+      document.getElementById('generateRecipe').disabled = false;
+      btn.innerHTML = originalText;
       return;
     }
-    let suitable = RECIPES.filter(r => r.problem === params.mainProblem);
-    suitable = suitable.map(recipe => {
-      const warnings = checkContraindications(recipe, params.conditions);
-      const interactions = checkInteractions(recipe);
-      const score = calculateScore(recipe, params);
-      return {
-        ...recipe,
-        warnings,
-        interactions,
-        score,
-        suitable: warnings.critical.length === 0
-      };
+    
+    let recipesToShow = [];
+
+    if (isGenerationMode) {
+        const generated = generateNewRecipe(params);
+        if (generated) {
+            recipesToShow.push(generated);
+        } else {
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="empty-state" style="color: var(--color-4);">
+                  <div class="empty-state-icon">❌</div>
+                  <h3>Не вдалося сгенерувати унікальний збір.</h3>
+                  <p>Спробуйте змінити параметри або обрати іншу "Основну проблему".</p>
+                </div>
+              `;
+            document.getElementById('findRecipes').disabled = false;
+            document.getElementById('generateRecipe').disabled = false;
+            btn.innerHTML = originalText;
+            return;
+        }
+
+    } else {
+        recipesToShow = RECIPES.filter(r => r.problem === params.mainProblem);
+    }
+    
+    recipesToShow = recipesToShow.map(recipe => {
+        const warnings = checkContraindications(recipe, params.conditions);
+        const interactions = checkInteractions(recipe);
+        const score = calculateScore(recipe, params);
+        return {
+            ...recipe,
+            warnings,
+            interactions,
+            score,
+            suitable: warnings.critical.length === 0
+        };
     });
-    suitable.sort((a, b) => b.score - a.score);
-    showResults(suitable, params);
-    btn.innerHTML = 'Підібрати збори';
-    btn.disabled = false;
+    
+    recipesToShow.sort((a, b) => b.score - a.score);
+    showResults(recipesToShow, params, isGenerationMode);
+
+    document.getElementById('findRecipes').disabled = false;
+    document.getElementById('generateRecipe').disabled = false;
+    btn.innerHTML = originalText;
   }, 500);
 }
 
@@ -1112,14 +1583,18 @@ function getParams() {
 
 function checkContraindications(recipe, userConditions) {
   const warnings = { critical: [], moderate: [] };
+  const criticalMap = ['pregnancy', 'antidepressants', 'ulcer', 'gastritis_high_acid', 'epilepsy', 'kidney_stones'];
+
   recipe.herbs.forEach(herbData => {
     const herb = HERBS.find(h => h.id === herbData.id);
     if (!herb) return;
+    
+    // Перевірка на основі checkbox'ів користувача
     userConditions.forEach(condition => {
       const contraList = CONDITION_MAPPING[condition] || [condition];
       contraList.forEach(contra => {
         if (herb.contra.includes(contra)) {
-          if (['pregnancy', 'antidepressants', 'ulcer', 'gastritis_high_acid', 'epilepsy'].includes(condition)) {
+          if (criticalMap.includes(condition)) {
             warnings.critical.push(`${herb.name}: протипоказана при ${getConditionName(condition)}`);
           } else {
             warnings.moderate.push(`${herb.name}: обережно при ${getConditionName(condition)}`);
@@ -1127,7 +1602,24 @@ function checkContraindications(recipe, userConditions) {
         }
       });
     });
+    
+    // Додаткова перевірка на прямі ризики (гіпотонія, сонливість), які не є чек-боксами
+    herb.contra.forEach(c => {
+        if (c === 'hypotension' && !userConditions.includes('hypertension')) { // Якщо гіпертонії немає, але є ризик гіпотонії
+            warnings.moderate.push(`${herb.name}: обережно при низькому тиску`);
+        }
+        if (c === 'bradycardia') {
+            warnings.moderate.push(`${herb.name}: обережно при низькому пульсі`);
+        }
+        if (c === 'drowsiness') {
+            warnings.moderate.push(`${herb.name}: може викликати сонливість`);
+        }
+    });
   });
+
+  warnings.critical = [...new Set(warnings.critical)];
+  warnings.moderate = [...new Set(warnings.moderate)];
+  
   return warnings;
 }
 
@@ -1140,7 +1632,7 @@ function checkInteractions(recipe) {
     herb.interactions.forEach(interactionId => {
       if (herbIds.includes(interactionId)) {
         const otherHerb = HERBS.find(h => h.id === interactionId);
-        warnings.push(`Взаємодія: ${herb.name} + ${otherHerb.name}`);
+        warnings.push(`Взаємодія: ${herb.name} + ${otherHerb.name} (Може знадобитися коригування дози)`);
       }
     });
   });
@@ -1150,6 +1642,7 @@ function checkInteractions(recipe) {
 function calculateScore(recipe, params) {
   let score = 50;
   if (recipe.problem === params.mainProblem) score += 30;
+  
   params.symptoms.forEach(symptom => {
     recipe.herbs.forEach(herbData => {
       const herb = HERBS.find(h => h.id === herbData.id);
@@ -1158,47 +1651,57 @@ function calculateScore(recipe, params) {
       }
     });
   });
+  
   if (params.age < 12 || params.age > 70) {
     score -= 5;
   }
+  
   return Math.min(100, score);
 }
 
-function showResults(recipes, params) {
+function showResults(recipes, params, isGenerationMode = false) {
   const container = document.getElementById('resultsContainer');
-  if (recipes.length === 0) {
+  if (recipes.length === 0 && !isGenerationMode) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <h3>Оберіть основну проблему для підбору</h3>
-        <p>Виберіть із списку проблему, яка вас турбує</p>
+        <h3>Готових зборів не знайдено</h3>
+        <p>Спробуйте змінити основну проблему або додаткові симптоми.</p>
       </div>
     `;
     return;
   }
+  
+  if (recipes.length === 0 && isGenerationMode) {
+      return;
+  }
+  
   const suitable = recipes.filter(r => r.suitable);
   const unsuitable = recipes.filter(r => !r.suitable);
+  
   let html = '';
-  if (params) {
-    html += `
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value" style="color: var(--success);">${suitable.length}</div>
-          <div class="stat-label">Підходить</div>
+  
+  if (!isGenerationMode) {
+      html += `
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--success);">${suitable.length}</div>
+            <div class="stat-label">Підходить</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--color-4);">${unsuitable.length}</div>
+            <div class="stat-label">Обмежено</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color: var(--color-3);">${params.conditions.length}</div>
+            <div class="stat-label">Протипоказань</div>
+          </div>
         </div>
-        <div class="stat-item">
-          <div class="stat-value" style="color: var(--color-4);">${unsuitable.length}</div>
-          <div class="stat-label">Обмежено</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value" style="color: var(--color-3);">${params.conditions.length}</div>
-          <div class="stat-label">Протипоказань</div>
-        </div>
-      </div>
-    `;
+      `;
   }
+
   if (suitable.length > 0) {
-    html += '<h2 style="margin-bottom: 1rem; color: var(--success);">✅ Рекомендовані збори</h2>';
+    html += `<h2 style="margin-bottom: 1rem; color: var(--success);">✅ ${isGenerationMode ? 'Ваш Персональний рецепт' : 'Рекомендовані збори'}</h2>`;
     suitable.forEach(recipe => {
       html += renderRecipeCard(recipe, true);
     });
@@ -1213,21 +1716,30 @@ function showResults(recipes, params) {
   container.innerHTML = html;
 }
 
+// --- ЗМІНЕНО: Рендер картки рецепта (додано персональний summary) ---
 function renderRecipeCard(recipe, isSuitable) {
-  // --- Генерація посилань та тегів (із попередньої ітерації) ---
+  
   const herbsList = recipe.herbs.map(h => {
     const herb = HERBS.find(herb => herb.id === h.id);
     if (!herb) return ''; 
-    const searchLink = getSearchLink(herb.name);
+    
+    let amountUnit = herb.dosage.unit;
+    if (h.amount === 1 && amountUnit === 'ст.л.') {
+        amountUnit = 'ст.л.';
+    } else if (h.amount === 1 && amountUnit === 'г') {
+        amountUnit = 'г';
+    } else if (amountUnit === 'ст.л.') {
+         amountUnit = 'ст.л.';
+    }
+
+    // НОВИЙ ЕЛЕМЕНТ: Span з onclick замість <a> з href на пошук
     return `
-        <a href="${searchLink}" target="_blank" class="herb-tag-link">
-            <span class="herb-tag">${herb.name} <strong style="color: var(--color-3);">${h.amount}${herb.dosage.unit}</strong></span>
-        </a>
+        <span class="herb-tag-link clickable-herb" onclick="showHerbDetails('${herb.id}')" title="Натисніть для деталей">
+            <span class="herb-tag">${herb.name} <strong style="color: var(--color-3);">${h.amount}${amountUnit}</strong></span>
+        </span>
     `;
   }).join('');
-  // ----------------------------------------------------
-
-  // --- ДОДАНО: Розрахунок та HTML для пропорцій в частинах ---
+  
   const ratioData = getRecipeSpoonRatio(recipe);
   let ratioHtml = '';
   
@@ -1236,14 +1748,14 @@ function renderRecipeCard(recipe, isSuitable) {
       <tr style="border-bottom: 1px dashed var(--border);">
         <td style="color: var(--text); padding: 0.5rem 0; font-weight: 500;">${p.name} (${p.herbPart})</td>
         <td style="font-weight: 600; text-align: right; color: var(--color-3); padding: 0.5rem 0;">
-          ${p.normalizedPart !== null ? p.normalizedPart : p.part} ${p.normalizedPart !== null ? 'частин' : p.unit}
+          ${p.normalizedPart !== null ? p.normalizedPart : p.part} ${p.normalizedPart !== null ? 'частин' : p.unit === 'г' ? 'г' : p.unit}
         </td>
       </tr>
     `).join('');
 
     const totalInfo = ratioData.brewingTotal ? `
         <p style="margin-top: 1rem; font-size: 0.9em; color: var(--text-light); border-top: 1px solid var(--border); padding-top: 0.75rem;">
-            *Для приготування суміші змішайте ${ratioData.totalNormalizedParts} отриманих частин.
+            *Для приготування суміші змішайте компоненти відповідно до кількості "частин".
         </p>
         <p style="font-weight: 600; margin-top: 0.75rem; color: var(--color-1);">
             <span style="background: #e3f2fd; padding: 0.4rem 0.75rem; border-radius: 4px; display: inline-block;">
@@ -1256,7 +1768,7 @@ function renderRecipeCard(recipe, isSuitable) {
 
     ratioHtml = `
       <div class="recipe-section" style="background: #f4f6f8; padding: 1.25rem; border-radius: 8px;">
-        <div class="recipe-section-title" style="color: var(--color-3);">⚖️ Пропорції в чайних ложках (ЧАСТИНАХ)</div>
+        <div class="recipe-section-title" style="color: var(--color-3);">⚖️ Пропорції в частинах для змішування</div>
         <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
             <tbody>
                 ${partsList}
@@ -1266,7 +1778,19 @@ function renderRecipeCard(recipe, isSuitable) {
       </div>
     `;
   }
-  // --------------------------------------------------------------------
+
+  // НОВИЙ БЛОК ДЛЯ ПЕРСОНАЛЬНОГО SUMMARY
+  let summaryHtml = '';
+  if (recipe.isGenerated && recipe.personal_summary) {
+    summaryHtml = `
+        <div class="recipe-section" style="background: #e6f7ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--color-1);">
+            <div class="recipe-section-title" style="color: var(--color-1);">👤 Ваші дані для генерації</div>
+            ${recipe.personal_summary}
+        </div>
+    `;
+  }
+  // КІНЕЦЬ НОВОГО БЛОКУ
+
 
   let warningsHtml = '';
   if (recipe.warnings.critical.length > 0) {
@@ -1295,15 +1819,17 @@ function renderRecipeCard(recipe, isSuitable) {
   }
 
   const cardBorderColor = isSuitable ? 'var(--color-1)' : 'var(--color-4)';
+  const scoreColor = isSuitable ? 'var(--success)' : 'var(--color-4)';
   
   return `
     <div class="recipe-card" style="${!isSuitable ? 'opacity: 0.8; border-left-color: ' + cardBorderColor + ';' : 'border-left-color: ' + cardBorderColor + ';'}">
       <div class="recipe-header">
         <h3 class="recipe-title">${recipe.name}</h3>
-        <span class="recipe-score" style="background: ${isSuitable ? 'var(--success)' : 'var(--color-4)'};">${recipe.score}%</span>
+        <span class="recipe-score" style="background: ${scoreColor};">${recipe.score}%</span>
       </div>
+      ${summaryHtml} 
       <div class="recipe-section">
-        <div class="recipe-section-title">🌿 Склад (натисніть для пошуку)</div>
+        <div class="recipe-section-title">🌿 Склад (натисніть для деталей)</div>
         <div class="herbs-list">${herbsList}</div>
       </div>
       ${ratioHtml}
@@ -1319,21 +1845,8 @@ function renderRecipeCard(recipe, isSuitable) {
     </div>
   `;
 }
+// -----------------------------------------------------------
 
-function getConditionName(condition) {
-  const names = {
-    pregnancy: 'вагітності',
-    hypertension: 'гіпертонії',
-    diabetes: 'діабеті',
-    kidney_stones: 'камінні в нирках',
-    antidepressants: 'прийомі антидепресантів',
-    ulcer: 'виразці',
-    gastritis_high_acid: 'підвищеній кислотності',
-    epilepsy: 'епілепсії',
-    varicose: 'варикозі'
-  };
-  return names[condition] || condition;
-}
 
 function reset() {
   document.getElementById('mainProblem').value = '';
