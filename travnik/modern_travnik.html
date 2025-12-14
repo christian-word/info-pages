@@ -484,7 +484,10 @@ body {
   <div class="header-content">
     <span style="font-size: 2rem;">🌿</span>
     <h1>Травник - Підбір індивідуального збору</h1>
-  </div>
+    <a href="help.html" style="color: white; text-decoration: none; font-size: 0.9rem; margin-left: auto; opacity: 0.8;">
+        ❓ Допомога
+    </a>
+    </div>
 </header>
 <main class="container">
   <aside>
@@ -1716,7 +1719,6 @@ function showResults(recipes, params, isGenerationMode = false) {
   container.innerHTML = html;
 }
 
-// --- ЗМІНЕНО: Рендер картки рецепта (додано персональний summary) ---
 function renderRecipeCard(recipe, isSuitable) {
   
   const herbsList = recipe.herbs.map(h => {
@@ -1845,8 +1847,6 @@ function renderRecipeCard(recipe, isSuitable) {
     </div>
   `;
 }
-// -----------------------------------------------------------
-
 
 function reset() {
   document.getElementById('mainProblem').value = '';
