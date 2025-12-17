@@ -378,6 +378,7 @@
             const thinking = document.getElementById('aiThinking');
             const suggestion = document.getElementById('aiSuggestion');
             const searchBtn = document.getElementById('searchBtn');
+            const input = document.getElementById('mainInput');
 
             thinking.classList.add('active');
             searchBtn.disabled = true;
@@ -443,9 +444,20 @@
                     }
 
                     lastAiQuery = result.query;
+                    
+                    // Показываем что AI нашел
                     document.getElementById('aiExplanation').textContent = result.explanation;
                     document.getElementById('queryText').textContent = result.query;
                     suggestion.classList.add('show');
+                    
+                    // Обновляем поле ввода чтобы было видно разницу
+                    input.value = `🤖 ${result.query}`;
+                    
+                    // Автоматически запускаем поиск через 1 секунду
+                    setTimeout(() => {
+                        doSearch(result.query);
+                        saveToHistory(`AI: ${userQuery} → ${result.query}`);
+                    }, 1000);
                 }
 
             } catch (error) {
