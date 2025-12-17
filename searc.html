@@ -3,58 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Portal | Поиск музыки</title>
+    <title>Music Search Portal</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Основные стили */
+        :root {
+            --bg-color: #0f172a;
+            --panel-color: #1e293b;
+            --accent-color: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f1f5f9;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 50px;
         }
 
+        /* Шапка */
         header {
-            margin-top: 50px;
+            margin-top: 40px;
             text-align: center;
+            padding: 0 20px;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 5px;
+            font-size: 2.2rem;
+            margin: 0;
             background: linear-gradient(90deg, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
         /* Контейнер поиска */
-        .search-area {
+        .search-section {
             width: 90%;
             max-width: 700px;
+            margin-top: 30px;
             position: sticky;
             top: 20px;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        .custom-search-box {
+        .search-box-wrapper {
             display: flex;
-            background: #1e293b;
+            background: var(--panel-color);
             padding: 6px;
             border-radius: 50px;
             border: 1px solid #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .music-input {
@@ -68,140 +72,137 @@
         }
 
         .search-btn {
-            background: #38bdf8;
+            background: var(--accent-color);
             color: #0f172a;
             border: none;
-            padding: 12px 25px;
+            padding: 0 25px;
             border-radius: 30px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: 0.2s;
         }
 
-        .search-btn:hover {
-            background: #7dd3fc;
-            transform: scale(1.02);
-        }
+        .search-btn:hover { background: #7dd3fc; }
 
-        /* Кнопки-фильтры */
-        .filters {
+        /* Теги/Фильтры */
+        .quick-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
-        .filter-btn {
+        .tag {
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-            padding: 8px 16px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            color: var(--accent-color);
+            padding: 6px 14px;
             border-radius: 20px;
+            font-size: 0.85rem;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
 
-        .filter-btn:hover {
-            background: #38bdf8;
-            color: #0f172a;
-            border-color: #38bdf8;
-        }
+        .tag:hover { background: var(--accent-color); color: var(--bg-color); }
 
-        /* Контейнер результатов */
-        #results-wrapper {
+        /* Результаты */
+        #results-area {
             width: 95%;
             max-width: 900px;
-            margin-top: 30px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-            padding: 10px;
+            margin-top: 20px;
+            min-height: 300px;
         }
 
-        /* Скрываем стандартные элементы Google */
-        .gsc-search-box, .gsc-control-searchbox-only {
-            display: none !important;
-        }
-        
-        .gsc-control-cse {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 0 !important;
+        /* Кнопка наверх */
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #0f172a;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        /* Стилизация ссылок Google */
-        .gs-title, .gs-title b {
-            color: #38bdf8 !important;
-            text-decoration: none !important;
+        /* Настройка Google CSE под RU */
+        .gsc-search-box { display: none !important; }
+        .gsc-control-cse { 
+            background: transparent !important; 
+            border: none !important; 
+            padding: 0 !important; 
         }
-
-        .gs-snippet {
-            color: #cbd5e1 !important;
-        }
+        .gs-title, .gs-title b { color: var(--accent-color) !important; text-decoration: none !important; }
+        .gs-snippet { color: var(--text-dim) !important; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Music Portal</h1>
-        <p class="subtitle">Поиск по базам kg-music.club и fonki.pro</p>
+        <h1>Music Explorer</h1>
+        <p style="color: var(--text-dim)">Поиск по проверенным музыкальным базам</p>
     </header>
 
-    <div class="search-area">
-        <div class="custom-search-box">
-            <input type="text" id="mainInput" class="music-input" placeholder="Введите исполнителя или песню..." autofocus>
-            <button onclick="doSearch()" class="search-btn">Найти</button>
+    <div class="search-section">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchInput" class="music-input" placeholder="Артист, песня или альбом..." autofocus>
+            <button onclick="startSearch()" class="search-btn">Найти</button>
         </div>
 
-        <div class="filters">
-            <button class="filter-btn" onclick="applyFilter('минус')">🎹 Минусовки</button>
-            <button class="filter-btn" onclick="applyFilter('ремикс')">⚡ Ремиксы</button>
-            <button class="filter-btn" onclick="applyFilter('караоке')">🎤 Караоке</button>
-            <button class="filter-btn" onclick="applyFilter('2025')">🔥 Новинки</button>
+        <div class="quick-tags">
+            <div class="tag" onclick="addTag('минус')">🎹 Минус</div>
+            <div class="tag" onclick="addTag('текст')">📜 Текст</div>
+            <div class="tag" onclick="addTag('remix')">⚡ Ремикс</div>
+            <div class="tag" onclick="addTag('320kbps')">🎧 В качестве</div>
         </div>
     </div>
 
-    <div id="results-wrapper">
-        <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80"></script>
+    <div id="results-area">
+        <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
         <div class="gcse-searchresults-only"></div>
     </div>
 
+    <div id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+
     <script>
-        // Главная функция поиска
-        function doSearch(queryText = null) {
-            const input = document.getElementById('mainInput');
-            const query = queryText || input.value.trim();
+        function startSearch() {
+            const val = document.getElementById('searchInput').value.trim();
+            const googleEngine = google.search.cse.element.getElement('results-only0');
             
-            if (query !== "") {
-                // Пытаемся найти встроенный движок Google
-                const element = google.search.cse.element.getElement('results-only0');
-                if (element) {
-                    element.execute(query);
-                } else {
-                    // Резервный метод через hash
-                    window.location.hash = 'gsc.q=' + encodeURIComponent(query);
-                }
+            if (val && googleEngine) {
+                googleEngine.execute(val);
             }
         }
 
-        // Функция для фильтров (добавляет слово к текущему запросу)
-        function applyFilter(tag) {
-            const input = document.getElementById('mainInput');
-            if (input.value.trim() !== "") {
-                const newQuery = input.value.trim() + " " + tag;
-                doSearch(newQuery);
+        function addTag(tagName) {
+            const input = document.getElementById('searchInput');
+            if (input.value) {
+                input.value += " " + tagName;
+                startSearch();
+            }
+        }
+
+        // Кнопка Enter
+        document.getElementById('searchInput').onkeypress = (e) => {
+            if (e.key === 'Enter') startSearch();
+        };
+
+        // Логика появления кнопки "Наверх"
+        window.onscroll = function() {
+            const btn = document.getElementById('backToTop');
+            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+                btn.style.display = "flex";
             } else {
-                alert("Сначала введите название песни");
+                btn.style.display = "none";
             }
-        }
-
-        // Поиск по Enter
-        document.getElementById('mainInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                doSearch();
-            }
-        });
+        };
     </script>
 
 </body>
