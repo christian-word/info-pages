@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Search Portal</title>
-    
+    <title>Music Searcher Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --bg-color: #0f172a;
-            --panel-color: #1e293b;
             --accent-color: #38bdf8;
-            --text-main: #f1f5f9;
-            --text-dim: #94a3b8;
+            --card-bg: #1e293b;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-main);
+            color: #f1f5f9;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -27,182 +23,167 @@
             min-height: 100vh;
         }
 
-        /* Шапка */
-        header {
-            margin-top: 40px;
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            margin: 0;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        header { margin-top: 40px; text-align: center; }
+        h1 { font-size: 2.2rem; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* Контейнер поиска */
-        .search-section {
-            width: 90%;
-            max-width: 700px;
-            margin-top: 30px;
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-        }
+        .search-wrapper { width: 90%; max-width: 650px; margin-top: 20px; position: relative; }
 
-        .search-box-wrapper {
+        .search-inner {
             display: flex;
-            background: var(--panel-color);
-            padding: 6px;
-            border-radius: 50px;
+            align-items: center;
+            background: var(--card-bg);
             border: 1px solid #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border-radius: 50px;
+            padding: 5px 15px;
+            transition: 0.3s;
         }
 
-        .music-input {
+        .search-inner:focus-within { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+
+        .search-inner input {
             flex: 1;
             background: transparent;
             border: none;
             outline: none;
             color: white;
-            padding: 12px 20px;
+            padding: 12px;
             font-size: 16px;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 20px;
+            display: none; /* Скрыт по умолчанию */
         }
 
         .search-btn {
             background: var(--accent-color);
             color: #0f172a;
             border: none;
-            padding: 0 25px;
+            padding: 10px 20px;
             border-radius: 30px;
             font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            margin-left: 10px;
         }
 
-        .search-btn:hover { background: #7dd3fc; }
-
-        /* Теги/Фильтры */
-        .quick-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin: 15px 0;
-        }
-
-        .tag {
+        /* Кнопки-фильтры */
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
+        .tag-btn {
             background: rgba(56, 189, 248, 0.1);
             border: 1px solid rgba(56, 189, 248, 0.2);
             color: var(--accent-color);
             padding: 6px 14px;
-            border-radius: 20px;
+            border-radius: 15px;
+            cursor: pointer;
             font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
         }
 
-        .tag:hover { background: var(--accent-color); color: var(--bg-color); }
-
-        /* Результаты */
-        #results-area {
-            width: 95%;
-            max-width: 900px;
-            margin-top: 20px;
-            min-height: 300px;
-        }
-
-        /* Кнопка наверх */
-        #backToTop {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--accent-color);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+        /* Скелетон (индикатор загрузки) */
+        #loader {
             display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #0f172a;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .skeleton {
+            height: 80px;
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        /* Настройка Google CSE под RU */
+        /* Google CSE Стили */
+        #results { width: 95%; max-width: 850px; margin-top: 20px; }
         .gsc-search-box { display: none !important; }
-        .gsc-control-cse { 
-            background: transparent !important; 
-            border: none !important; 
-            padding: 0 !important; 
-        }
+        .gsc-control-cse { background: transparent !important; border: none !important; padding: 0 !important; }
         .gs-title, .gs-title b { color: var(--accent-color) !important; text-decoration: none !important; }
-        .gs-snippet { color: var(--text-dim) !important; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Music Explorer</h1>
-        <p style="color: var(--text-dim)">Поиск по проверенным музыкальным базам</p>
+        <h1>Music Hub</h1>
     </header>
 
-    <div class="search-section">
-        <div class="search-box-wrapper">
-            <input type="text" id="searchInput" class="music-input" placeholder="Артист, песня или альбом..." autofocus>
-            <button onclick="startSearch()" class="search-btn">Найти</button>
+    <div class="search-wrapper">
+        <div class="search-inner">
+            <span style="color: #64748b; margin-left: 10px;">🔍</span>
+            <input type="text" id="queryInput" placeholder="Трек, исполнитель или альбом..." oninput="toggleClearBtn()">
+            <button class="clear-btn" id="clearBtn" onclick="clearInput()">×</button>
+            <button class="search-btn" onclick="startSearch()">Поиск</button>
         </div>
 
-        <div class="quick-tags">
-            <div class="tag" onclick="addTag('минус')">🎹 Минус</div>
-            <div class="tag" onclick="addTag('текст')">📜 Текст</div>
-            <div class="tag" onclick="addTag('remix')">⚡ Ремикс</div>
-            <div class="tag" onclick="addTag('320kbps')">🎧 В качестве</div>
+        <div class="tags">
+            <button class="tag-btn" onclick="quickSearch('минус')">🎹 Минус</button>
+            <button class="tag-btn" onclick="quickSearch('remix')">⚡ Remix</button>
+            <button class="tag-btn" onclick="quickSearch('2025')">🔥 Новинки</button>
+            <button class="tag-btn" onclick="quickSearch('текст песни')">📝 Текст</button>
         </div>
     </div>
 
-    <div id="results-area">
+    <div id="loader">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+    </div>
+
+    <div id="results">
         <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
-        <div class="gcse-searchresults-only"></div>
+        <div class="gcse-searchresults-only" data-resultsUrl="" data-newWindow="true" data-queryParameterName="q"></div>
     </div>
-
-    <div id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
 
     <script>
         function startSearch() {
-            const val = document.getElementById('searchInput').value.trim();
-            const googleEngine = google.search.cse.element.getElement('results-only0');
-            
-            if (val && googleEngine) {
-                googleEngine.execute(val);
+            const val = document.getElementById('queryInput').value.trim();
+            if (val) {
+                // Показываем лоадер
+                document.getElementById('loader').style.display = 'block';
+                
+                const element = google.search.cse.element.getElement('results-only0');
+                if (element) {
+                    element.execute(val);
+                    // Скрываем лоадер через 1.5 сек (когда примерно придут результаты)
+                    setTimeout(() => {
+                        document.getElementById('loader').style.display = 'none';
+                    }, 1500);
+                }
             }
         }
 
-        function addTag(tagName) {
-            const input = document.getElementById('searchInput');
+        function quickSearch(suffix) {
+            const input = document.getElementById('queryInput');
             if (input.value) {
-                input.value += " " + tagName;
+                input.value = input.value + " " + suffix;
                 startSearch();
             }
         }
 
-        // Кнопка Enter
-        document.getElementById('searchInput').onkeypress = (e) => {
-            if (e.key === 'Enter') startSearch();
-        };
+        function toggleClearBtn() {
+            const btn = document.getElementById('clearBtn');
+            btn.style.display = document.getElementById('queryInput').value ? 'block' : 'none';
+        }
 
-        // Логика появления кнопки "Наверх"
-        window.onscroll = function() {
-            const btn = document.getElementById('backToTop');
-            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
-                btn.style.display = "flex";
-            } else {
-                btn.style.display = "none";
-            }
-        };
+        function clearInput() {
+            document.getElementById('queryInput').value = '';
+            toggleClearBtn();
+            document.getElementById('queryInput').focus();
+        }
+
+        // Enter key
+        document.getElementById('queryInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') startSearch();
+        });
     </script>
 
 </body>
