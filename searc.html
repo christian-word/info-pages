@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Search Portal</title>
+    <title>Music Portal | Поиск музыки</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -14,24 +17,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            padding-bottom: 50px;
         }
+
+        header { margin-top: 50px; text-align: center; }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
 
         .search-area {
-            width: 100%;
-            max-width: 600px;
-            margin-top: 50px;
+            width: 90%;
+            max-width: 700px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
         }
 
-        .input-group {
+        .custom-search-box {
             display: flex;
             background: #1e293b;
-            border: 1px solid #334155;
+            padding: 6px;
             border-radius: 50px;
-            padding: 5px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        input {
+        .music-input {
             flex: 1;
             background: transparent;
             border: none;
@@ -41,101 +59,167 @@
             font-size: 16px;
         }
 
-        .btn-search {
+        .search-btn {
             background: #38bdf8;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
             color: #0f172a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
         }
 
-        /* Теги */
-        .tags {
-            margin-top: 15px;
+        .search-btn:hover { background: #7dd3fc; transform: scale(1.02); }
+
+        .filters {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
-            flex-wrap: wrap;
+            margin: 20px 0 10px 0;
         }
 
-        .tag {
+        .filter-btn {
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
             color: #38bdf8;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Результаты */
-        #results-container {
-            width: 100%;
-            max-width: 800px;
+        .filter-btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+
+        /* Стили для истории поиска */
+        .search-history {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .history-item {
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .history-item:hover { color: #38bdf8; }
+
+        #results-wrapper {
+            width: 95%;
+            max-width: 900px;
             margin-top: 30px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 15px;
+            padding: 10px;
         }
 
-        /* Принудительно скрываем стандартную строку Google */
-        .gsc-search-box, .gsc-control-searchbox-only {
-            display: none !important;
-        }
-        .gsc-control-cse {
-            background: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-        }
+        .gsc-search-box, .gsc-control-searchbox-only { display: none !important; }
+        .gsc-control-cse { background-color: transparent !important; border: none !important; padding: 0 !important; }
+        .gs-title, .gs-title b { color: #38bdf8 !important; text-decoration: none !important; }
+        .gs-snippet { color: #cbd5e1 !important; }
     </style>
 </head>
 <body>
 
-    <h1>Music Search</h1>
+    <header>
+        <h1>Music Portal</h1>
+        <p class="subtitle">Поиск по базам kg-music.club и fonki.pro</p>
+    </header>
 
     <div class="search-area">
-        <div class="input-group">
-            <input type="text" id="myInput" placeholder="Введите название...">
-            <button class="btn-search" onclick="doSearch()">Найти</button>
+        <div class="custom-search-box">
+            <input type="text" id="mainInput" class="music-input" placeholder="Введите исполнителя или песню..." autofocus>
+            <button onclick="doSearch()" class="search-btn">Найти</button>
         </div>
 
-        <div class="tags">
-            <span class="tag" onclick="quickSearch('минус')">Минусовки</span>
-            <span class="tag" onclick="quickSearch('remix')">Ремиксы</span>
-            <span class="tag" onclick="quickSearch('караоке')">Караоке</span>
+        <div class="filters">
+            <button class="filter-btn" onclick="applyFilter('минус')"><i class="fa-solid fa-piano"></i> Минусовки</button>
+            <button class="filter-btn" onclick="applyFilter('ремикс')"><i class="fa-solid fa-compact-disc"></i> Ремиксы</button>
+            <button class="filter-btn" onclick="applyFilter('караоке')"><i class="fa-solid fa-microphone"></i> Караоке</button>
+            <button class="filter-btn" onclick="applyFilter('2025')"><i class="fa-solid fa-fire"></i> Новинки</button>
         </div>
+
+        <div id="historyList" class="search-history"></div>
     </div>
 
-    <div id="results-container">
+    <div id="results-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
         <div class="gcse-searchresults-only"></div>
     </div>
 
     <script>
-        function doSearch() {
-            const query = document.getElementById('myInput').value.trim();
-            if (query) {
-                // Ищем элемент управления Google
+        // Инициализация истории при загрузке
+        updateHistoryUI();
+
+        function doSearch(queryText = null) {
+            const input = document.getElementById('mainInput');
+            const query = queryText || input.value.trim();
+            
+            if (query !== "") {
+                if (!queryText) saveToHistory(query); // Сохраняем только новые вводы
+
                 const element = google.search.cse.element.getElement('results-only0');
                 if (element) {
                     element.execute(query);
                 } else {
-                    // Если Google еще не прогрузился, пробуем старый метод через хеш
                     window.location.hash = 'gsc.q=' + encodeURIComponent(query);
                 }
+                updateHistoryUI();
             }
         }
 
-        function quickSearch(text) {
-            const input = document.getElementById('myInput');
-            input.value = input.value + " " + text;
-            doSearch();
+        function applyFilter(tag) {
+            const input = document.getElementById('mainInput');
+            if (input.value.trim() !== "") {
+                doSearch(input.value.trim() + " " + tag);
+            } else {
+                alert("Сначала введите название песни");
+            }
         }
 
-        // Поддержка Enter
-        document.getElementById('myInput').addEventListener('keypress', function(e) {
+        // Работа с локальным хранилищем
+        function saveToHistory(q) {
+            let history = JSON.parse(localStorage.getItem('my_music_search') || '[]');
+            if (!history.includes(q)) {
+                history.unshift(q);
+                if (history.length > 5) history.pop();
+                localStorage.setItem('my_music_search', JSON.stringify(history));
+            }
+        }
+
+        function updateHistoryUI() {
+            const history = JSON.parse(localStorage.getItem('my_music_search') || '[]');
+            const container = document.getElementById('historyList');
+            if (history.length > 0) {
+                container.innerHTML = 'История: ' + history.map(item => 
+                    `<span class="history-item" onclick="setAndSearch('${item}')">${item}</span>`
+                ).join(', ');
+            }
+        }
+
+        function setAndSearch(val) {
+            document.getElementById('mainInput').value = val;
+            doSearch(val);
+        }
+
+        document.getElementById('mainInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') doSearch();
         });
     </script>
-
 </body>
 </html>
