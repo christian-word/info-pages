@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Сучасний Травник — Безпечний Підбір</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --bg: #f8faf9;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --border: #e0e0e0;
+            --warning: #ff6b6b;
+            --warning-bg: #fff5f5;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .warning-box {
+            background: var(--warning-bg);
+            border-left: 5px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        #result {
+            margin-top: 30px;
+        }
+
+        /* Стиль карточки результата */
+        .recipe-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            background: #fff;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .badge-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .instruction-text {
+            background: #f1f8e9;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌿 Сучасний Травник</h1>
+    <p class="subtitle">Інтелектуальний підбір безпечних фітозборів</p>
+    
+    <div class="warning-box">
+        <strong>⚠️ ВІДМОВА ВІД ВІДПОВІДАЛЬНОСТІ:</strong> 
+        Ця програма має довідковий характер. Трави можуть мати побічні ефекти та конфліктувати з ліками. 
+        Завжди консультуйтеся з лікарем перед початком прийому.
+    </div>
+
+    <div class="control-group">
+        <label for="mainHerb">Оберіть основний інгредієнт або проблему:</label>
+        <select id="mainHerb">
+            <option value="" disabled selected>Завантаження списку трав...</option>
+        </select>
+    </div>
+
+    <button id="generateBtn">Сформувати рекомендацію</button>
+
+    <div id="result">
+        </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
