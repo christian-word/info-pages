@@ -3,186 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Searcher Pro</title>
+    <title>Music Search Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --accent-color: #38bdf8;
-            --card-bg: #1e293b;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            background-color: #0f172a;
             color: #f1f5f9;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
-        header { margin-top: 40px; text-align: center; }
-        h1 { font-size: 2.2rem; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .search-area {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 50px;
+        }
 
-        /* Контейнер поиска */
-        .search-wrapper { width: 90%; max-width: 650px; margin-top: 20px; position: relative; }
-
-        .search-inner {
+        .input-group {
             display: flex;
-            align-items: center;
-            background: var(--card-bg);
+            background: #1e293b;
             border: 1px solid #334155;
             border-radius: 50px;
-            padding: 5px 15px;
-            transition: 0.3s;
+            padding: 5px;
         }
 
-        .search-inner:focus-within { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-
-        .search-inner input {
+        input {
             flex: 1;
             background: transparent;
             border: none;
             outline: none;
             color: white;
-            padding: 12px;
+            padding: 12px 20px;
             font-size: 16px;
         }
 
-        .clear-btn {
-            background: none;
+        .btn-search {
+            background: #38bdf8;
             border: none;
-            color: #64748b;
-            cursor: pointer;
-            font-size: 20px;
-            display: none; /* Скрыт по умолчанию */
-        }
-
-        .search-btn {
-            background: var(--accent-color);
-            color: #0f172a;
-            border: none;
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 30px;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
-            margin-left: 10px;
+            color: #0f172a;
         }
 
-        /* Кнопки-фильтры */
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
-        .tag-btn {
+        /* Теги */
+        .tags {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tag {
             background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            color: var(--accent-color);
-            padding: 6px 14px;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 5px 12px;
             border-radius: 15px;
+            font-size: 12px;
             cursor: pointer;
-            font-size: 0.85rem;
         }
 
-        /* Скелетон (индикатор загрузки) */
-        #loader {
-            display: none;
+        /* Результаты */
+        #results-container {
             width: 100%;
             max-width: 800px;
-            margin-top: 20px;
-        }
-        .skeleton {
-            height: 80px;
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            margin-top: 30px;
         }
 
-        /* Google CSE Стили */
-        #results { width: 95%; max-width: 850px; margin-top: 20px; }
-        .gsc-search-box { display: none !important; }
-        .gsc-control-cse { background: transparent !important; border: none !important; padding: 0 !important; }
-        .gs-title, .gs-title b { color: var(--accent-color) !important; text-decoration: none !important; }
+        /* Принудительно скрываем стандартную строку Google */
+        .gsc-search-box, .gsc-control-searchbox-only {
+            display: none !important;
+        }
+        .gsc-control-cse {
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Music Hub</h1>
-    </header>
+    <h1>Music Search</h1>
 
-    <div class="search-wrapper">
-        <div class="search-inner">
-            <span style="color: #64748b; margin-left: 10px;">🔍</span>
-            <input type="text" id="queryInput" placeholder="Трек, исполнитель или альбом..." oninput="toggleClearBtn()">
-            <button class="clear-btn" id="clearBtn" onclick="clearInput()">×</button>
-            <button class="search-btn" onclick="startSearch()">Поиск</button>
+    <div class="search-area">
+        <div class="input-group">
+            <input type="text" id="myInput" placeholder="Введите название...">
+            <button class="btn-search" onclick="doSearch()">Найти</button>
         </div>
 
         <div class="tags">
-            <button class="tag-btn" onclick="quickSearch('минус')">🎹 Минус</button>
-            <button class="tag-btn" onclick="quickSearch('remix')">⚡ Remix</button>
-            <button class="tag-btn" onclick="quickSearch('2025')">🔥 Новинки</button>
-            <button class="tag-btn" onclick="quickSearch('текст песни')">📝 Текст</button>
+            <span class="tag" onclick="quickSearch('минус')">Минусовки</span>
+            <span class="tag" onclick="quickSearch('remix')">Ремиксы</span>
+            <span class="tag" onclick="quickSearch('караоке')">Караоке</span>
         </div>
     </div>
 
-    <div id="loader">
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-    </div>
-
-    <div id="results">
+    <div id="results-container">
         <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
-        <div class="gcse-searchresults-only" data-resultsUrl="" data-newWindow="true" data-queryParameterName="q"></div>
+        <div class="gcse-searchresults-only"></div>
     </div>
 
     <script>
-        function startSearch() {
-            const val = document.getElementById('queryInput').value.trim();
-            if (val) {
-                // Показываем лоадер
-                document.getElementById('loader').style.display = 'block';
-                
+        function doSearch() {
+            const query = document.getElementById('myInput').value.trim();
+            if (query) {
+                // Ищем элемент управления Google
                 const element = google.search.cse.element.getElement('results-only0');
                 if (element) {
-                    element.execute(val);
-                    // Скрываем лоадер через 1.5 сек (когда примерно придут результаты)
-                    setTimeout(() => {
-                        document.getElementById('loader').style.display = 'none';
-                    }, 1500);
+                    element.execute(query);
+                } else {
+                    // Если Google еще не прогрузился, пробуем старый метод через хеш
+                    window.location.hash = 'gsc.q=' + encodeURIComponent(query);
                 }
             }
         }
 
-        function quickSearch(suffix) {
-            const input = document.getElementById('queryInput');
-            if (input.value) {
-                input.value = input.value + " " + suffix;
-                startSearch();
-            }
+        function quickSearch(text) {
+            const input = document.getElementById('myInput');
+            input.value = input.value + " " + text;
+            doSearch();
         }
 
-        function toggleClearBtn() {
-            const btn = document.getElementById('clearBtn');
-            btn.style.display = document.getElementById('queryInput').value ? 'block' : 'none';
-        }
-
-        function clearInput() {
-            document.getElementById('queryInput').value = '';
-            toggleClearBtn();
-            document.getElementById('queryInput').focus();
-        }
-
-        // Enter key
-        document.getElementById('queryInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') startSearch();
+        // Поддержка Enter
+        document.getElementById('myInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') doSearch();
         });
     </script>
 
