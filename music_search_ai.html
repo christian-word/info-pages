@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Portal | AI-Поиск музыки</title>
+    <title>Christian Music Portal | AI-Поиск</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #f1f5f9;
             margin: 0;
             display: flex;
@@ -21,16 +21,34 @@
             padding-bottom: 50px;
         }
 
-        header { margin-top: 50px; text-align: center; }
+        header { 
+            margin-top: 50px; 
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
         h1 {
             font-size: 2.5rem;
             margin-bottom: 5px;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .subtitle { color: #94a3b8; margin-bottom: 30px; }
+        .subtitle { 
+            color: #e0e7ff; 
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .verse {
+            color: #fef3c7;
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
 
         .search-area {
             width: 90%;
@@ -38,6 +56,7 @@
             position: sticky;
             top: 20px;
             z-index: 100;
+            margin-top: 30px;
         }
 
         .search-mode-toggle {
@@ -48,9 +67,9 @@
         }
 
         .mode-btn {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
             padding: 10px 20px;
             border-radius: 25px;
             cursor: pointer;
@@ -62,29 +81,29 @@
         }
 
         .mode-btn.active {
-            background: #38bdf8;
-            color: #0f172a;
-            border-color: #38bdf8;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border-color: white;
             transform: scale(1.05);
         }
 
         .mode-btn:hover:not(.active) {
-            background: rgba(56, 189, 248, 0.2);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .custom-search-box {
             display: flex;
-            background: #1e293b;
+            background: rgba(255, 255, 255, 0.95);
             padding: 6px;
             border-radius: 50px;
-            border: 1px solid #334155;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             position: relative;
         }
 
         .custom-search-box.ai-mode {
-            border-color: #818cf8;
-            box-shadow: 0 10px 30px rgba(129, 140, 248, 0.3);
+            border-color: #fbbf24;
+            box-shadow: 0 10px 50px rgba(251, 191, 36, 0.4);
         }
 
         .music-input {
@@ -92,14 +111,18 @@
             background: transparent;
             border: none;
             outline: none;
-            color: white;
+            color: #1e293b;
             padding: 12px 20px;
             font-size: 16px;
         }
 
+        .music-input::placeholder {
+            color: #64748b;
+        }
+
         .search-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #667eea;
+            color: white;
             border: none;
             padding: 12px 25px;
             border-radius: 30px;
@@ -111,9 +134,13 @@
             gap: 8px;
         }
 
-        .search-btn:hover { background: #7dd3fc; transform: scale(1.02); }
+        .search-btn:hover { 
+            background: #5a67d8; 
+            transform: scale(1.02); 
+        }
+        
         .search-btn:disabled { 
-            background: #334155; 
+            background: #94a3b8; 
             cursor: not-allowed;
             transform: none;
         }
@@ -122,11 +149,12 @@
             position: absolute;
             bottom: -30px;
             left: 20px;
-            color: #818cf8;
+            color: #fbbf24;
             font-size: 0.85rem;
             display: none;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
         }
 
         .ai-thinking.active { display: flex; }
@@ -134,8 +162,8 @@
         .ai-thinking .spinner {
             width: 16px;
             height: 16px;
-            border: 2px solid rgba(129, 140, 248, 0.3);
-            border-top-color: #818cf8;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-top-color: #fbbf24;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -145,34 +173,36 @@
         }
 
         .ai-suggestion {
-            background: rgba(129, 140, 248, 0.1);
-            border: 1px solid rgba(129, 140, 248, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #fbbf24;
             border-radius: 15px;
             padding: 15px;
             margin-top: 45px;
             display: none;
+            color: #1e293b;
         }
 
         .ai-suggestion.show { display: block; }
 
         .ai-suggestion-header {
-            color: #818cf8;
+            color: #667eea;
             font-size: 0.85rem;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
+            font-weight: 600;
         }
 
         .ai-suggestion-text {
-            color: #cbd5e1;
+            color: #475569;
             font-size: 0.95rem;
             margin-bottom: 10px;
         }
 
         .ai-suggestion-query {
-            background: rgba(56, 189, 248, 0.2);
-            color: #38bdf8;
+            background: #667eea;
+            color: white;
             padding: 8px 15px;
             border-radius: 10px;
             font-family: 'Courier New', monospace;
@@ -183,7 +213,7 @@
         }
 
         .ai-suggestion-query:hover {
-            background: rgba(56, 189, 248, 0.3);
+            background: #5a67d8;
             transform: translateX(5px);
         }
 
@@ -196,9 +226,9 @@
         }
 
         .filter-btn {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
@@ -210,9 +240,9 @@
         }
 
         .filter-btn:hover {
-            background: #38bdf8;
-            color: #0f172a;
-            border-color: #38bdf8;
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border-color: white;
         }
 
         .search-history {
@@ -222,7 +252,7 @@
             justify-content: center;
             margin-bottom: 20px;
             font-size: 0.8rem;
-            color: #64748b;
+            color: #e0e7ff;
         }
 
         .history-item {
@@ -231,46 +261,49 @@
             transition: color 0.2s;
         }
 
-        .history-item:hover { color: #38bdf8; }
+        .history-item:hover { color: #fbbf24; }
 
         #results-wrapper {
             width: 95%;
             max-width: 900px;
             margin-top: 30px;
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
         .gsc-search-box, .gsc-control-searchbox-only { display: none !important; }
         .gsc-control-cse { background-color: transparent !important; border: none !important; padding: 0 !important; }
-        .gs-title, .gs-title b { color: #38bdf8 !important; text-decoration: none !important; }
-        .gs-snippet { color: #cbd5e1 !important; }
+        .gs-title, .gs-title b { color: #667eea !important; text-decoration: none !important; }
+        .gs-snippet { color: #475569 !important; }
 
         .ai-examples {
             margin-top: 15px;
             font-size: 0.85rem;
-            color: #64748b;
+            color: #e0e7ff;
             text-align: center;
         }
 
         .ai-examples span {
-            color: #818cf8;
+            color: #fbbf24;
             cursor: pointer;
             text-decoration: underline;
             margin: 0 5px;
+            font-weight: 600;
         }
 
         .ai-examples span:hover {
-            color: #a5b4fc;
+            color: #fde68a;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Music Portal</h1>
-        <p class="subtitle">Умный поиск с AI по базам kg-music.club и fonki.pro</p>
+        <h1>✝ Christian Music Portal</h1>
+        <p class="subtitle">Поиск христианской музыки с помощью AI</p>
+        <p class="verse">"Пойте Господу песнь новую" - Псалом 95:1</p>
     </header>
 
     <div class="search-area">
@@ -279,7 +312,7 @@
                 <i class="fa-solid fa-search"></i> Обычный поиск
             </button>
             <button class="mode-btn" onclick="switchMode('ai')">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> AI-поиск
+                <i class="fa-solid fa-dove"></i> AI-поиск
             </button>
         </div>
 
@@ -291,7 +324,7 @@
             </button>
             <div class="ai-thinking" id="aiThinking">
                 <div class="spinner"></div>
-                <span>AI думает...</span>
+                <span>AI анализирует...</span>
             </div>
         </div>
 
@@ -308,16 +341,16 @@
 
         <div class="ai-examples" id="aiExamples" style="display: none;">
             Примеры: 
-            <span onclick="tryExample('найди что-то похожее на Nirvana но современное')">похожее на Nirvana</span>
-            <span onclick="tryExample('грустная музыка для дождливого вечера')">грустная музыка</span>
-            <span onclick="tryExample('энергичный рок для тренировки')">для тренировки</span>
+            <span onclick="tryExample('песни прославления для молитвы')">для молитвы</span>
+            <span onclick="tryExample('христианский рок на английском')">христианский рок</span>
+            <span onclick="tryExample('успокаивающие гимны перед сном')">гимны</span>
         </div>
 
         <div class="filters">
-            <button class="filter-btn" onclick="applyFilter('минус')"><i class="fa-solid fa-piano"></i> Минусовки</button>
-            <button class="filter-btn" onclick="applyFilter('ремикс')"><i class="fa-solid fa-compact-disc"></i> Ремиксы</button>
-            <button class="filter-btn" onclick="applyFilter('караоке')"><i class="fa-solid fa-microphone"></i> Караоке</button>
-            <button class="filter-btn" onclick="applyFilter('2025')"><i class="fa-solid fa-fire"></i> Новинки</button>
+            <button class="filter-btn" onclick="applyFilter('прославление')"><i class="fa-solid fa-hands-praying"></i> Прославление</button>
+            <button class="filter-btn" onclick="applyFilter('поклонение')"><i class="fa-solid fa-church"></i> Поклонение</button>
+            <button class="filter-btn" onclick="applyFilter('гимн')"><i class="fa-solid fa-cross"></i> Гимны</button>
+            <button class="filter-btn" onclick="applyFilter('2025')"><i class="fa-solid fa-star"></i> Новинки</button>
         </div>
 
         <div id="historyList" class="search-history"></div>
@@ -354,7 +387,7 @@
             if (mode === 'ai') {
                 searchBox.classList.add('ai-mode');
                 aiExamples.style.display = 'block';
-                input.placeholder = 'Опишите, какую музыку хотите найти...';
+                input.placeholder = 'Опишите, какую христианскую музыку ищете...';
             } else {
                 searchBox.classList.remove('ai-mode');
                 aiExamples.style.display = 'none';
@@ -395,25 +428,29 @@
                         model: AI_CONFIG.MODEL_NAME,
                         messages: [{
                             role: 'system',
-                            content: `Ты - ассистент музыкального поиска. Твоя задача - преобразовывать естественные запросы пользователей в оптимальные поисковые фразы для музыкальных порталов kg-music.club и fonki.pro.
+                            content: `Ты - ассистент для поиска христианской музыки. Твоя задача - преобразовывать естественные запросы в оптимальные поисковые фразы для христианских музыкальных порталов.
 
 Правила:
 1. Отвечай ТОЛЬКО в формате JSON: {"query": "поисковая фраза", "explanation": "короткое объяснение"}
 2. Поисковая фраза должна быть короткой (2-5 слов) и точной
-3. Используй названия исполнителей, жанров, годы
-4. Если пользователь описывает настроение/ситуацию - переводи в жанры и характеристики
-5. Добавляй релевантные теги: минус, караоке, ремикс, 2024, 2025
-6. Объяснение должно быть кратким (1 предложение)
+3. Используй термины: прославление, поклонение, гимн, псалом, христианский рок/поп
+4. Если пользователь описывает настроение - переводи в христианские жанры
+5. Добавляй релевантные теги: worship, praise, contemporary, hymn, gospel
+6. Всегда фокусируйся на христианском контенте
+7. Объяснение должно быть кратким (1 предложение)
 
 Примеры:
-Запрос: "найди что-то похожее на Nirvana но современное"
-Ответ: {"query": "гранж альтернатива 2024", "explanation": "Ищу современный гранж и альтернативный рок"}
+Запрос: "песни для молитвы утром"
+Ответ: {"query": "христианское прославление утро", "explanation": "Утренние песни прославления для молитвы"}
 
-Запрос: "грустная музыка для дождливого вечера"
-Ответ: {"query": "sad indie ballad", "explanation": "Меланхоличные инди-баллады"}
+Запрос: "что-то энергичное для молодежного служения"
+Ответ: {"query": "christian rock worship youth", "explanation": "Энергичный христианский рок для молодежи"}
 
-Запрос: "энергичный рок для тренировки"
-Ответ: {"query": "hard rock workout 2025", "explanation": "Энергичный хард-рок и метал"}`
+Запрос: "успокаивающие гимны"
+Ответ: {"query": "христианские гимны instrumental", "explanation": "Спокойные инструментальные гимны"}
+
+Запрос: "современная музыка о Божьей любви"
+Ответ: {"query": "contemporary worship love God", "explanation": "Современные песни поклонения о любви Бога"}`
                         }, {
                             role: 'user',
                             content: userQuery
@@ -438,22 +475,19 @@
                         }
                     } catch (e) {
                         result = {
-                            query: userQuery,
-                            explanation: "Используем ваш запрос напрямую"
+                            query: userQuery + " христианская музыка",
+                            explanation: "Добавлен фильтр для христианской музыки"
                         };
                     }
 
                     lastAiQuery = result.query;
                     
-                    // Показываем что AI нашел
                     document.getElementById('aiExplanation').textContent = result.explanation;
                     document.getElementById('queryText').textContent = result.query;
                     suggestion.classList.add('show');
                     
-                    // Обновляем поле ввода чтобы было видно разницу
-                    input.value = `🤖 ${result.query}`;
+                    input.value = `✝ ${result.query}`;
                     
-                    // Автоматически запускаем поиск через 1 секунду
                     setTimeout(() => {
                         doSearch(result.query);
                         saveToHistory(`AI: ${userQuery} → ${result.query}`);
@@ -503,7 +537,7 @@
             if (input.value.trim() !== "") {
                 doSearch(input.value.trim() + " " + tag);
             } else {
-                alert("Сначала введите название песни");
+                alert("Сначала введите запрос");
             }
         }
 
