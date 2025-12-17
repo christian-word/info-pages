@@ -3,63 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Музыкальный Поиск | Найди свой трек</title>
+    <title>Music Portal | Поиск музыки</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Базовые стили страницы */
+        /* Основные стили */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Темный глубокий фон */
-            color: #f8fafc;
+            background-color: #0f172a;
+            color: #f1f5f9;
             margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding-bottom: 50px;
         }
 
         header {
+            margin-top: 50px;
             text-align: center;
-            padding: 50px 20px 30px;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             background: linear-gradient(90deg, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        p {
+        .subtitle {
             color: #94a3b8;
-            font-size: 1.1rem;
+            margin-bottom: 30px;
         }
 
         /* Контейнер поиска */
-        .search-wrapper {
-            width: 100%;
+        .search-area {
+            width: 90%;
             max-width: 700px;
-            padding: 0 20px;
-            box-sizing: border-box;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
         }
 
         .custom-search-box {
             display: flex;
             background: #1e293b;
-            padding: 8px;
+            padding: 6px;
             border-radius: 50px;
             border: 1px solid #334155;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .custom-search-box:focus-within {
-            border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .music-input {
@@ -76,94 +71,135 @@
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 12px 30px;
-            border-radius: 40px;
+            padding: 12px 25px;
+            border-radius: 30px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.2s, background 0.2s;
         }
 
         .search-btn:hover {
             background: #7dd3fc;
+            transform: scale(1.02);
         }
 
-        /* Контейнер для вывода результатов Google */
-        #results-container {
-            width: 100%;
+        /* Кнопки-фильтры */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .filter-btn {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+
+        /* Контейнер результатов */
+        #results-wrapper {
+            width: 95%;
             max-width: 900px;
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
+            margin-top: 30px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 15px;
+            padding: 10px;
         }
 
-        /* Стилизация внутренних элементов Google CSE через CSS */
+        /* Скрываем стандартные элементы Google */
+        .gsc-search-box, .gsc-control-searchbox-only {
+            display: none !important;
+        }
+        
         .gsc-control-cse {
             background-color: transparent !important;
             border: none !important;
             padding: 0 !important;
         }
 
+        /* Стилизация ссылок Google */
         .gs-title, .gs-title b {
             color: #38bdf8 !important;
             text-decoration: none !important;
-            font-size: 18px !important;
         }
 
         .gs-snippet {
-            color: #94a3b8 !important;
-        }
-
-        .gsc-url-top {
-            color: #10b981 !important; /* Зеленый цвет для ссылок */
-        }
-
-        .gsc-cursor-page {
-            color: white !important;
-            background-color: #334155 !important;
-            padding: 5px 10px !important;
-            border-radius: 4px !important;
-            margin: 5px !important;
+            color: #cbd5e1 !important;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Music Searcher</h1>
-        <p>Поиск музыки по базам kg-music и fonki</p>
+        <h1>Music Portal</h1>
+        <p class="subtitle">Поиск по базам kg-music.club и fonki.pro</p>
     </header>
 
-    <div class="search-wrapper">
+    <div class="search-area">
         <div class="custom-search-box">
-            <input type="text" id="userQuery" class="music-input" placeholder="Введите название песни или исполнителя...">
-            <button onclick="startSearch()" class="search-btn">Найти</button>
+            <input type="text" id="mainInput" class="music-input" placeholder="Введите исполнителя или песню..." autofocus>
+            <button onclick="doSearch()" class="search-btn">Найти</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn" onclick="applyFilter('минус')">🎹 Минусовки</button>
+            <button class="filter-btn" onclick="applyFilter('ремикс')">⚡ Ремиксы</button>
+            <button class="filter-btn" onclick="applyFilter('караоке')">🎤 Караоке</button>
+            <button class="filter-btn" onclick="applyFilter('2025')">🔥 Новинки</button>
         </div>
     </div>
 
-    <div id="results-container">
+    <div id="results-wrapper">
         <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80"></script>
         <div class="gcse-searchresults-only"></div>
     </div>
 
     <script>
-        // Функция запуска поиска
-        function startSearch() {
-            const query = document.getElementById('userQuery').value;
-            // Получаем доступ к поисковому элементу Google
-            const element = google.search.cse.element.getElement('results-only0');
+        // Главная функция поиска
+        function doSearch(queryText = null) {
+            const input = document.getElementById('mainInput');
+            const query = queryText || input.value.trim();
             
-            if (query.trim() !== "") {
-                element.execute(query);
-            } else {
-                alert("Пожалуйста, введите запрос");
+            if (query !== "") {
+                // Пытаемся найти встроенный движок Google
+                const element = google.search.cse.element.getElement('results-only0');
+                if (element) {
+                    element.execute(query);
+                } else {
+                    // Резервный метод через hash
+                    window.location.hash = 'gsc.q=' + encodeURIComponent(query);
+                }
             }
         }
 
-        // Обработка нажатия клавиши Enter
-        document.getElementById('userQuery').addEventListener('keypress', function (e) {
+        // Функция для фильтров (добавляет слово к текущему запросу)
+        function applyFilter(tag) {
+            const input = document.getElementById('mainInput');
+            if (input.value.trim() !== "") {
+                const newQuery = input.value.trim() + " " + tag;
+                doSearch(newQuery);
+            } else {
+                alert("Сначала введите название песни");
+            }
+        }
+
+        // Поиск по Enter
+        document.getElementById('mainInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                startSearch();
+                doSearch();
             }
         });
     </script>
