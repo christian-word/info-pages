@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacred Stream | AI Music Search</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --input-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            margin-top: 60px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        /* Переключатель режимов */
+        .mode-container {
+            margin-top: 40px;
+            background: var(--card-bg);
+            padding: 5px;
+            border-radius: 16px;
+            display: flex;
+            gap: 5px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .mode-btn {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-blue);
+            color: var(--bg-dark);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Поле поиска */
+        .search-section {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 25px;
+        }
+
+        .search-bar-wrapper {
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-bar-wrapper:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        .search-bar-wrapper.ai-mode-active {
+            border-color: var(--accent-green);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+        }
+
+        .main-search-btn {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .main-search-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        /* AI Индикатор */
+        .ai-status {
+            height: 20px;
+            margin-top: 12px;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Рекомендация AI */
+        .ai-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .ai-card.show { display: block; animation: slideUp 0.4s ease; }
+
+        .ai-label { color: var(--accent-green); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; }
+
+        /* История и Теги */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .tag-pill {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-pill:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main);
+        }
+
+        #results-area {
+            width: 95%;
+            max-width: 1000px;
+            margin-top: 40px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 10px;
+            min-height: 200px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Скрытие стандартного Google Search */
+        .gsc-control-cse { background: transparent !important; border: none !important; }
+        .gs-title { color: var(--accent-blue) !important; font-weight: 600 !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sacred Stream</h1>
+        <p class="subtitle">Умная поисковая система христианской музыки</p>
+    </header>
+
+    <div class="mode-container">
+        <button class="mode-btn active" onclick="setMode('simple')">
+            <i class="fa-solid fa-bolt"></i> Простой
+        </button>
+        <button class="mode-btn" onclick="setMode('ai')">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Поиск
+        </button>
+    </div>
+
+    <div class="search-section">
+        <div class="search-bar-wrapper" id="searchBarWrapper">
+            <input type="text" id="userInput" class="search-input" placeholder="Исполнитель, песня или тема..." autofocus>
+            <button class="main-search-btn" onclick="startSearch()">Найти</button>
+        </div>
+
+        <div class="ai-status" id="aiStatus">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> AI подбирает лучшие варианты...
+        </div>
+
+        <div class="ai-card" id="aiCard">
+            <div class="ai-label">Совет от ИИ</div>
+            <div id="aiExplanation" style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-dim);"></div>
+            <div id="aiQueryBox" style="background: var(--bg-dark); padding: 12px; border-radius: 10px; cursor: pointer; border: 1px dashed var(--accent-green);">
+                <i class="fa-solid fa-magnifying-glass" style="margin-right: 10px; color: var(--accent-green);"></i>
+                <span id="aiSuggestedText"></span>
+            </div>
+        </div>
+
+        <div class="tags-container">
+            <div class="tag-pill" onclick="quickSearch('Утреннее прославление')">🌅 Утро</div>
+            <div class="tag-pill" onclick="quickSearch('Христианский рок 2025')">🎸 Рок</div>
+            <div class="tag-pill" onclick="quickSearch('Гимны поклонения')">📖 Гимны</div>
+            <div class="tag-pill" onclick="quickSearch('Инструментал для молитвы')">🎹 Молитва</div>
+        </div>
+    </div>
+
+    <div id="results-area">
+        <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
+        <div class="gcse-searchresults-only"></div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            API_KEY: "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",
+            API_URL: "https://api.groq.com/openai/v1/chat/completions",
+            MODEL: "meta-llama/llama-4-maverick-17b-128e-instruct"
+        };
+
+        let activeMode = 'simple';
+
+        function setMode(mode) {
+            activeMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const wrapper = document.getElementById('searchBarWrapper');
+            const input = document.getElementById('userInput');
+            
+            if(mode === 'ai') {
+                wrapper.classList.add('ai-mode-active');
+                input.placeholder = "Напр: 'Музыка для молодежного служения в стиле поп'...";
+            } else {
+                wrapper.classList.remove('ai-mode-active');
+                input.placeholder = "Исполнитель, песня или тема...";
+                document.getElementById('aiCard').classList.remove('show');
+            }
+        }
+
+        async function startSearch() {
+            const query = document.getElementById('userInput').value.trim();
+            if(!query) return;
+
+            if(activeMode === 'ai') {
+                await runAiLogic(query);
+            } else {
+                executeGoogleSearch(query);
+            }
+        }
+
+        async function runAiLogic(prompt) {
+            const status = document.getElementById('aiStatus');
+            const card = document.getElementById('aiCard');
+            status.style.display = 'flex';
+            card.classList.remove('show');
+
+            try {
+                const response = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${CONFIG.API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: CONFIG.MODEL,
+                        messages: [{
+                            role: 'system',
+                            content: 'Ты эксперт по христианской музыке. Твоя цель: превратить описание пользователя в идеальный поисковый запрос. Отвечай только JSON: {"q": "запрос", "desc": "пояснение"}'
+                        }, {
+                            role: 'user', content: prompt
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                const result = JSON.parse(data.choices[0].message.content);
+
+                document.getElementById('aiExplanation').innerText = result.desc;
+                document.getElementById('aiSuggestedText').innerText = result.q;
+                card.classList.add('show');
+                
+                // Авто-поиск через 1.5 секунды
+                setTimeout(() => executeGoogleSearch(result.q), 1500);
+
+            } catch (e) {
+                console.error(e);
+                executeGoogleSearch(prompt + " христианская музыка");
+            } finally {
+                status.style.display = 'none';
+            }
+        }
+
+        function executeGoogleSearch(q) {
+            const element = google.search.cse.element.getElement('results-only0');
+            if (element) {
+                element.execute(q);
+            }
+        }
+
+        function quickSearch(text) {
+            document.getElementById('userInput').value = text;
+            executeGoogleSearch(text);
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') startSearch();
+        });
+    </script>
+</body>
+</html>
