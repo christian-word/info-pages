@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Portal AI | ИИ-Поиск</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        header { margin-top: 50px; text-align: center; }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #38bdf8, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
+
+        .search-area {
+            width: 90%;
+            max-width: 700px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .custom-search-box {
+            display: flex;
+            background: #1e293b;
+            padding: 6px;
+            border-radius: 50px;
+            border: 2px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+
+        .custom-search-box:focus-within { border-color: #a855f7; }
+
+        .music-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .search-btn:hover { background: #7dd3fc; }
+
+        /* Блок ответа ИИ */
+        #ai-container {
+            width: 95%;
+            max-width: 900px;
+            margin-top: 25px;
+            background: rgba(30, 41, 59, 0.8);
+            border-left: 4px solid #a855f7;
+            border-radius: 12px;
+            padding: 20px;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .ai-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #a855f7;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #ai-text { line-height: 1.6; color: #e2e8f0; }
+
+        #results-wrapper {
+            width: 95%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #a855f7;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Google CSE Стили */
+        .gsc-control-cse { background-color: transparent !important; border: none !important; }
+        .gs-title, .gs-title b { color: #38bdf8 !important; }
+        .gs-snippet { color: #cbd5e1 !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Music Portal <span style="font-size: 1.2rem;">AI</span></h1>
+        <p class="subtitle">Умный поиск музыки и фактов</p>
+    </header>
+
+    <div class="search-area">
+        <div class="custom-search-box">
+            <input type="text" id="mainInput" class="music-input" placeholder="Введите название песни или вопрос..." autofocus>
+            <button onclick="handleSearch()" class="search-btn">Найти</button>
+        </div>
+    </div>
+
+    <div id="ai-container">
+        <div class="ai-header"><i class="fa-solid fa-robot"></i> Ответ нейросети</div>
+        <div id="ai-text"></div>
+    </div>
+
+    <div id="results-wrapper">
+        <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
+        <div class="gcse-searchresults-only"></div>
+    </div>
+
+    <script>
+        const AI_CONFIG = {
+            API_KEY: "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",
+            API_URL: "https://api.groq.com/openai/v1/chat/completions",
+            MODEL_NAME: "meta-llama/llama-4-maverick-17b-128e-instruct" // Используем самую мощную модель для точности
+        };
+
+        async function handleSearch() {
+            const query = document.getElementById('mainInput').value.trim();
+            if (!query) return;
+
+            // 1. Поиск Google
+            try {
+                const element = google.search.cse.element.getElement('results-only0');
+                if (element) element.execute(query);
+            } catch (e) { console.warn("Google еще загружается..."); }
+
+            // 2. Поиск ИИ
+            await getAIAnswer(query);
+        }
+
+        async function getAIAnswer(query) {
+            const container = document.getElementById('ai-container');
+            const textBox = document.getElementById('ai-text');
+            
+            container.style.display = "block";
+            textBox.innerHTML = 'Ищу информацию... <span class="loader"></span>';
+
+            try {
+                const response = await fetch(AI_CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AI_CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: AI_CONFIG.MODEL_NAME,
+                        messages: [
+                            { 
+                                role: "system", 
+                                content: `Ты — музыкальный эксперт. Твоя задача:
+                                1. Расскажи кратко об исполнителе или песне "${query}".
+                                2. Если это группа "Авана", пиши про христианскую музыкальную группу, не путай с поп-артистами.
+                                3. Посоветуй 2 похожих трека.
+                                4. Отвечай только на русском языке. Будь точен в именах.` 
+                            },
+                            { role: "user", content: query }
+                        ],
+                        temperature: 0.2 // Минимальная фантазия для точности
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0]) {
+                    textBox.innerText = data.choices[0].message.content;
+                } else {
+                    textBox.innerText = "ИИ временно не отвечает, посмотрите результаты поиска Google ниже.";
+                }
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                textBox.innerText = "Произошла ошибка при подключении к ИИ.";
+            }
+        }
+
+        // Поиск по нажатию Enter
+        document.getElementById('mainInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch();
+        });
+    </script>
+</body>
+</html>
