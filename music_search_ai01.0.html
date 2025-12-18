@@ -16,7 +16,6 @@
             --accent-green: #10b981;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --input-bg: #0f172a;
         }
 
         body {
@@ -25,69 +24,58 @@
             background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            padding-bottom: 50px;
         }
 
         header {
             margin-top: 60px;
             text-align: center;
-            max-width: 600px;
         }
 
         h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: -1px;
+            font-size: 2.5rem;
             margin-bottom: 10px;
             background: linear-gradient(to right, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .subtitle {
-            color: var(--text-dim);
-            font-size: 1.1rem;
-        }
-
-        /* Переключатель режимов */
         .mode-container {
-            margin-top: 40px;
+            margin-top: 30px;
             background: var(--card-bg);
             padding: 5px;
             border-radius: 16px;
             display: flex;
             gap: 5px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .mode-btn {
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 12px;
             border: none;
             background: transparent;
             color: var(--text-dim);
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: 0.3s;
         }
 
         .mode-btn.active {
             background: var(--accent-blue);
             color: var(--bg-dark);
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
         }
 
-        /* Поле поиска */
         .search-section {
             width: 90%;
-            max-width: 800px;
+            max-width: 700px;
             margin-top: 25px;
         }
 
@@ -96,18 +84,7 @@
             padding: 8px;
             border-radius: 20px;
             display: flex;
-            align-items: center;
             border: 1px solid rgba(255,255,255,0.1);
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .search-bar-wrapper:focus-within {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
-        }
-
-        .search-bar-wrapper.ai-mode-active {
-            border-color: var(--accent-green);
         }
 
         .search-input {
@@ -116,240 +93,185 @@
             border: none;
             outline: none;
             color: white;
-            padding: 15px 20px;
-            font-size: 1.05rem;
+            padding: 12px 20px;
+            font-size: 1rem;
         }
 
         .main-search-btn {
             background: var(--text-main);
             color: var(--bg-dark);
             border: none;
-            padding: 12px 28px;
+            padding: 10px 25px;
             border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .main-search-btn:hover {
-            transform: translateY(-1px);
-            opacity: 0.9;
-        }
-
-        /* AI Индикатор */
         .ai-status {
-            height: 20px;
-            margin-top: 12px;
-            padding-left: 20px;
-            font-size: 0.85rem;
+            margin-top: 15px;
             color: var(--accent-green);
             display: none;
+            font-size: 0.9rem;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        /* Рекомендация AI */
         .ai-card {
-            background: rgba(16, 185, 129, 0.05);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 16px;
-            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 15px;
+            padding: 15px;
             margin-top: 20px;
             display: none;
         }
 
-        .ai-card.show { display: block; animation: slideUp 0.4s ease; }
-
-        .ai-label { color: var(--accent-green); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; }
-
-        /* История и Теги */
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 25px;
-            justify-content: center;
-        }
-
-        .tag-pill {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 6px 16px;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tag-pill:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-main);
-        }
+        .ai-card.show { display: block; }
 
         #results-area {
             width: 95%;
-            max-width: 1000px;
-            margin-top: 40px;
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 10px;
-            min-height: 200px;
+            max-width: 900px;
+            margin-top: 30px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            min-height: 100px;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Скрытие стандартного Google Search */
-        .gsc-control-cse { background: transparent !important; border: none !important; }
-        .gs-title { color: var(--accent-blue) !important; font-weight: 600 !important; }
+        /* Настройка внешнего вида Google результатов внутри блока */
+        .gsc-control-cse { padding: 20px !important; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Sacred Stream</h1>
-        <p class="subtitle">Умная поисковая система христианской музыки</p>
+        <p style="color: var(--text-dim)">Христианский музыкальный поиск</p>
     </header>
 
     <div class="mode-container">
-        <button class="mode-btn active" onclick="setMode('simple')">
-            <i class="fa-solid fa-bolt"></i> Простой
+        <button class="mode-btn active" id="btn-simple" onclick="setMode('simple')">
+            <i class="fa-solid fa-magnifying-glass"></i> Простой
         </button>
-        <button class="mode-btn" onclick="setMode('ai')">
+        <button class="mode-btn" id="btn-ai" onclick="setMode('ai')">
             <i class="fa-solid fa-wand-magic-sparkles"></i> AI Поиск
         </button>
     </div>
 
     <div class="search-section">
-        <div class="search-bar-wrapper" id="searchBarWrapper">
-            <input type="text" id="userInput" class="search-input" placeholder="Исполнитель, песня или тема..." autofocus>
-            <button class="main-search-btn" onclick="startSearch()">Найти</button>
+        <div class="search-bar-wrapper">
+            <input type="text" id="userInput" class="search-input" placeholder="Введите название или исполнителя..." autofocus>
+            <button class="main-search-btn" onclick="handleSearch()">Найти</button>
         </div>
 
         <div class="ai-status" id="aiStatus">
-            <i class="fa-solid fa-circle-notch fa-spin"></i> AI подбирает лучшие варианты...
+            <i class="fa-solid fa-spinner fa-spin"></i> AI подбирает лучшие ключевые слова...
         </div>
 
         <div class="ai-card" id="aiCard">
-            <div class="ai-label">Совет от ИИ</div>
-            <div id="aiExplanation" style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-dim);"></div>
-            <div id="aiQueryBox" style="background: var(--bg-dark); padding: 12px; border-radius: 10px; cursor: pointer; border: 1px dashed var(--accent-green);">
-                <i class="fa-solid fa-magnifying-glass" style="margin-right: 10px; color: var(--accent-green);"></i>
-                <span id="aiSuggestedText"></span>
-            </div>
-        </div>
-
-        <div class="tags-container">
-            <div class="tag-pill" onclick="quickSearch('Утреннее прославление')">🌅 Утро</div>
-            <div class="tag-pill" onclick="quickSearch('Христианский рок 2025')">🎸 Рок</div>
-            <div class="tag-pill" onclick="quickSearch('Гимны поклонения')">📖 Гимны</div>
-            <div class="tag-pill" onclick="quickSearch('Инструментал для молитвы')">🎹 Молитва</div>
+            <div style="font-weight: bold; color: var(--accent-green); margin-bottom: 5px;">Рекомендация AI:</div>
+            <div id="aiExplanation" style="font-size: 0.9rem; margin-bottom: 10px;"></div>
+            <div id="aiSuggestedQuery" style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px;"></div>
         </div>
     </div>
 
     <div id="results-area">
-        <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80&hl=ru"></script>
         <div class="gcse-searchresults-only"></div>
     </div>
 
     <script>
-        const CONFIG = {
-            API_KEY: "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",
-            API_URL: "https://api.groq.com/openai/v1/chat/completions",
-            MODEL: "meta-llama/llama-4-maverick-17b-128e-instruct"
+        const API_CONFIG = {
+            KEY: "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", // Ваш ключ
+            URL: "https://api.groq.com/openai/v1/chat/completions",
+            MODEL: "llama-3.1-8b-instant" // Стабильная рабочая модель
         };
 
-        let activeMode = 'simple';
+        let currentMode = 'simple';
 
         function setMode(mode) {
-            activeMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            
-            const wrapper = document.getElementById('searchBarWrapper');
-            const input = document.getElementById('userInput');
-            
-            if(mode === 'ai') {
-                wrapper.classList.add('ai-mode-active');
-                input.placeholder = "Напр: 'Музыка для молодежного служения в стиле поп'...";
-            } else {
-                wrapper.classList.remove('ai-mode-active');
-                input.placeholder = "Исполнитель, песня или тема...";
-                document.getElementById('aiCard').classList.remove('show');
-            }
+            currentMode = mode;
+            document.getElementById('btn-simple').classList.toggle('active', mode === 'simple');
+            document.getElementById('btn-ai').classList.toggle('active', mode === 'ai');
+            document.getElementById('aiCard').classList.remove('show');
+            document.getElementById('userInput').placeholder = mode === 'ai' 
+                ? "Опишите музыку (напр: 'песни для молитвы в стиле поп')" 
+                : "Введите название или исполнителя...";
         }
 
-        async function startSearch() {
+        async function handleSearch() {
             const query = document.getElementById('userInput').value.trim();
-            if(!query) return;
+            if (!query) return;
 
-            if(activeMode === 'ai') {
-                await runAiLogic(query);
+            if (currentMode === 'ai') {
+                await runAiSearch(query);
             } else {
-                executeGoogleSearch(query);
+                executeGoogle(query);
             }
         }
 
-        async function runAiLogic(prompt) {
+        async function runAiSearch(userText) {
             const status = document.getElementById('aiStatus');
             const card = document.getElementById('aiCard');
             status.style.display = 'flex';
             card.classList.remove('show');
 
             try {
-                const response = await fetch(CONFIG.API_URL, {
+                const response = await fetch(API_CONFIG.URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${CONFIG.API_KEY}`
+                        'Authorization': `Bearer ${API_CONFIG.KEY}`
                     },
                     body: JSON.stringify({
-                        model: CONFIG.MODEL,
+                        model: API_CONFIG.MODEL,
                         messages: [{
                             role: 'system',
-                            content: 'Ты эксперт по христианской музыке. Твоя цель: превратить описание пользователя в идеальный поисковый запрос. Отвечай только JSON: {"q": "запрос", "desc": "пояснение"}'
+                            content: 'Ты помощник по поиску христианской музыки. Преобразуй запрос пользователя в эффективную поисковую фразу. Отвечай ТОЛЬКО в формате JSON: {"q": "фраза", "explanation": "почему"}'
                         }, {
-                            role: 'user', content: prompt
-                        }]
+                            role: 'user', content: userText
+                        }],
+                        response_format: { type: "json_object" } // Требуем JSON
                     })
                 });
 
                 const data = await response.json();
-                const result = JSON.parse(data.choices[0].message.content);
+                const aiResult = JSON.parse(data.choices[0].message.content);
 
-                document.getElementById('aiExplanation').innerText = result.desc;
-                document.getElementById('aiSuggestedText').innerText = result.q;
+                document.getElementById('aiExplanation').innerText = aiResult.explanation;
+                document.getElementById('aiSuggestedQuery').innerText = aiResult.q;
                 card.classList.add('show');
-                
-                // Авто-поиск через 1.5 секунды
-                setTimeout(() => executeGoogleSearch(result.q), 1500);
 
-            } catch (e) {
-                console.error(e);
-                executeGoogleSearch(prompt + " христианская музыка");
+                executeGoogle(aiResult.q);
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                executeGoogle(userText + " христианская музыка");
             } finally {
                 status.style.display = 'none';
             }
         }
 
-        function executeGoogleSearch(q) {
-            const element = google.search.cse.element.getElement('results-only0');
-            if (element) {
-                element.execute(q);
+        function executeGoogle(q) {
+            // Пытаемся использовать встроенный метод Google CSE
+            try {
+                const element = google.search.cse.element.getElement('results-only0');
+                if (element) {
+                    element.execute(q);
+                } else {
+                    throw new Error("CSE not ready");
+                }
+            } catch (e) {
+                // Если скрипт еще не загрузился, используем перенаправление
+                console.log("Ожидание загрузки Google...");
+                window.location.hash = 'gsc.q=' + encodeURIComponent(q);
             }
         }
 
-        function quickSearch(text) {
-            document.getElementById('userInput').value = text;
-            executeGoogleSearch(text);
-        }
-
+        // Поддержка клавиши Enter
         document.getElementById('userInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') startSearch();
+            if (e.key === 'Enter') handleSearch();
         });
     </script>
+
+    <script async src="https://cse.google.com/cse.js?cx=d454e3c095f214e80"></script>
 </body>
 </html>
