@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta property="og:image" content="ico.png">
-    <title>❄️ Рождественская Музыкальная Галерея </title>
+    <meta property="og:image" content="ico.png">
+    <title>❄️ Рождественская Музыкальная Галерея</title>
     <style>
-        /* Глубокий синий зимний фон */
+        /* 1. Анимированный градиентный фон */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background: radial-gradient(circle at center, #001f3f 0%, #00050a 100%); 
+            background: linear-gradient(135deg, #00050a, #001f3f, #08001a, #001f3f);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: #add8e6; 
             padding: 20px; 
             margin: 0;
             overflow-x: hidden;
             min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Гирлянда */
@@ -50,10 +58,11 @@
         h1 { 
             text-align: center; 
             color: #fff; 
-            text-shadow: 0 0 10px #0074D9, 0 0 20px #7FDBFF;
+            text-shadow: 0 0 15px rgba(127, 219, 255, 0.8);
             font-size: 3rem;
             margin-top: 50px;
             padding: 0 10px;
+            letter-spacing: 2px;
         }
 
         .video-grid {
@@ -66,14 +75,23 @@
             z-index: 5;
         }
         
+        /* 2. Эффект инея на карточках */
         .video-card { 
-            background: rgba(0, 116, 217, 0.1); 
-            border: 2px solid #7FDBFF; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(127, 219, 255, 0.3); 
             border-radius: 15px; 
             padding: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(127, 219, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .video-container {
@@ -87,44 +105,24 @@
 
         .video-container iframe, .video-container div {
             position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            top: 0 !important; left: 0 !important;
+            width: 100% !important; height: 100% !important;
         }
 
         .video-title {
             margin-top: 15px;
             font-size: 1.1rem;
             text-align: center;
-            color: #7FDBFF;
-            font-weight: bold;
+            color: #fff;
+            font-weight: 300;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
-        /* --- МОБИЛЬНЫЕ СТИЛИ --- */
+        /* Мобильная адаптация */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8rem; /* Уменьшаем заголовок */
-                margin-top: 40px;
-            }
-            .video-grid {
-                grid-template-columns: 1fr; /* Одна колонка на смартфонах */
-                gap: 20px;
-                padding: 10px;
-            }
-            .video-card {
-                padding: 10px; /* Меньше отступы внутри карточки */
-            }
-            .video-title {
-                font-size: 0.9rem; /* Меньше текст названия */
-            }
-            .lights li {
-                margin: 8px; /* Чаще лампочки на малых экранах */
-                width: 8px;
-                height: 18px;
-            }
+            h1 { font-size: 1.8rem; margin-top: 40px; }
+            .video-grid { grid-template-columns: 1fr; padding: 10px; }
         }
 
         #snow {
@@ -158,7 +156,7 @@
     </div>
 
     <script>
-        // Снег
+        // Улучшенный Снег
         const canvas = document.getElementById('snow');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
@@ -169,12 +167,13 @@
             canvas.width = width;
             canvas.height = height;
             particles = [];
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 120; i++) {
                 particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    r: Math.random() * 3 + 1,
+                    r: Math.random() * 2 + 1,
                     d: Math.random() * 1,
+                    opacity: Math.random(),
                     color: Math.random() > 0.5 ? '#fff' : '#7FDBFF'
                 });
             }
@@ -184,9 +183,9 @@
             ctx.clearRect(0, 0, width, height);
             for (let i = 0; i < particles.length; i++) {
                 let p = particles[i];
+                ctx.globalAlpha = p.opacity;
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
                 ctx.fill();
             }
@@ -197,9 +196,9 @@
             for (let i = 0; i < particles.length; i++) {
                 let p = particles[i];
                 p.y += Math.cos(p.d) + 1 + p.r / 2;
-                p.x += Math.sin(p.d) * 1.5;
+                p.x += Math.sin(p.d) * 1.2;
                 if (p.y > height) {
-                    particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d, color: p.color };
+                    particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d, opacity: p.opacity, color: p.color };
                 }
             }
         }
@@ -237,7 +236,7 @@
                         'start': item.start, 
                         'rel': 0, 
                         'modestbranding': 1,
-                        'playsinline': 1 // Важно для мобильных
+                        'playsinline': 1 
                     },
                     events: { 
                         'onStateChange': function(event) {
@@ -264,9 +263,8 @@
                     setTimeout(function() {
                         let nextPlayer = players[nextIndex];
                         let startTime = videoList[nextIndex].start || 0;
-
-                        // Сброс и запуск
-                        nextPlayer.stopVideo(); // Полная очистка
+                        
+                        nextPlayer.stopVideo(); 
                         nextPlayer.seekTo(startTime, true);
                         nextPlayer.playVideo();
 
