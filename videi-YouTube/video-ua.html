@@ -16,14 +16,77 @@
             min-height: 100vh;
         }
 
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .flag-decoration {
+            display: flex;
+            height: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .flag-stripe {
+            flex: 1;
+        }
+
+        .flag-stripe.blue {
+            background: #0057B7;
+        }
+
+        .flag-stripe.yellow {
+            background: #FFD700;
+        }
+
         h1 { 
             text-align: center; 
             color: #fff; 
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.4);
             font-size: 2.8rem;
-            margin-top: 30px;
+            margin: 20px 0 10px 0;
             padding: 10px;
-            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: #fff;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            margin: 10px 0 30px 0;
+            font-weight: 300;
+        }
+
+        .info-panel {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #004494;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon {
+            font-size: 1.5rem;
         }
 
         .video-grid {
@@ -70,11 +133,56 @@
 
         .video-title {
             margin-top: 15px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             text-align: center;
             color: #004494;
             font-weight: 700;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .video-number {
+            background: linear-gradient(135deg, #0057B7, #FFD700);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            color: #004494;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .blessing {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0057B7;
+            margin-top: 20px;
         }
 
         @media (max-width: 768px) {
@@ -85,16 +193,31 @@
 </head>
 <body>
 
-    <h1>Українські християнські збірки</h1>
+    <header>
+        <div class="flag-decoration">
+            <div class="flag-stripe blue"></div>
+            <div class="flag-stripe yellow"></div>
+        </div>
+        <h1>🕊️ Українські християнські збірки 🙏</h1>
+        <p class="subtitle">Духовна музика для душі • Слухайте та діліться Божою любов'ю</p>
+
+    </header>
 
     <div class="video-grid">
-        <div class="video-card"><div class="video-container"><div id="player1"></div></div><div class="video-title">Українська Християнська Збірка 1</div></div>
-        <div class="video-card"><div class="video-container"><div id="player2"></div></div><div class="video-title">Українська Християнська Збірка 2</div></div>
-        <div class="video-card"><div class="video-container"><div id="player3"></div></div><div class="video-title">Українська Християнська Збірка 3</div></div>
-        <div class="video-card"><div class="video-container"><div id="player4"></div></div><div class="video-title">Українська Християнська Збірка 4</div></div>
-        <div class="video-card"><div class="video-container"><div id="player5"></div></div><div class="video-title">Українська Християнська Збірка 5</div></div>
-        <div class="video-card"><div class="video-container"><div id="player6"></div></div><div class="video-title">Українська Християнська Збірка 6</div></div>
+        <div class="video-card"><div class="video-container"><div id="player1"></div></div><div class="video-title"><span class="video-number">1</span>Українська Християнська Збірка 1</div></div>
+        <div class="video-card"><div class="video-container"><div id="player2"></div></div><div class="video-title"><span class="video-number">2</span>Українська Християнська Збірка 2</div></div>
+        <div class="video-card"><div class="video-container"><div id="player3"></div></div><div class="video-title"><span class="video-number">3</span>Українська Християнська Збірка 3</div></div>
+        <div class="video-card"><div class="video-container"><div id="player4"></div></div><div class="video-title"><span class="video-number">4</span>Українська Християнська Збірка 4</div></div>
+        <div class="video-card"><div class="video-container"><div id="player5"></div></div><div class="video-title"><span class="video-number">5</span>Українська Християнська Збірка 5</div></div>
+        <div class="video-card"><div class="video-container"><div id="player6"></div></div><div class="video-title"><span class="video-number">6</span>Українська Християнська Збірка 6</div></div>
     </div>
+
+    <footer>
+        <p>💙 Ця колекція створена для прославлення Господа українською мовою 💛</p>
+        <p>Кожна пісня несе Божу любов і надію. Нехай ця музика наповнює ваші серця миром і радістю.</p>
+        <p>Відео автоматично перемикаються одне за одним - просто насолоджуйтесь слуханням!</p>
+        <p class="blessing">🙏 Нехай Господь благословить вас! 🕊️</p>
+    </footer>
 
     <script>
         var tag = document.createElement('script');
