@@ -6,7 +6,6 @@
      <meta property="og:image" content="ico.png">
     <title>❄️ Рождественская Музыкальная Галерея </title>
     <style>
-        /* Глубокий синий зимний фон */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: radial-gradient(circle at center, #001f3f 0%, #00050a 100%); 
@@ -17,7 +16,6 @@
             min-height: 100vh;
         }
 
-        /* Синяя и белая гирлянда */
         .lights {
             text-align: center;
             white-space: nowrap;
@@ -192,7 +190,7 @@
         initSnow();
         setInterval(drawSnow, 30);
 
-        // --- YouTube API Logic ---
+        // --- YouTube API ---
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -221,7 +219,7 @@
                         'start': item.start, 
                         'rel': 0, 
                         'modestbranding': 1,
-                        'autoplay': 0
+                        'autoplay': 0 
                     },
                     events: { 
                         'onStateChange': function(event) {
@@ -234,9 +232,9 @@
         }
 
         function onPlayerStateChange(event, index) {
-            // Если видео начали играть вручную или автоматически
+            // Если видео начало воспроизводиться
             if (event.data == YT.PlayerState.PLAYING) {
-                // Ставим на паузу все остальные плееры
+                // Останавливаем все остальные
                 players.forEach(function(p, i) {
                     if (i !== index && p.getPlayerState() == YT.PlayerState.PLAYING) {
                         p.pauseVideo();
@@ -250,15 +248,20 @@
                 
                 if (nextIndex < players.length) {
                     setTimeout(function() {
-                        // Сбрасываем следующее видео на начало (или на заданный start)
+                        let nextPlayer = players[nextIndex];
                         let startTime = videoList[nextIndex].start || 0;
-                        players[nextIndex].seekTo(startTime);
+
+                        // ПРИНУДИТЕЛЬНЫЙ СБРОС: Сначала перематываем, потом играем
+                        nextPlayer.seekTo(startTime, true);
+                        nextPlayer.playVideo();
+
+                        // Повторная подстраховка: перемотка через полсекунды после старта
+                        setTimeout(() => {
+                            nextPlayer.seekTo(startTime, true);
+                        }, 500);
                         
-                        // Запускаем воспроизведение
-                        players[nextIndex].playVideo();
-                        
-                        // Скролл
-                        players[nextIndex].getIframe().scrollIntoView({ 
+                        // Скролл к видео
+                        nextPlayer.getIframe().scrollIntoView({ 
                             behavior: 'smooth', 
                             block: 'center' 
                         });
