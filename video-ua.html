@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Українські християнські збірки</title>
+    <style>
+        /* Глубокий синий зимний фон (сохранен по запросу) */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: radial-gradient(circle at center, #001f3f 0%, #00050a 100%); 
+            color: #add8e6; 
+            padding: 20px; 
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: #fff; 
+            text-shadow: 0 0 10px #0074D9, 0 0 20px #7FDBFF;
+            font-size: 3rem;
+            margin-top: 30px;
+            padding: 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 40px auto;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .video-card { 
+            background: rgba(0, 116, 217, 0.1); 
+            border: 2px solid #7FDBFF; 
+            border-radius: 15px; 
+            padding: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; 
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .video-container iframe, .video-container div {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .video-title {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            color: #7FDBFF;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- МОБИЛЬНЫЕ СТИЛИ --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+                margin-top: 20px;
+            }
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 10px;
+            }
+            .video-card {
+                padding: 10px;
+            }
+            .video-title {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Українські християнські збірки</h1>
+
+    <div class="video-grid">
+        <div class="video-card"><div class="video-container"><div id="player1"></div></div><div class="video-title">Збірка 1</div></div>
+        <div class="video-card"><div class="video-container"><div id="player2"></div></div><div class="video-title">Збірка 2</div></div>
+        <div class="video-card"><div class="video-container"><div id="player3"></div></div><div class="video-title">Збірка 3</div></div>
+        <div class="video-card"><div class="video-container"><div id="player4"></div></div><div class="video-title">Збірка 4</div></div>
+        <div class="video-card"><div class="video-container"><div id="player5"></div></div><div class="video-title">Збірка 5</div></div>
+        <div class="video-card"><div class="video-container"><div id="player6"></div></div><div class="video-title">Збірка 6</div></div>
+        <div class="video-card"><div class="video-container"><div id="player7"></div></div><div class="video-title">Збірка 7</div></div>
+
+    </div>
+
+    <script>
+        // --- YouTube API ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var players = [];
+        const NEXT_TRACK_DELAY = 3000;
+
+        // Обновленный список ID видео из ваших ссылок
+        const videoList = [
+            { id: 'player1', videoId: 'w-MCRwKZMr0' },
+            { id: 'player2', videoId: '8IpBSHMowxU' },
+            { id: 'player3', videoId: 'UgD3oJkbxcA' },
+            { id: 'player4', videoId: 'KsXH8VRQC8Y' },
+            { id: 'player5', videoId: '93mtlCUKhXA' },
+            { id: 'player6', videoId: 'zvO0Q3deums' },
+            { id: 'player7', videoId: 'QJY30VVfBK8' }
+        ];
+
+        function onYouTubeIframeAPIReady() {
+            videoList.forEach(function(item, index) {
+                var player = new YT.Player(item.id, {
+                    width: '100%', height: '100%',
+                    videoId: item.videoId,
+                    playerVars: { 
+                        'rel': 0, 
+                        'modestbranding': 1,
+                        'playsinline': 1 
+                    },
+                    events: { 
+                        'onStateChange': function(event) {
+                            onPlayerStateChange(event, index);
+                        }
+                    }
+                });
+                players.push(player);
+            });
+        }
+
+        function onPlayerStateChange(event, index) {
+            // Если одно видео запускается, остальные ставятся на паузу
+            if (event.data == YT.PlayerState.PLAYING) {
+                players.forEach(function(p, i) {
+                    if (i !== index && p.getPlayerState() == YT.PlayerState.PLAYING) {
+                        p.pauseVideo();
+                    }
+                });
+            }
+
+            // Автопереключение на следующее видео по окончании
+            if (event.data == YT.PlayerState.ENDED) {
+                let nextIndex = index + 1;
+                if (nextIndex < players.length) {
+                    setTimeout(function() {
+                        let nextPlayer = players[nextIndex];
+                        nextPlayer.stopVideo();
+                        nextPlayer.playVideo();
+
+                        nextPlayer.getIframe().scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }, NEXT_TRACK_DELAY);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
