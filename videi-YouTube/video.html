@@ -6,6 +6,7 @@
      <meta property="og:image" content="ico.png">
     <title>❄️ Рождественская Музыкальная Галерея </title>
     <style>
+        /* Глубокий синий зимний фон */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: radial-gradient(circle at center, #001f3f 0%, #00050a 100%); 
@@ -16,6 +17,7 @@
             min-height: 100vh;
         }
 
+        /* Гирлянда */
         .lights {
             text-align: center;
             white-space: nowrap;
@@ -31,9 +33,9 @@
         .lights li {
             position: relative;
             list-style: none;
-            margin: 20px;
+            margin: 15px;
             width: 12px;
-            height: 28px;
+            height: 25px;
             border-radius: 50%;
             display: inline-block;
             background: #0074D9;
@@ -50,7 +52,8 @@
             color: #fff; 
             text-shadow: 0 0 10px #0074D9, 0 0 20px #7FDBFF;
             font-size: 3rem;
-            margin-top: 40px;
+            margin-top: 50px;
+            padding: 0 10px;
         }
 
         .video-grid {
@@ -68,14 +71,9 @@
             border: 2px solid #7FDBFF; 
             border-radius: 15px; 
             padding: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(127, 219, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             backdrop-filter: blur(8px);
             transition: all 0.3s ease;
-        }
-        .video-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: #fff;
-            box-shadow: 0 15px 40px rgba(0, 116, 217, 0.5);
         }
 
         .video-container {
@@ -105,23 +103,43 @@
             letter-spacing: 1px;
         }
 
+        /* --- МОБИЛЬНЫЕ СТИЛИ --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem; /* Уменьшаем заголовок */
+                margin-top: 40px;
+            }
+            .video-grid {
+                grid-template-columns: 1fr; /* Одна колонка на смартфонах */
+                gap: 20px;
+                padding: 10px;
+            }
+            .video-card {
+                padding: 10px; /* Меньше отступы внутри карточки */
+            }
+            .video-title {
+                font-size: 0.9rem; /* Меньше текст названия */
+            }
+            .lights li {
+                margin: 8px; /* Чаще лампочки на малых экранах */
+                width: 8px;
+                height: 18px;
+            }
+        }
+
         #snow {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
         }
-
         .decor { color: #fff; text-shadow: 0 0 10px #7FDBFF; }
     </style>
 </head>
 <body>
 
     <ul class="lights">
-        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
     </ul>
 
     <canvas id="snow"></canvas>
@@ -151,7 +169,7 @@
             canvas.width = width;
             canvas.height = height;
             particles = [];
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 150; i++) {
                 particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
@@ -219,7 +237,7 @@
                         'start': item.start, 
                         'rel': 0, 
                         'modestbranding': 1,
-                        'autoplay': 0 
+                        'playsinline': 1 // Важно для мобильных
                     },
                     events: { 
                         'onStateChange': function(event) {
@@ -232,9 +250,7 @@
         }
 
         function onPlayerStateChange(event, index) {
-            // Если видео начало воспроизводиться
             if (event.data == YT.PlayerState.PLAYING) {
-                // Останавливаем все остальные
                 players.forEach(function(p, i) {
                     if (i !== index && p.getPlayerState() == YT.PlayerState.PLAYING) {
                         p.pauseVideo();
@@ -242,25 +258,18 @@
                 });
             }
 
-            // Когда видео закончилось
             if (event.data == YT.PlayerState.ENDED) {
                 let nextIndex = index + 1;
-                
                 if (nextIndex < players.length) {
                     setTimeout(function() {
                         let nextPlayer = players[nextIndex];
                         let startTime = videoList[nextIndex].start || 0;
 
-                        // ПРИНУДИТЕЛЬНЫЙ СБРОС: Сначала перематываем, потом играем
+                        // Сброс и запуск
+                        nextPlayer.stopVideo(); // Полная очистка
                         nextPlayer.seekTo(startTime, true);
                         nextPlayer.playVideo();
 
-                        // Повторная подстраховка: перемотка через полсекунды после старта
-                        setTimeout(() => {
-                            nextPlayer.seekTo(startTime, true);
-                        }, 500);
-                        
-                        // Скролл к видео
                         nextPlayer.getIframe().scrollIntoView({ 
                             behavior: 'smooth', 
                             block: 'center' 
@@ -271,5 +280,4 @@
         }
     </script>
 </body>
-
 </html>
