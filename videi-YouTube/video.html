@@ -65,7 +65,6 @@
             z-index: 5;
         }
         
-        /* Карточки в стиле «Ледяных кристаллов» */
         .video-card { 
             background: rgba(0, 116, 217, 0.1); 
             border: 2px solid #7FDBFF; 
@@ -143,7 +142,7 @@
     </div>
 
     <script>
-        // Снег (белый и голубой)
+        // Снег
         const canvas = document.getElementById('snow');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
@@ -200,7 +199,7 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         var players = [];
-        const NEXT_TRACK_DELAY = 3000; // Таймер: 3 секунды
+        const NEXT_TRACK_DELAY = 3000;
 
         const videoList = [
             { id: 'player1', videoId: 'oZKO22Y1c88', start: 53 },
@@ -235,8 +234,9 @@
         }
 
         function onPlayerStateChange(event, index) {
-            // 1. Если видео заиграло, останавливаем остальные
+            // Если видео начали играть вручную или автоматически
             if (event.data == YT.PlayerState.PLAYING) {
+                // Ставим на паузу все остальные плееры
                 players.forEach(function(p, i) {
                     if (i !== index && p.getPlayerState() == YT.PlayerState.PLAYING) {
                         p.pauseVideo();
@@ -244,16 +244,20 @@
                 });
             }
 
-            // 2. Если видео закончилось, переходим к следующему
+            // Когда видео закончилось
             if (event.data == YT.PlayerState.ENDED) {
                 let nextIndex = index + 1;
                 
-                // Если есть следующий трек в списке
                 if (nextIndex < players.length) {
                     setTimeout(function() {
+                        // Сбрасываем следующее видео на начало (или на заданный start)
+                        let startTime = videoList[nextIndex].start || 0;
+                        players[nextIndex].seekTo(startTime);
+                        
+                        // Запускаем воспроизведение
                         players[nextIndex].playVideo();
                         
-                        // Плавный скролл к новому видео
+                        // Скролл
                         players[nextIndex].getIframe().scrollIntoView({ 
                             behavior: 'smooth', 
                             block: 'center' 
