@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <meta property="og:image" content="icoy.jpg">
-    <title>GospelTube | Христианская музыка на YouTube</title>
+    <title>GospelTube | Христианская Музыка & Проповеди на YouTube</title>
+    <meta property="og:image" content="icoy.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -483,7 +483,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
                 <div style="text-align: left;">
                     <h1>🎵 GospelTube</h1>
-                    <p class="subtitle">Христианская музыка на YouTube</p>
+                    <p class="subtitle">Христианская Музыка & Проповеди на YouTube</p>
                 </div>
                 <button onclick="toggleFavoritesPanel()" style="
                     background: rgba(255,255,255,0.05);
@@ -782,7 +782,11 @@
             
             // Уровень 3: Additional markers (70% вероятность)
             additional: ['вера', 'молитва', 'душа', 'небо', 'спасение', 'благовестие', 'prayer', 'faith', 
-                        'alleluia', 'hallelujah', 'amen', 'благословение', 'покаяние', 'гимн']
+                        'alleluia', 'hallelujah', 'amen', 'благословение', 'покаяние', 'гимн'],
+            
+            // Уровень 4: Sermon/Preaching keywords (для проповедей)
+            sermon: ['проповедь', 'sermon', 'pastor', 'пастор', 'church', 'церковь', 'служение', 'учение', 
+                    'библия', 'bible', 'послание', 'message', 'preaching', 'teaching']
         };
         
         let searchHistory = [];
@@ -897,11 +901,27 @@
             // SMART FILTER: Автоматически добавляем христианские маркеры если их нет
             let searchQuery = currentQuery;
             if (smartFilterEnabled) {
-                const hasChristianMarker = [...christianKeywords.core, ...christianKeywords.strong]
-                    .some(kw => currentQuery.toLowerCase().includes(kw));
+                const allKeywords = [
+                    ...christianKeywords.core, 
+                    ...christianKeywords.strong,
+                    ...christianKeywords.sermon
+                ];
+                
+                const hasChristianMarker = allKeywords.some(kw => 
+                    currentQuery.toLowerCase().includes(kw)
+                );
                 
                 if (!hasChristianMarker) {
-                    searchQuery = `${currentQuery} христианская музыка`;
+                    // Проверяем, возможно это запрос про проповеди
+                    const isSermonQuery = christianKeywords.sermon.some(kw => 
+                        currentQuery.toLowerCase().includes(kw.substring(0, 4)) // проповед, sermon, pastor
+                    );
+                    
+                    if (isSermonQuery) {
+                        searchQuery = `${currentQuery} христианская`;
+                    } else {
+                        searchQuery = `${currentQuery} христианская музыка`;
+                    }
                 }
             }
 
@@ -964,6 +984,11 @@
 
         // SMART RANKING: Система скоринга для христианского контента
         function rankByChristianContent(videos) {
+            // Проверяем есть ли в текущем запросе слова связанные с проповедями
+            const isSermonSearch = christianKeywords.sermon.some(kw => 
+                currentQuery.toLowerCase().includes(kw)
+            );
+            
             return videos.map(video => {
                 const title = video.snippet.title.toLowerCase();
                 const description = video.snippet.description.toLowerCase();
@@ -987,8 +1012,20 @@
                     if (fullText.includes(kw)) score += 1;
                 });
                 
+                // Sermon keywords = +4 балла (между strong и core)
+                christianKeywords.sermon.forEach(kw => {
+                    if (fullText.includes(kw)) score += 4;
+                });
+                
                 // Специальный бонус за МСЦ ЕХБ
                 if (fullText.includes('мсц') || fullText.includes('ехб')) score += 10;
+                
+                // БОНУС: Если это поиск проповедей, даём дополнительные баллы
+                if (isSermonSearch) {
+                    christianKeywords.sermon.forEach(kw => {
+                        if (fullText.includes(kw)) score += 3; // Дополнительно +3
+                    });
+                }
                 
                 return { ...video, christianScore: score };
             })
