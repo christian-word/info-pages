@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GospelTube | Христианская музыка на YouTube</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --accent-red: #ef4444;
+            --accent-orange: #f97316;
+            --accent-blue: #38bdf8;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255,255,255,0.1);
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #ef4444, #f97316, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* SEARCH SECTION */
+        .search-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 15px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-red);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* TAGS & FILTERS */
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tag:hover, .tag.active {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .btn-more {
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-more:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* EXPANDED FILTERS */
+        .expanded-filters {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .expanded-filters.visible {
+            display: block;
+        }
+
+        .filter-group {
+            margin-bottom: 12px;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .exclude-filter {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .exclude-filter.active {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+
+
+        /* RESULTS */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+
+        .results-count {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+        }
+
+        .view-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 10px;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .video-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .video-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border-color: var(--accent-red);
+        }
+
+        .video-thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: rgba(255,255,255,0.05);
+            overflow: hidden;
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.8);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .video-info {
+            padding: 10px;
+        }
+
+        .video-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-channel {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 5px;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        /* LIST VIEW */
+        .video-grid.list-view .video-card {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .video-grid.list-view .video-thumbnail-wrapper {
+            width: 200px;
+            padding-top: 0;
+            height: 120px;
+            flex-shrink: 0;
+        }
+
+        .video-grid.list-view .video-info {
+            flex: 1;
+            padding: 12px;
+        }
+
+        /* STATES */
+        .loading, .no-results, .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-dim);
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            animation: spin 1s linear infinite;
+        }
+
+        .no-results i, .error i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* UTILITY BAR */
+        .utility-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .utility-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .utility-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .video-thumbnail-wrapper:hover .play-button {
+            opacity: 1 !important;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            header > div {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            header > div > div {
+                text-align: center !important;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .video-grid.list-view .video-card {
+                flex-direction: column;
+            }
+
+            .video-grid.list-view .video-thumbnail-wrapper {
+                width: 100%;
+                height: auto;
+                padding-top: 56.25%;
+            }
+
+            #favoritesPanel {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+                <div style="text-align: left;">
+                    <h1>🎵 GospelTube</h1>
+                    <p class="subtitle">Христианская музыка на YouTube</p>
+                </div>
+                <button onclick="toggleFavoritesPanel()" style="
+                    background: rgba(255,255,255,0.05);
+                    border: 1px solid var(--border);
+                    border-radius: 12px;
+                    padding: 10px 20px;
+                    color: var(--text-main);
+                    font-weight: 500;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    white-space: nowrap;
+                " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--accent-red)'; this.style.transform='translateY(-2px)';" 
+                   onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='var(--border)'; this.style.transform='translateY(0)';">
+                    <i class="fa-solid fa-heart" style="color: var(--accent-red);"></i> Избранное <span id="favCount" style="background: rgba(239, 68, 68, 0.2); color: var(--accent-red); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; margin-left: 5px; font-weight: 600;">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- SEARCH SECTION -->
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Поиск христианской музыки..." autofocus>
+                <button class="btn-primary" onclick="performSearch()">
+                    <i class="fa-brands fa-youtube"></i> Найти
+                </button>
+            </div>
+
+            <!-- MAIN TAGS -->
+            <div class="controls-row">
+                <div class="tag" data-query="worship христианская музыка">
+                    <i class="fa-solid fa-hands-praying"></i> Worship
+                </div>
+                <div class="tag" data-query="минусовка христианская">
+                    <i class="fa-solid fa-volume-xmark"></i> Минусовка
+                </div>
+                <div class="tag" data-query="караоке христианские песни">
+                    <i class="fa-solid fa-microphone"></i> Караоке
+                </div>
+                <div class="tag" data-query="хвала и поклонение">
+                    <i class="fa-solid fa-dove"></i> Хвала
+                </div>
+                <button class="btn-more" onclick="toggleFilters()">
+                    <i class="fa-solid fa-sliders"></i> Ещё фильтров
+                </button>
+            </div>
+
+            <!-- EXPANDED FILTERS -->
+            <div id="expandedFilters" class="expanded-filters">
+                <!-- MORE TAGS -->
+                <div class="filter-group">
+                    <div class="filter-label">Дополнительные теги</div>
+                    <div class="filter-options">
+                        <div class="tag" data-query="проповедь христианская">Проповедь</div>
+                        <div class="tag" data-query="псалмы">Псалмы</div>
+                        <div class="tag" data-query="гимны">Гимны</div>
+                        <div class="tag" data-query="modern worship">Modern</div>
+                        <div class="tag" data-query="acoustic worship">Acoustic</div>
+                        <div class="tag" data-query="live worship">Live</div>
+                    </div>
+                </div>
+
+                <!-- DURATION -->
+                <div class="filter-group">
+                    <div class="filter-label">Длительность</div>
+                    <div class="filter-options">
+                        <div class="filter-btn active" data-filter="duration" data-value="">Любая</div>
+                        <div class="filter-btn" data-filter="duration" data-value="short">< 4 мин</div>
+                        <div class="filter-btn" data-filter="duration" data-value="medium">4-20 мин</div>
+                        <div class="filter-btn" data-filter="duration" data-value="long">> 20 мин</div>
+                    </div>
+                </div>
+
+                <!-- DATE -->
+                <div class="filter-group">
+                    <div class="filter-label">Дата загрузки</div>
+                    <div class="filter-options">
+                        <div class="filter-btn active" data-filter="date" data-value="">Любая</div>
+                        <div class="filter-btn" data-filter="date" data-value="hour">Последний час</div>
+                        <div class="filter-btn" data-filter="date" data-value="today">Сегодня</div>
+                        <div class="filter-btn" data-filter="date" data-value="week">Эта неделя</div>
+                        <div class="filter-btn" data-filter="date" data-value="month">Этот месяц</div>
+                        <div class="filter-btn" data-filter="date" data-value="year">Этот год</div>
+                    </div>
+                </div>
+
+                <!-- EXCLUDE -->
+                <div class="filter-group">
+                    <div class="filter-label">Исключить</div>
+                    <div class="filter-options">
+                        <div class="exclude-filter" data-exclude="cover">
+                            <i class="fa-regular fa-square"></i> Cover
+                        </div>
+                        <div class="exclude-filter" data-exclude="remix">
+                            <i class="fa-regular fa-square"></i> Remix
+                        </div>
+                        <div class="exclude-filter" data-exclude="live">
+                            <i class="fa-regular fa-square"></i> Live
+                        </div>
+                        <div class="exclude-filter" data-exclude="acoustic">
+                            <i class="fa-regular fa-square"></i> Acoustic
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UTILITY BAR -->
+            <div class="utility-bar">
+                <button class="utility-btn" onclick="toggleSmartFilter()" id="filterToggleBtn" style="font-weight: 600;">
+                    <i class="fa-solid fa-filter"></i> Умные фильтры: ВКЛ
+                </button>
+                <button class="utility-btn" onclick="showHistory()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> История
+                </button>
+                <button class="utility-btn" onclick="clearSearch()">
+                    <i class="fa-solid fa-broom"></i> Очистить
+                </button>
+            </div>
+        </div>
+
+
+
+        <!-- RESULTS -->
+        <div id="resultsArea">
+            <div class="no-results">
+                <i class="fa-brands fa-youtube"></i>
+                <p>Введите запрос для поиска христианской музыки</p>
+            </div>
+        </div>
+
+        <!-- FAVORITES PANEL (overlay) -->
+        <div id="favoritesPanel" style="
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: var(--bg-dark);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        ">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">
+                    <i class="fa-solid fa-heart" style="color: var(--accent-red);"></i> Избранное
+                </h2>
+                <button onclick="toggleFavoritesPanel()" style="
+                    background: rgba(255,255,255,0.1);
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 12px;
+                    color: var(--text-dim);
+                    cursor: pointer;
+                    font-size: 1.2rem;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div id="favoritesContent"></div>
+        </div>
+
+        <!-- OVERLAY BACKDROP -->
+        <div id="favoritesBackdrop" onclick="toggleFavoritesPanel()" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            display: none;
+        "></div>
+
+        <!-- VIDEO PLAYER MODAL -->
+        <div id="videoPlayerModal" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.9);
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        " onclick="closeVideoPlayer(event)">
+            <div style="
+                width: 90%;
+                max-width: 1200px;
+                background: var(--bg-card);
+                border-radius: 16px;
+                padding: 20px;
+                position: relative;
+            " onclick="event.stopPropagation()">
+                <button onclick="closeVideoPlayer()" style="
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255,255,255,0.1);
+                    border: none;
+                    border-radius: 8px;
+                    padding: 8px 12px;
+                    color: var(--text-main);
+                    cursor: pointer;
+                    font-size: 1.2rem;
+                    transition: all 0.2s;
+                    z-index: 10;
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                
+                <div id="videoPlayerContent" style="margin-top: 20px;">
+                    <!-- Player will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG
+        const YOUTUBE_API_KEY = 'AIzaSyB79LenCkfDqTFbrVMRVoAqRp5Wpzy_2Dg';
+        
+        // SMART CHRISTIAN FILTER SYSTEM
+        const christianKeywords = {
+            // Уровень 1: Core keywords (100% христианский контент)
+            core: ['христиан', 'worship', 'gospel', 'псалом', 'хвала', 'поклонение', 'прославление'],
+            
+            // Уровень 2: Strong markers (90% вероятность)
+            strong: ['господь', 'бог', 'христос', 'иисус', 'мсц', 'ехб', 'jesus', 'god', 'christ', 'praise'],
+            
+            // Уровень 3: Additional markers (70% вероятность)
+            additional: ['вера', 'молитва', 'душа', 'небо', 'спасение', 'благовестие', 'prayer', 'faith', 
+                        'alleluia', 'hallelujah', 'amen', 'благословение', 'покаяние', 'гимн']
+        };
+        
+        let searchHistory = [];
+        let currentFilters = {
+            duration: '',
+            date: '',
+            excludes: []
+        };
+        let currentView = 'grid';
+        let smartFilterEnabled = true; // Умная фильтрация включена по умолчанию
+        let currentQuery = ''; // Текущий запрос
+        let nextPageToken = ''; // Токен для следующей страницы
+        let allVideos = []; // Все загруженные видео
+        let totalReceived = 0; // Всего получено от YouTube
+        let totalAfterFilter = 0; // Всего после фильтрации
+        let currentSort = 'relevance'; // Текущая сортировка: relevance, newest, oldest
+        let favorites = []; // Избранные видео
+        let favoritesPanelOpen = false;
+        let currentPlayingVideo = null;
+
+        // INIT
+        (function init() {
+            loadFromStorage();
+            attachEventListeners();
+            updateFavCount();
+        })();
+
+        function loadFromStorage() {
+            searchHistory = JSON.parse(localStorage.getItem('ytSearchHistory') || '[]');
+            favorites = JSON.parse(localStorage.getItem('ytFavorites') || '[]');
+        }
+
+        function attachEventListeners() {
+            // Enter key
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+
+            // Tags
+            document.querySelectorAll('.tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const query = this.dataset.query;
+                    document.getElementById('searchInput').value = query;
+                    performSearch();
+                });
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+                    const value = this.dataset.value;
+                    
+                    document.querySelectorAll(`[data-filter="${filter}"]`).forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilters[filter] = value;
+                    performSearch();
+                });
+            });
+
+            // Exclude filters
+            document.querySelectorAll('.exclude-filter').forEach(filter => {
+                filter.addEventListener('click', function() {
+                    const exclude = this.dataset.exclude;
+                    const icon = this.querySelector('i');
+                    
+                    if (this.classList.contains('active')) {
+                        this.classList.remove('active');
+                        icon.className = 'fa-regular fa-square';
+                        currentFilters.excludes = currentFilters.excludes.filter(e => e !== exclude);
+                    } else {
+                        this.classList.add('active');
+                        icon.className = 'fa-solid fa-square-check';
+                        currentFilters.excludes.push(exclude);
+                    }
+                    
+                    performSearch();
+                });
+            });
+        }
+
+        function toggleFilters() {
+            const filters = document.getElementById('expandedFilters');
+            filters.classList.toggle('visible');
+        }
+
+        async function performSearch(isLoadMore = false) {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            if (!isLoadMore) {
+                // Новый поиск - сбрасываем всё
+                showLoading();
+                saveToHistory(query);
+                currentQuery = query;
+                nextPageToken = '';
+                allVideos = [];
+                totalReceived = 0;
+                totalAfterFilter = 0;
+            } else {
+                // Загрузка ещё - показываем индикатор
+                showLoadingMore();
+            }
+
+            // SMART FILTER: Автоматически добавляем христианские маркеры если их нет
+            let searchQuery = currentQuery;
+            if (smartFilterEnabled) {
+                const hasChristianMarker = [...christianKeywords.core, ...christianKeywords.strong]
+                    .some(kw => currentQuery.toLowerCase().includes(kw));
+                
+                if (!hasChristianMarker) {
+                    searchQuery = `${currentQuery} христианская музыка`;
+                }
+            }
+
+            // Добавляем исключения
+            currentFilters.excludes.forEach(ex => {
+                searchQuery += ` -${ex}`;
+            });
+
+            // Build API URL
+            let apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=50&key=${YOUTUBE_API_KEY}`;
+            
+            // Добавляем токен пагинации если это "Загрузить ещё"
+            if (isLoadMore && nextPageToken) {
+                apiUrl += `&pageToken=${nextPageToken}`;
+            }
+            
+            if (currentFilters.duration) {
+                apiUrl += `&videoDuration=${currentFilters.duration}`;
+            }
+            
+            if (currentFilters.date) {
+                apiUrl += `&publishedAfter=${getDateFilter(currentFilters.date)}`;
+            }
+
+            try {
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error('API Error');
+                }
+
+                const data = await response.json();
+                
+                // Сохраняем токен следующей страницы
+                nextPageToken = data.nextPageToken || '';
+                
+                const batchReceived = data.items ? data.items.length : 0;
+                totalReceived += batchReceived;
+                
+                // SMART FILTER: Ранжирование результатов по христианскому контенту
+                const rankedResults = smartFilterEnabled ? rankByChristianContent(data.items) : data.items;
+                
+                const batchAfterFilter = rankedResults ? rankedResults.length : 0;
+                totalAfterFilter += batchAfterFilter;
+                
+                // Добавляем к общему массиву
+                allVideos = [...allVideos, ...rankedResults];
+                
+                displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Ошибка поиска. Проверьте подключение.');
+            }
+        }
+
+        function loadMoreResults() {
+            performSearch(true);
+        }
+
+        // SMART RANKING: Система скоринга для христианского контента
+        function rankByChristianContent(videos) {
+            return videos.map(video => {
+                const title = video.snippet.title.toLowerCase();
+                const description = video.snippet.description.toLowerCase();
+                const channel = video.snippet.channelTitle.toLowerCase();
+                const fullText = `${title} ${description} ${channel}`;
+                
+                let score = 0;
+                
+                // Core keywords = +5 баллов
+                christianKeywords.core.forEach(kw => {
+                    if (fullText.includes(kw)) score += 5;
+                });
+                
+                // Strong markers = +3 балла
+                christianKeywords.strong.forEach(kw => {
+                    if (fullText.includes(kw)) score += 3;
+                });
+                
+                // Additional markers = +1 балл
+                christianKeywords.additional.forEach(kw => {
+                    if (fullText.includes(kw)) score += 1;
+                });
+                
+                // Специальный бонус за МСЦ ЕХБ
+                if (fullText.includes('мсц') || fullText.includes('ехб')) score += 10;
+                
+                return { ...video, christianScore: score };
+            })
+            .sort((a, b) => b.christianScore - a.christianScore) // Сортируем по рейтингу
+            .filter(v => v.christianScore > 0); // Убираем совсем нерелевантные
+        }
+
+        function getDateFilter(period) {
+            const now = new Date();
+            let date;
+            
+            switch(period) {
+                case 'hour':
+                    date = new Date(now - 60*60*1000);
+                    break;
+                case 'today':
+                    date = new Date(now.setHours(0,0,0,0));
+                    break;
+                case 'week':
+                    date = new Date(now - 7*24*60*60*1000);
+                    break;
+                case 'month':
+                    date = new Date(now - 30*24*60*60*1000);
+                    break;
+                case 'year':
+                    date = new Date(now - 365*24*60*60*1000);
+                    break;
+                default:
+                    return '';
+            }
+            return date.toISOString();
+        }
+
+        function displayResults(videos, totalRec = 0, totalFiltered = 0, hasNextPage = false) {
+            const resultsArea = document.getElementById('resultsArea');
+
+            if (!videos || videos.length === 0) {
+                resultsArea.innerHTML = `
+                    <div class="no-results">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <p>Ничего не найдено</p>
+                        <p style="font-size: 0.75rem; margin-top: 10px; color: var(--text-dim);">
+                            Попробуйте другие ключевые слова или используйте быстрые теги
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Применяем сортировку
+            const sortedVideos = sortVideos([...videos], currentSort);
+
+            const videoGrid = sortedVideos.map(video => {
+                const videoId = video.id.videoId;
+                const title = video.snippet.title;
+                const channel = video.snippet.channelTitle;
+                const thumbnail = video.snippet.thumbnails.medium.url;
+                const publishedAt = new Date(video.snippet.publishedAt).toLocaleDateString('ru-RU');
+                
+                const isFavorite = favorites.some(fav => fav.id.videoId === videoId);
+                const heartIcon = isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+                const heartColor = isFavorite ? 'var(--accent-red)' : 'var(--text-dim)';
+
+                return `
+                    <div class="video-card">
+                        <div class="video-thumbnail-wrapper" style="position: relative; cursor: pointer;" onclick="playVideo('${videoId}', '${title.replace(/'/g, "\\'")}')">
+                            <img src="${thumbnail}" alt="${title}" class="video-thumbnail">
+                            <div style="
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: rgba(0,0,0,0.7);
+                                width: 60px;
+                                height: 60px;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                transition: all 0.3s;
+                                opacity: 0;
+                            " class="play-button">
+                                <i class="fa-solid fa-play" style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title" onclick="playVideo('${videoId}', '${title.replace(/'/g, "\\'")}')" style="cursor: pointer;">${title}</div>
+                            <div class="video-channel">
+                                <i class="fa-brands fa-youtube"></i> ${channel}
+                            </div>
+                            <div class="video-meta" style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fa-solid fa-calendar"></i> ${publishedAt}</span>
+                                <button onclick="toggleFavorite(event, '${videoId}')" style="
+                                    background: none;
+                                    border: none;
+                                    color: ${heartColor};
+                                    cursor: pointer;
+                                    font-size: 1.1rem;
+                                    padding: 5px;
+                                    transition: all 0.3s;
+                                " onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                    <i class="${heartIcon}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Статистика
+            const statsHTML = totalRec > 0 ? `
+                <div style="font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <span><i class="fa-solid fa-download"></i> Получено от YouTube: <strong>${totalRec}</strong></span>
+                    ${smartFilterEnabled ? `<span><i class="fa-solid fa-filter"></i> После фильтрации: <strong style="color: var(--accent-red);">${totalFiltered}</strong></span>` : ''}
+                    ${smartFilterEnabled && totalRec > totalFiltered ? `<span style="color: var(--accent-orange);">⚠ Отфильтровано: ${totalRec - totalFiltered}</span>` : ''}
+                </div>
+            ` : '';
+
+            // Кнопка "Загрузить ещё"
+            const loadMoreBtn = hasNextPage ? `
+                <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+                    <button onclick="loadMoreResults()" style="
+                        background: linear-gradient(135deg, var(--accent-blue), #0ea5e9);
+                        border: none;
+                        border-radius: 12px;
+                        padding: 12px 30px;
+                        color: white;
+                        font-weight: 600;
+                        font-size: 0.9rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(56, 189, 248, 0.4)';" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(56, 189, 248, 0.3)';">
+                        <i class="fa-solid fa-circle-down"></i> Загрузить ещё (+50)
+                    </button>
+                    <div style="font-size: 0.7rem; color: var(--text-dim); margin-top: 8px;">
+                        Найдено больше результатов
+                    </div>
+                </div>
+            ` : `
+                <div style="text-align: center; margin-top: 30px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-dim);">
+                    <i class="fa-solid fa-circle-check"></i> Все результаты загружены
+                </div>
+            `;
+
+            resultsArea.innerHTML = `
+                <div class="results-header">
+                    <div class="results-count">
+                        <i class="fa-solid fa-video"></i> Показано: ${sortedVideos.length} видео
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select onchange="changeSort(this.value)" style="
+                            background: var(--bg-card);
+                            border: 1px solid var(--border);
+                            border-radius: 6px;
+                            padding: 5px 10px;
+                            color: var(--text-main);
+                            font-size: 0.75rem;
+                            cursor: pointer;
+                            outline: none;
+                            font-family: inherit;
+                        ">
+                            <option value="relevance" ${currentSort === 'relevance' ? 'selected' : ''} style="background: var(--bg-card); color: var(--text-main);">По релевантности</option>
+                            <option value="newest" ${currentSort === 'newest' ? 'selected' : ''} style="background: var(--bg-card); color: var(--text-main);">Новые первыми</option>
+                            <option value="oldest" ${currentSort === 'oldest' ? 'selected' : ''} style="background: var(--bg-card); color: var(--text-main);">Старые первыми</option>
+                        </select>
+                        <div class="view-toggle">
+                            <button class="view-btn ${currentView === 'grid' ? 'active' : ''}" onclick="setView('grid')">
+                                <i class="fa-solid fa-grip"></i>
+                            </button>
+                            <button class="view-btn ${currentView === 'list' ? 'active' : ''}" onclick="setView('list')">
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                ${statsHTML}
+                <div class="video-grid ${currentView === 'list' ? 'list-view' : ''}" style="margin-top: 15px;">${videoGrid}</div>
+                ${loadMoreBtn}
+            `;
+        }
+
+        function sortVideos(videos, sortType) {
+            switch(sortType) {
+                case 'newest':
+                    return videos.sort((a, b) => 
+                        new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt)
+                    );
+                case 'oldest':
+                    return videos.sort((a, b) => 
+                        new Date(a.snippet.publishedAt) - new Date(b.snippet.publishedAt)
+                    );
+                case 'relevance':
+                default:
+                    // По христианскому рейтингу (если фильтры включены) или по умолчанию
+                    return videos.sort((a, b) => 
+                        (b.christianScore || 0) - (a.christianScore || 0)
+                    );
+            }
+        }
+
+        function changeSort(sortType) {
+            currentSort = sortType;
+            // Перерисовываем результаты с новой сортировкой
+            displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+        }
+
+        function setView(view) {
+            currentView = view;
+            const grid = document.querySelector('.video-grid');
+            if (grid) {
+                grid.className = view === 'list' ? 'video-grid list-view' : 'video-grid';
+            }
+        }
+
+        function openVideo(videoId) {
+            window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+        }
+
+        // VIDEO PLAYER
+        function playVideo(videoId, title) {
+            currentPlayingVideo = videoId;
+            const modal = document.getElementById('videoPlayerModal');
+            const content = document.getElementById('videoPlayerContent');
+            
+            modal.style.display = 'flex';
+            
+            // Пробуем загрузить iframe
+            content.innerHTML = `
+                <div style="position: relative; width: 100%; padding-top: 56.25%;">
+                    <iframe 
+                        id="youtubePlayer"
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+                        style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            border: none;
+                            border-radius: 12px;
+                        "
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                    ></iframe>
+                </div>
+                <div style="margin-top: 15px;">
+                    <h3 style="font-size: 1.2rem; color: var(--text-main); margin-bottom: 10px;">${title}</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="openVideo('${videoId}')" style="
+                            background: linear-gradient(135deg, #ef4444, #dc2626);
+                            border: none;
+                            border-radius: 8px;
+                            padding: 8px 16px;
+                            color: white;
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-youtube"></i> Открыть на YouTube
+                        </button>
+                        <button onclick="shareVideo('${videoId}', '${title.replace(/'/g, "\\'")}')" style="
+                            background: rgba(56, 189, 248, 0.2);
+                            border: 1px solid var(--accent-blue);
+                            border-radius: 8px;
+                            padding: 8px 16px;
+                            color: var(--accent-blue);
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.background='rgba(56, 189, 248, 0.3)'" onmouseout="this.style.background='rgba(56, 189, 248, 0.2)'">
+                            <i class="fa-solid fa-share"></i> Поделиться
+                        </button>
+                    </div>
+                </div>
+                <div id="embedError" style="display: none; text-align: center; padding: 40px 20px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 15px;"></i>
+                    <p style="font-size: 1rem; color: var(--text-main); margin-bottom: 10px;">Видео недоступно для встраивания</p>
+                    <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 20px;">
+                        Автор запретил воспроизведение на сторонних сайтах
+                    </p>
+                    <button onclick="openVideo('${videoId}')" style="
+                        background: linear-gradient(135deg, #ef4444, #dc2626);
+                        border: none;
+                        border-radius: 10px;
+                        padding: 12px 24px;
+                        color: white;
+                        font-weight: 600;
+                        font-size: 0.9rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fa-brands fa-youtube"></i> Смотреть на YouTube
+                    </button>
+                </div>
+            `;
+            
+            // Проверяем загрузку iframe через несколько секунд
+            setTimeout(() => {
+                const iframe = document.getElementById('youtubePlayer');
+                if (iframe) {
+                    iframe.onerror = showEmbedError;
+                    
+                    // Проверяем доступность через попытку загрузки
+                    iframe.addEventListener('load', () => {
+                        // Если iframe загрузился, все ок
+                    });
+                }
+            }, 100);
+        }
+
+        function showEmbedError() {
+            const iframe = document.getElementById('youtubePlayer');
+            const error = document.getElementById('embedError');
+            
+            if (iframe && error) {
+                iframe.parentElement.style.display = 'none';
+                error.style.display = 'block';
+            }
+        }
+
+        function closeVideoPlayer(event) {
+            if (event && event.target.id !== 'videoPlayerModal') return;
+            
+            const modal = document.getElementById('videoPlayerModal');
+            modal.style.display = 'none';
+            
+            const content = document.getElementById('videoPlayerContent');
+            content.innerHTML = ''; // Останавливаем видео
+            
+            currentPlayingVideo = null;
+        }
+
+        function shareVideo(videoId, title) {
+            const url = `https://www.youtube.com/watch?v=${videoId}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url
+                }).catch(err => console.log('Share cancelled'));
+            } else {
+                // Fallback: копируем ссылку
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('✅ Ссылка скопирована в буфер обмена!');
+                });
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('resultsArea').innerHTML = `
+                <div class="loading">
+                    <i class="fa-solid fa-spinner"></i>
+                    <p>Поиск видео...</p>
+                </div>
+            `;
+        }
+
+        function showLoadingMore() {
+            const loadMoreBtn = document.querySelector('button[onclick="loadMoreResults()"]');
+            if (loadMoreBtn) {
+                loadMoreBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Загрузка...';
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.style.opacity = '0.6';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('resultsArea').innerHTML = `
+                <div class="error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function saveToHistory(query) {
+            searchHistory = searchHistory.filter(item => item.query !== query);
+            searchHistory.unshift({
+                query: query,
+                timestamp: new Date().toISOString()
+            });
+            searchHistory = searchHistory.slice(0, 20);
+            localStorage.setItem('ytSearchHistory', JSON.stringify(searchHistory));
+        }
+
+        function showHistory() {
+            if (searchHistory.length === 0) {
+                alert('История пуста');
+                return;
+            }
+            
+            const historyText = searchHistory.map((h, i) => 
+                `${i + 1}. ${h.query} (${new Date(h.timestamp).toLocaleString('ru-RU')})`
+            ).join('\n');
+            
+            alert('📜 История поиска:\n\n' + historyText);
+        }
+
+        function toggleSmartFilter() {
+            smartFilterEnabled = !smartFilterEnabled;
+            const btn = document.getElementById('filterToggleBtn');
+            
+            if (smartFilterEnabled) {
+                btn.innerHTML = '<i class="fa-solid fa-filter"></i> Умные фильтры: ВКЛ';
+                btn.style.color = 'var(--accent-blue)';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-filter-circle-xmark"></i> Умные фильтры: ВЫКЛ';
+                btn.style.color = 'var(--text-dim)';
+            }
+            
+            // Сбрасываем и делаем новый поиск
+            const lastQuery = document.getElementById('searchInput').value.trim();
+            if (lastQuery) {
+                nextPageToken = '';
+                allVideos = [];
+                totalReceived = 0;
+                totalAfterFilter = 0;
+                performSearch(false);
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').focus();
+        }
+
+        // FAVORITES MANAGEMENT
+        function toggleFavorite(event, videoId) {
+            event.stopPropagation();
+            
+            const video = allVideos.find(v => v.id.videoId === videoId);
+            if (!video) {
+                // Если видео не в текущих результатах, ищем в избранном
+                const favVideo = favorites.find(v => v.id.videoId === videoId);
+                if (!favVideo) return;
+            }
+            
+            const favIndex = favorites.findIndex(fav => fav.id.videoId === videoId);
+            
+            if (favIndex === -1) {
+                // Добавляем в избранное
+                favorites.push(video);
+                localStorage.setItem('ytFavorites', JSON.stringify(favorites));
+                updateFavCount();
+                
+                // Перерисовываем если есть результаты
+                if (allVideos.length > 0) {
+                    displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+                }
+                
+                // Обновляем панель избранного если открыта
+                if (favoritesPanelOpen) {
+                    renderFavoritesPanel();
+                }
+            } else {
+                // Удаляем из избранного
+                favorites.splice(favIndex, 1);
+                localStorage.setItem('ytFavorites', JSON.stringify(favorites));
+                updateFavCount();
+                
+                if (allVideos.length > 0) {
+                    displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+                }
+                
+                if (favoritesPanelOpen) {
+                    renderFavoritesPanel();
+                }
+            }
+        }
+
+        function updateFavCount() {
+            const countEl = document.getElementById('favCount');
+            if (countEl) {
+                countEl.textContent = favorites.length;
+            }
+        }
+
+        function toggleFavoritesPanel() {
+            favoritesPanelOpen = !favoritesPanelOpen;
+            
+            const panel = document.getElementById('favoritesPanel');
+            const backdrop = document.getElementById('favoritesBackdrop');
+            
+            if (favoritesPanelOpen) {
+                panel.style.right = '0';
+                backdrop.style.display = 'block';
+                renderFavoritesPanel();
+            } else {
+                panel.style.right = '-100%';
+                backdrop.style.display = 'none';
+            }
+        }
+
+        function renderFavoritesPanel() {
+            const content = document.getElementById('favoritesContent');
+            
+            if (favorites.length === 0) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-dim);">
+                        <i class="fa-solid fa-heart-crack" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>Избранное пустое</p>
+                        <p style="font-size: 0.75rem; margin-top: 10px;">
+                            Добавляйте видео нажимая на ❤️
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            const controls = `
+                <div style="display: flex; gap: 8px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
+                    <button onclick="exportFavorites()" style="
+                        flex: 1;
+                        background: rgba(56, 189, 248, 0.2);
+                        border: 1px solid var(--accent-blue);
+                        border-radius: 8px;
+                        padding: 8px 12px;
+                        color: var(--accent-blue);
+                        font-size: 0.8rem;
+                        cursor: pointer;
+                        font-weight: 600;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(56, 189, 248, 0.3)'" onmouseout="this.style.background='rgba(56, 189, 248, 0.2)'">
+                        <i class="fa-solid fa-download"></i> Экспорт
+                    </button>
+                    <button onclick="clearFavorites()" style="
+                        flex: 1;
+                        background: rgba(239, 68, 68, 0.2);
+                        border: 1px solid var(--accent-red);
+                        border-radius: 8px;
+                        padding: 8px 12px;
+                        color: var(--accent-red);
+                        font-size: 0.8rem;
+                        cursor: pointer;
+                        font-weight: 600;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(239, 68, 68, 0.3)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.2)'">
+                        <i class="fa-solid fa-trash"></i> Очистить
+                    </button>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 15px;">
+                    Всего: <strong>${favorites.length}</strong> видео
+                </div>
+            `;
+
+            const videosList = favorites.map(video => {
+                const videoId = video.id.videoId;
+                const title = video.snippet.title;
+                const channel = video.snippet.channelTitle;
+                const thumbnail = video.snippet.thumbnails.default.url;
+
+                return `
+                    <div style="
+                        background: var(--bg-card);
+                        border: 1px solid var(--border);
+                        border-radius: 10px;
+                        padding: 10px;
+                        margin-bottom: 10px;
+                        display: flex;
+                        gap: 10px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.borderColor='var(--accent-red)'; this.style.transform='translateX(-5px)';" 
+                       onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateX(0)';">
+                        <img src="${thumbnail}" onclick="playVideo('${videoId}', '${title.replace(/'/g, "\\'")}')" style="
+                            width: 120px;
+                            height: 90px;
+                            object-fit: cover;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            position: relative;
+                        ">
+                        <div style="flex: 1; min-width: 0;">
+                            <div onclick="playVideo('${videoId}', '${title.replace(/'/g, "\\'")}')" style="
+                                font-size: 0.85rem;
+                                font-weight: 600;
+                                margin-bottom: 5px;
+                                line-height: 1.3;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                cursor: pointer;
+                            ">${title}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">
+                                <i class="fa-brands fa-youtube"></i> ${channel}
+                            </div>
+                            <button onclick="toggleFavorite(event, '${videoId}')" style="
+                                background: rgba(239, 68, 68, 0.2);
+                                border: 1px solid var(--accent-red);
+                                border-radius: 6px;
+                                padding: 4px 10px;
+                                color: var(--accent-red);
+                                font-size: 0.75rem;
+                                cursor: pointer;
+                                font-weight: 600;
+                                transition: all 0.2s;
+                            " onmouseover="this.style.background='rgba(239, 68, 68, 0.3)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.2)'">
+                                <i class="fa-solid fa-trash"></i> Удалить
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            content.innerHTML = controls + videosList;
+        }
+
+        function exportFavorites() {
+            if (favorites.length === 0) {
+                alert('Избранное пустое');
+                return;
+            }
+            
+            const exportData = favorites.map(v => ({
+                title: v.snippet.title,
+                channel: v.snippet.channelTitle,
+                url: `https://www.youtube.com/watch?v=${v.id.videoId}`,
+                date: v.snippet.publishedAt
+            }));
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GospelTube_Избранное_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearFavorites() {
+            if (!confirm(`Удалить все ${favorites.length} видео из избранного?`)) return;
+            
+            favorites = [];
+            localStorage.setItem('ytFavorites', JSON.stringify(favorites));
+            updateFavCount();
+            renderFavoritesPanel();
+            
+            // Обновляем основные результаты если есть
+            if (allVideos.length > 0) {
+                displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+            }
+        }
+    </script>
+</body>
+</html>
