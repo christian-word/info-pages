@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta property="og:image" content="icoy.jpg">
     <title>GospelTube | Христианская музыка на YouTube</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -383,6 +384,28 @@
             to { transform: rotate(360deg); }
         }
 
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
         /* UTILITY BAR */
         .utility-bar {
             display: flex;
@@ -484,7 +507,7 @@
         <div class="search-section">
             <div class="search-bar">
                 <input type="text" id="searchInput" class="search-input" placeholder="Поиск христианской музыки..." autofocus>
-                <button class="btn-primary" onclick="performSearch()">
+                <button class="btn-primary" onclick="performSearchFromButton()">
                     <i class="fa-brands fa-youtube"></i> Найти
                 </button>
             </div>
@@ -639,6 +662,67 @@
             display: none;
         "></div>
 
+        <!-- HISTORY MODAL -->
+        <div id="historyModal" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.9);
+            z-index: 1002;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        " onclick="closeHistoryModal(event)">
+            <div style="
+                width: 90%;
+                max-width: 600px;
+                max-height: 80vh;
+                background: var(--bg-card);
+                border-radius: 16px;
+                padding: 20px;
+                position: relative;
+                overflow-y: auto;
+            " onclick="event.stopPropagation()">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
+                    <h2 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-blue);"></i> История поиска
+                    </h2>
+                    <button onclick="closeHistoryModal()" style="
+                        background: rgba(255,255,255,0.1);
+                        border: none;
+                        border-radius: 8px;
+                        padding: 8px 12px;
+                        color: var(--text-dim);
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div id="historyContent"></div>
+
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); text-align: center;">
+                    <button onclick="clearHistory()" style="
+                        background: rgba(239, 68, 68, 0.2);
+                        border: 1px solid var(--accent-red);
+                        border-radius: 8px;
+                        padding: 8px 16px;
+                        color: var(--accent-red);
+                        font-weight: 600;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    " onmouseover="this.style.background='rgba(239, 68, 68, 0.3)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.2)'">
+                        <i class="fa-solid fa-trash"></i> Очистить историю
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- VIDEO PLAYER MODAL -->
         <div id="videoPlayerModal" style="
             position: fixed;
@@ -734,7 +818,13 @@
         function attachEventListeners() {
             // Enter key
             document.getElementById('searchInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') performSearch();
+                if (e.key === 'Enter') {
+                    const query = document.getElementById('searchInput').value.trim();
+                    if (query) {
+                        saveToHistory(query); // Сохраняем при Enter
+                        performSearch();
+                    }
+                }
             });
 
             // Tags
@@ -742,6 +832,7 @@
                 tag.addEventListener('click', function() {
                     const query = this.dataset.query;
                     document.getElementById('searchInput').value = query;
+                    saveToHistory(query); // Сохраняем при клике на тег
                     performSearch();
                 });
             });
@@ -793,7 +884,6 @@
             if (!isLoadMore) {
                 // Новый поиск - сбрасываем всё
                 showLoading();
-                saveToHistory(query);
                 currentQuery = query;
                 nextPageToken = '';
                 allVideos = [];
@@ -1191,63 +1281,30 @@
                     </div>
                     <div id="downloadMenu" style="display: none; margin-top: 15px; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 10px; padding: 15px;">
                         <div style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px;">
-                            ⚠️ Выберите сервис для скачивания (откроется в новой вкладке):
+                            ⚠️ Скачивание через SaveFrom.net (откроется в новой вкладке):
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <a href="https://notube.net/ru/youtube-app-296?url=https://www.youtube.com/watch?v=${videoId}" target="_blank" style="
+                            <a href="https://ru.savefrom.net/#url=https://www.youtube.com/watch?v=${videoId}" target="_blank" style="
                                 background: var(--bg-card);
-                                border: 1px solid var(--border);
+                                border: 1px solid #22c55e;
                                 border-radius: 8px;
-                                padding: 10px 15px;
+                                padding: 12px 15px;
                                 color: var(--text-main);
                                 text-decoration: none;
                                 display: flex;
                                 justify-content: space-between;
                                 align-items: center;
                                 transition: all 0.2s;
-                                font-size: 0.85rem;
-                            " onmouseover="this.style.borderColor='#22c55e'; this.style.background='rgba(34, 197, 94, 0.1)'" 
-                               onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--bg-card)'">
-                                <span><i class="fa-solid fa-music" style="color: #22c55e;"></i> <strong>NoTube</strong> - MP3/MP4, без рекламы</span>
-                                <i class="fa-solid fa-external-link" style="color: var(--text-dim); font-size: 0.75rem;"></i>
-                            </a>
-                            <a href="https://en.savefrom.net/#url=https://www.youtube.com/watch?v=${videoId}" target="_blank" style="
-                                background: var(--bg-card);
-                                border: 1px solid var(--border);
-                                border-radius: 8px;
-                                padding: 10px 15px;
-                                color: var(--text-main);
-                                text-decoration: none;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                transition: all 0.2s;
-                                font-size: 0.85rem;
-                            " onmouseover="this.style.borderColor='#22c55e'; this.style.background='rgba(34, 197, 94, 0.1)'" 
-                               onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--bg-card)'">
-                                <span><i class="fa-solid fa-gem" style="color: #3b82f6;"></i> <strong>SaveFrom</strong> - Высокое качество</span>
-                                <i class="fa-solid fa-external-link" style="color: var(--text-dim); font-size: 0.75rem;"></i>
-                            </a>
-                            <a href="https://ssyoutube.com/watch?v=${videoId}" target="_blank" style="
-                                background: var(--bg-card);
-                                border: 1px solid var(--border);
-                                border-radius: 8px;
-                                padding: 10px 15px;
-                                color: var(--text-main);
-                                text-decoration: none;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                transition: all 0.2s;
-                                font-size: 0.85rem;
-                            " onmouseover="this.style.borderColor='#22c55e'; this.style.background='rgba(34, 197, 94, 0.1)'" 
-                               onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--bg-card)'">
-                                <span><i class="fa-solid fa-video" style="color: #ef4444;"></i> <strong>SSYouTube</strong> - Просто добавь SS</span>
+                                font-size: 0.9rem;
+                                font-weight: 600;
+                            " onmouseover="this.style.background='rgba(34, 197, 94, 0.2)'; this.style.transform='translateX(5px)'" 
+                               onmouseout="this.style.background='var(--bg-card)'; this.style.transform='translateX(0)'">
+                                <span><i class="fa-solid fa-download" style="color: #22c55e;"></i> Скачать MP3/MP4 на SaveFrom.net</span>
                                 <i class="fa-solid fa-external-link" style="color: var(--text-dim); font-size: 0.75rem;"></i>
                             </a>
                         </div>
                         <div style="margin-top: 10px; font-size: 0.75rem; color: var(--text-dim); text-align: center;">
-                            Мы не храним и не обрабатываем видео. Все операции выполняются на сторонних сервисах.
+                            Мы не храним и не обрабатываем видео. Все операции выполняются на SaveFrom.net
                         </div>
                     </div>
                 </div>
@@ -1352,11 +1409,87 @@
             }
         }
 
-        function showError(message) {
+        function showError(title, message, type = 'unknown') {
+            const icons = {
+                quota: 'fa-calendar-xmark',
+                key: 'fa-key',
+                invalid: 'fa-circle-exclamation',
+                network: 'fa-wifi',
+                unknown: 'fa-triangle-exclamation'
+            };
+            
+            const colors = {
+                quota: '#f59e0b',
+                key: '#ef4444',
+                invalid: '#f97316',
+                network: '#3b82f6',
+                unknown: '#ef4444'
+            };
+            
+            const icon = icons[type] || icons.unknown;
+            const color = colors[type] || colors.unknown;
+            
+            // Дополнительные действия в зависимости от типа ошибки
+            let actionButtons = '';
+            
+            if (type === 'quota') {
+                actionButtons = `
+                    <div style="margin-top: 20px;">
+                        <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px;">
+                            <strong>Что можно сделать:</strong>
+                        </p>
+                        <ul style="text-align: left; font-size: 0.85rem; color: var(--text-dim); padding-left: 20px;">
+                            <li>Подождать до полуночи по PST (обычно 11:00 МСК)</li>
+                            <li>Создать новый API ключ в Google Cloud Console</li>
+                            <li>Использовать другой Google аккаунт</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (type === 'key') {
+                actionButtons = `
+                    <div style="margin-top: 20px;">
+                        <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="
+                            display: inline-block;
+                            background: linear-gradient(135deg, #ef4444, #dc2626);
+                            border: none;
+                            border-radius: 10px;
+                            padding: 10px 20px;
+                            color: white;
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            text-decoration: none;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="fa-solid fa-external-link"></i> Получить новый ключ
+                        </a>
+                    </div>
+                `;
+            } else if (type === 'network') {
+                actionButtons = `
+                    <div style="margin-top: 20px;">
+                        <button onclick="location.reload()" style="
+                            background: linear-gradient(135deg, #3b82f6, #2563eb);
+                            border: none;
+                            border-radius: 10px;
+                            padding: 10px 20px;
+                            color: white;
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="fa-solid fa-rotate"></i> Обновить страницу
+                        </button>
+                    </div>
+                `;
+            }
+            
             document.getElementById('resultsArea').innerHTML = `
-                <div class="error">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <p>${message}</p>
+                <div class="error" style="text-align: center; padding: 60px 20px;">
+                    <i class="fa-solid ${icon}" style="font-size: 4rem; color: ${color}; margin-bottom: 20px;"></i>
+                    <h3 style="font-size: 1.3rem; color: var(--text-main); margin-bottom: 10px;">${title}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-dim); max-width: 500px; margin: 0 auto;">${message}</p>
+                    ${actionButtons}
                 </div>
             `;
         }
@@ -1372,16 +1505,115 @@
         }
 
         function showHistory() {
+            const modal = document.getElementById('historyModal');
+            const content = document.getElementById('historyContent');
+            
             if (searchHistory.length === 0) {
-                alert('История пуста');
-                return;
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-dim);">
+                        <i class="fa-solid fa-clock" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>История поиска пуста</p>
+                        <p style="font-size: 0.75rem; margin-top: 10px;">
+                            Ваши последние поисковые запросы будут отображаться здесь
+                        </p>
+                    </div>
+                `;
+            } else {
+                const historyList = searchHistory.map((item, index) => {
+                    const date = new Date(item.timestamp);
+                    const dateStr = date.toLocaleDateString('ru-RU', { 
+                        day: 'numeric', 
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    return `
+                        <div style="
+                            background: var(--bg-dark);
+                            border: 1px solid var(--border);
+                            border-radius: 10px;
+                            padding: 12px 15px;
+                            margin-bottom: 10px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.borderColor='var(--accent-blue)'; this.style.transform='translateX(5px)';" 
+                           onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateX(0)';"
+                           onclick="searchFromHistory('${item.query.replace(/'/g, "\\'")}')">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="
+                                    font-size: 0.9rem;
+                                    font-weight: 600;
+                                    color: var(--text-main);
+                                    margin-bottom: 4px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                ">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-blue); font-size: 0.8rem; margin-right: 8px;"></i>
+                                    ${item.query}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-dim);">
+                                    <i class="fa-regular fa-clock"></i> ${dateStr}
+                                </div>
+                            </div>
+                            <button onclick="event.stopPropagation(); removeFromHistory(${index})" style="
+                                background: none;
+                                border: none;
+                                color: var(--text-dim);
+                                cursor: pointer;
+                                padding: 5px;
+                                font-size: 1rem;
+                                transition: all 0.2s;
+                                margin-left: 10px;
+                            " onmouseover="this.style.color='var(--accent-red)'; this.style.transform='scale(1.2)'" 
+                               onmouseout="this.style.color='var(--text-dim)'; this.style.transform='scale(1)'">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                
+                content.innerHTML = `
+                    <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 15px;">
+                        Всего запросов: <strong>${searchHistory.length}</strong> (последние 20)
+                    </div>
+                    ${historyList}
+                `;
             }
             
-            const historyText = searchHistory.map((h, i) => 
-                `${i + 1}. ${h.query} (${new Date(h.timestamp).toLocaleString('ru-RU')})`
-            ).join('\n');
+            modal.style.display = 'flex';
+        }
+
+        function closeHistoryModal(event) {
+            if (event && event.target.id !== 'historyModal') return;
             
-            alert('📜 История поиска:\n\n' + historyText);
+            const modal = document.getElementById('historyModal');
+            modal.style.display = 'none';
+        }
+
+        function searchFromHistory(query) {
+            document.getElementById('searchInput').value = query;
+            closeHistoryModal();
+            // НЕ сохраняем в историю - это уже было!
+            performSearch();
+        }
+
+        function removeFromHistory(index) {
+            searchHistory.splice(index, 1);
+            localStorage.setItem('ytSearchHistory', JSON.stringify(searchHistory));
+            showHistory(); // Перерисовываем
+        }
+
+        function clearHistory() {
+            if (!confirm(`Удалить всю историю поиска (${searchHistory.length} записей)?`)) return;
+            
+            searchHistory = [];
+            localStorage.setItem('ytSearchHistory', JSON.stringify(searchHistory));
+            showHistory(); // Перерисовываем
         }
 
         function toggleSmartFilter() {
@@ -1396,7 +1628,7 @@
                 btn.style.color = 'var(--text-dim)';
             }
             
-            // Сбрасываем и делаем новый поиск
+            // Сбрасываем и делаем новый поиск (без сохранения в историю)
             const lastQuery = document.getElementById('searchInput').value.trim();
             if (lastQuery) {
                 nextPageToken = '';
@@ -1404,6 +1636,14 @@
                 totalReceived = 0;
                 totalAfterFilter = 0;
                 performSearch(false);
+            }
+        }
+
+        async function performSearchFromButton() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                saveToHistory(query); // Сохраняем при клике на кнопку "Найти"
+                await performSearch();
             }
         }
 
