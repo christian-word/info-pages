@@ -1266,30 +1266,24 @@
         // VIDEO PLAYER
         function playVideo(videoId, title) {
             currentPlayingVideo = videoId;
-            
-            // Находим полную информацию о видео из allVideos или favorites
-            let videoData = allVideos.find(v => v.id.videoId === videoId);
-            if (!videoData) {
-                videoData = favorites.find(v => v.id.videoId === videoId);
-            }
-            
-            const channelName = videoData ? videoData.snippet.channelTitle : 'Unknown';
-            const channelId = videoData ? videoData.snippet.channelId : '';
-            const publishedDate = videoData ? new Date(videoData.snippet.publishedAt).toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            }) : '';
-            
             const modal = document.getElementById('videoPlayerModal');
             const content = document.getElementById('videoPlayerContent');
             
-            modal.style.display = 'flex';
+            // Находим полную информацию о видео
+            const video = allVideos.find(v => v.id.videoId === videoId) || 
+                         favorites.find(v => v.id.videoId === videoId);
             
-            // Проверяем, добавлено ли видео в избранное
+            const channelTitle = video ? video.snippet.channelTitle : 'Неизвестный канал';
+            const channelId = video ? video.snippet.channelId : '';
+            const publishedDate = video ? new Date(video.snippet.publishedAt).toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }) : '';
+            
             const isFavorite = favorites.some(fav => fav.id.videoId === videoId);
-            const heartIcon = isFavorite ? 'fa-solid' : 'fa-regular';
-            const heartColor = isFavorite ? 'var(--accent-red)' : 'var(--text-dim)';
+            
+            modal.style.display = 'flex';
             
             // Пробуем загрузить iframe
             content.innerHTML = `
@@ -1311,110 +1305,98 @@
                     ></iframe>
                 </div>
                 
-                <!-- Video Info Card -->
-                <div style="
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                    padding: 15px;
-                    margin-top: 15px;
-                ">
-                    <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.4;">
-                        ${title}
-                    </h3>
+                <!-- VIDEO INFO CARD -->
+                <div style="margin-top: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
+                    <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.4;">${title}</h3>
                     
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1;">
-                            <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 600; margin-bottom: 4px;">
-                                <i class="fa-brands fa-youtube" style="color: var(--accent-red);"></i> ${channelName}
+                            <div style="font-size: 0.9rem; color: var(--text-main); font-weight: 600; margin-bottom: 3px;">
+                                <i class="fa-brands fa-youtube" style="color: var(--accent-red);"></i> ${channelTitle}
                             </div>
                             <div style="font-size: 0.75rem; color: var(--text-dim);">
-                                <i class="fa-regular fa-calendar"></i> ${publishedDate}
+                                <i class="fa-regular fa-calendar"></i> Опубликовано: ${publishedDate}
                             </div>
                         </div>
-                        <button onclick="toggleFavoriteFromPlayer('${videoId}', event)" id="playerFavBtn" style="
-                            background: rgba(239, 68, 68, 0.1);
-                            border: 1px solid ${heartColor};
-                            border-radius: 8px;
-                            padding: 8px 12px;
-                            color: ${heartColor};
-                            cursor: pointer;
-                            font-size: 1.2rem;
-                            transition: all 0.2s;
-                        " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                            <i class="${heartIcon} fa-heart"></i>
-                        </button>
                     </div>
                     
+                    <!-- ACTION BUTTONS -->
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        ${channelId ? `
-                        <a href="https://www.youtube.com/channel/${channelId}" target="_blank" style="
-                            background: rgba(56, 189, 248, 0.2);
-                            border: 1px solid var(--accent-blue);
-                            border-radius: 8px;
-                            padding: 8px 14px;
-                            color: var(--accent-blue);
-                            font-weight: 600;
-                            font-size: 0.8rem;
-                            cursor: pointer;
-                            transition: all 0.2s;
-                            text-decoration: none;
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 6px;
-                        " onmouseover="this.style.background='rgba(56, 189, 248, 0.3)'" onmouseout="this.style.background='rgba(56, 189, 248, 0.2)'">
-                            <i class="fa-solid fa-tv"></i> Перейти на канал
-                        </a>
-                        ` : ''}
-                        
                         <button onclick="openVideo('${videoId}')" style="
                             background: linear-gradient(135deg, #ef4444, #dc2626);
                             border: none;
                             border-radius: 8px;
-                            padding: 8px 14px;
+                            padding: 10px 16px;
                             color: white;
                             font-weight: 600;
-                            font-size: 0.8rem;
+                            font-size: 0.85rem;
                             cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-youtube"></i> YouTube
+                        </button>
+                        
+                        ${channelId ? `
+                        <a href="https://www.youtube.com/channel/${channelId}" target="_blank" style="
+                            background: rgba(135, 80, 200, 0.2);
+                            border: 1px solid #8750c8;
+                            border-radius: 8px;
+                            padding: 10px 16px;
+                            color: #a78bfa;
+                            text-decoration: none;
+                            font-size: 0.85rem;
+                            font-weight: 600;
                             transition: all 0.2s;
                             display: inline-flex;
                             align-items: center;
                             gap: 6px;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                            <i class="fa-brands fa-youtube"></i> Открыть на YouTube
-                        </button>
+                        " onmouseover="this.style.background='rgba(135, 80, 200, 0.3)'; this.style.transform='translateY(-2px)'" 
+                           onmouseout="this.style.background='rgba(135, 80, 200, 0.2)'; this.style.transform='translateY(0)'">
+                            <i class="fa-solid fa-tv"></i> Канал
+                        </a>
+                        ` : ''}
                         
                         <button onclick="showDownloadMenu('${videoId}')" style="
                             background: rgba(34, 197, 94, 0.2);
                             border: 1px solid #22c55e;
                             border-radius: 8px;
-                            padding: 8px 14px;
+                            padding: 10px 16px;
                             color: #22c55e;
                             font-weight: 600;
-                            font-size: 0.8rem;
+                            font-size: 0.85rem;
                             cursor: pointer;
                             transition: all 0.2s;
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 6px;
-                        " onmouseover="this.style.background='rgba(34, 197, 94, 0.3)'" onmouseout="this.style.background='rgba(34, 197, 94, 0.2)'">
+                        " onmouseover="this.style.background='rgba(34, 197, 94, 0.3)'; this.style.transform='translateY(-2px)'" 
+                           onmouseout="this.style.background='rgba(34, 197, 94, 0.2)'; this.style.transform='translateY(0)'">
                             <i class="fa-solid fa-download"></i> Скачать
                         </button>
                         
-                        <button onclick="shareVideo('${videoId}', '${title.replace(/'/g, "\\'")}'); event.stopPropagation();" style="
-                            background: rgba(139, 92, 246, 0.2);
-                            border: 1px solid #8b5cf6;
+                        <button onclick="toggleFavoriteFromPlayer('${videoId}')" style="
+                            background: ${isFavorite ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255,255,255,0.05)'};
+                            border: 1px solid ${isFavorite ? 'var(--accent-red)' : 'var(--border)'};
                             border-radius: 8px;
-                            padding: 8px 14px;
-                            color: #8b5cf6;
+                            padding: 10px 16px;
+                            color: ${isFavorite ? 'var(--accent-red)' : 'var(--text-dim)'};
                             font-weight: 600;
-                            font-size: 0.8rem;
+                            font-size: 0.85rem;
                             cursor: pointer;
                             transition: all 0.2s;
-                            display: inline-flex;
-                            align-items: center;
-                            gap: 6px;
-                        " onmouseover="this.style.background='rgba(139, 92, 246, 0.3)'" onmouseout="this.style.background='rgba(139, 92, 246, 0.2)'">
+                        " onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" id="favBtnPlayer">
+                            <i class="${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart"></i> ${isFavorite ? 'Избранное' : 'В избранное'}
+                        </button>
+                        
+                        <button onclick="shareVideo('${videoId}', '${title.replace(/'/g, "\\'")}'); event.stopPropagation();" style="
+                            background: rgba(56, 189, 248, 0.2);
+                            border: 1px solid var(--accent-blue);
+                            border-radius: 8px;
+                            padding: 10px 16px;
+                            color: var(--accent-blue);
+                            font-weight: 600;
+                            font-size: 0.85rem;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        " onmouseover="this.style.background='rgba(56, 189, 248, 0.3)'; this.style.transform='translateY(-2px)'" 
+                           onmouseout="this.style.background='rgba(56, 189, 248, 0.2)'; this.style.transform='translateY(0)'">
                             <i class="fa-solid fa-share"></i> Поделиться
                         </button>
                     </div>
@@ -1485,52 +1467,46 @@
             }, 100);
         }
 
-        function toggleFavoriteFromPlayer(videoId, event) {
-            if (event) event.stopPropagation();
+        function toggleFavoriteFromPlayer(videoId) {
+            const video = allVideos.find(v => v.id.videoId === videoId) || 
+                         favorites.find(v => v.id.videoId === videoId);
             
-            // Находим видео
-            let video = allVideos.find(v => v.id.videoId === videoId);
-            if (!video) {
-                video = favorites.find(v => v.id.videoId === videoId);
-            }
-            if (!video) {
-                showNotification('❌ Ошибка: видео не найдено', 'error');
-                return;
-            }
+            if (!video) return;
             
             const favIndex = favorites.findIndex(fav => fav.id.videoId === videoId);
+            const btn = document.getElementById('favBtnPlayer');
             
             if (favIndex === -1) {
                 // Добавляем в избранное
                 favorites.push(video);
                 localStorage.setItem('ytFavorites', JSON.stringify(favorites));
                 updateFavCount();
-                showNotification('✅ Добавлено в избранное', 'success');
                 
-                // Обновляем кнопку в плеере
-                const btn = document.getElementById('playerFavBtn');
                 if (btn) {
-                    btn.style.color = 'var(--accent-red)';
+                    btn.style.background = 'rgba(239, 68, 68, 0.2)';
                     btn.style.borderColor = 'var(--accent-red)';
-                    btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                    btn.style.color = 'var(--accent-red)';
+                    btn.innerHTML = '<i class="fa-solid fa-heart"></i> В избранном';
                 }
+                
+                showNotification('✅ Добавлено в избранное', 'success');
             } else {
                 // Удаляем из избранного
                 favorites.splice(favIndex, 1);
                 localStorage.setItem('ytFavorites', JSON.stringify(favorites));
                 updateFavCount();
-                showNotification('❌ Удалено из избранного', 'info');
                 
-                // Обновляем кнопку в плеере
-                const btn = document.getElementById('playerFavBtn');
                 if (btn) {
+                    btn.style.background = 'rgba(255,255,255,0.05)';
+                    btn.style.borderColor = 'var(--border)';
                     btn.style.color = 'var(--text-dim)';
-                    btn.style.borderColor = 'var(--text-dim)';
-                    btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
+                    btn.innerHTML = '<i class="fa-regular fa-heart"></i> В избранное';
                 }
+                
+                showNotification('✅ Удалено из избранного', 'success');
             }
             
-            // Обновляем основные результаты если есть
+            // Обновляем основные результаты
             if (allVideos.length > 0) {
                 displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
             }
