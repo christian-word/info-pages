@@ -1332,7 +1332,7 @@
                                 <i class="fa-regular fa-calendar"></i> ${publishedDate}
                             </div>
                         </div>
-                        <button onclick="toggleFavoriteFromPlayer('${videoId}')" id="playerFavBtn" style="
+                        <button onclick="toggleFavoriteFromPlayer('${videoId}', event)" id="playerFavBtn" style="
                             background: rgba(239, 68, 68, 0.1);
                             border: 1px solid ${heartColor};
                             border-radius: 8px;
@@ -1485,13 +1485,18 @@
             }, 100);
         }
 
-        function toggleFavoriteFromPlayer(videoId) {
+        function toggleFavoriteFromPlayer(videoId, event) {
+            if (event) event.stopPropagation();
+            
             // Находим видео
             let video = allVideos.find(v => v.id.videoId === videoId);
             if (!video) {
                 video = favorites.find(v => v.id.videoId === videoId);
             }
-            if (!video) return;
+            if (!video) {
+                showNotification('❌ Ошибка: видео не найдено', 'error');
+                return;
+            }
             
             const favIndex = favorites.findIndex(fav => fav.id.videoId === videoId);
             
@@ -1528,6 +1533,11 @@
             // Обновляем основные результаты если есть
             if (allVideos.length > 0) {
                 displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+            }
+            
+            // Обновляем панель избранного если открыта
+            if (favoritesPanelOpen) {
+                renderFavoritesPanel();
             }
         }
 
