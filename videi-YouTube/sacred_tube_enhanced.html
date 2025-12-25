@@ -523,7 +523,7 @@
                 <div class="tag" data-query="фонограмма христианская">
                     <i class="fa-solid fa-music"></i> Фонограмма
                 </div>
-                <div class="tag" data-query="молитва христианская">
+                <div class="tag" data-query="молитва евангельская -православ -католик -икона -монах">
                     <i class="fa-solid fa-hands"></i> Молитва
                 </div>
                 <button class="btn-more" onclick="toggleFilters()">
@@ -993,6 +993,14 @@
                 currentQuery.toLowerCase().includes(kw)
             );
             
+            // Список православных/католических маркеров (снижаем приоритет)
+            const orthodoxCatholicWords = [
+                'православ', 'католик', 'икона', 'монах', 'монастырь', 'патриарх',
+                'orthodox', 'catholic', 'vatican', 'pope', 'priest', 'monastery',
+                'отец', 'батюшка', 'митрополит', 'епископ', 'святой', 'мощи',
+                'акафист', 'канон', 'литургия', 'всенощная', 'богородица'
+            ];
+            
             return videos.map(video => {
                 const title = video.snippet.title.toLowerCase();
                 const description = video.snippet.description.toLowerCase();
@@ -1030,6 +1038,11 @@
                         if (fullText.includes(kw)) score += 3; // Дополнительно +3
                     });
                 }
+                
+                // ШТРАФ: Православный/католический контент (снижаем приоритет)
+                orthodoxCatholicWords.forEach(word => {
+                    if (fullText.includes(word)) score -= 10; // Минус 10 баллов!
+                });
                 
                 return { ...video, christianScore: score };
             })
