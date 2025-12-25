@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -520,11 +520,11 @@
                 <div class="tag" data-query="минусовка христианская">
                     <i class="fa-solid fa-volume-xmark"></i> Минусовка
                 </div>
-                <div class="tag" data-query="караоке христианские песни">
-                    <i class="fa-solid fa-microphone"></i> Караоке
+                <div class="tag" data-query="фонограмма христианская">
+                    <i class="fa-solid fa-music"></i> Фонограмма
                 </div>
-                <div class="tag" data-query="хвала и поклонение">
-                    <i class="fa-solid fa-dove"></i> Хвала
+                <div class="tag" data-query="молитва христианская">
+                    <i class="fa-solid fa-hands"></i> Молитва
                 </div>
                 <button class="btn-more" onclick="toggleFilters()">
                     <i class="fa-solid fa-sliders"></i> Открыть все фильтры
@@ -537,6 +537,8 @@
                 <div class="filter-group">
                     <div class="filter-label">Дополнительные теги</div>
                     <div class="filter-options">
+                        <div class="tag" data-query="караоке христианские песни">Караоке</div>
+                        <div class="tag" data-query="хвала и поклонение">Хвала</div>
                         <div class="tag" data-query="проповедь христианская">Проповедь</div>
                         <div class="tag" data-query="псалмы">Псалмы</div>
                         <div class="tag" data-query="гимны">Гимны</div>
@@ -775,14 +777,16 @@
         // SMART CHRISTIAN FILTER SYSTEM
         const christianKeywords = {
             // Уровень 1: Core keywords (100% христианский контент)
-            core: ['христиан', 'worship', 'gospel', 'псалом', 'хвала', 'поклонение', 'прославление'],
+            core: ['христиан', 'worship', 'gospel', 'псалом', 'хвала', 'поклонение', 'прославление', 
+                   'фонограмм', 'молитва'],
             
             // Уровень 2: Strong markers (90% вероятность)
-            strong: ['господь', 'бог', 'христос', 'иисус', 'мсц', 'ехб', 'jesus', 'god', 'christ', 'praise'],
+            strong: ['господь', 'бог', 'христос', 'иисус', 'мсц', 'ехб', 'jesus', 'god', 'christ', 'praise', 
+                    'prayer', 'минус'],
             
             // Уровень 3: Additional markers (70% вероятность)
-            additional: ['вера', 'молитва', 'душа', 'небо', 'спасение', 'благовестие', 'prayer', 'faith', 
-                        'alleluia', 'hallelujah', 'amen', 'благословение', 'покаяние', 'гимн'],
+            additional: ['вера', 'душа', 'небо', 'спасение', 'благовестие', 'faith', 
+                        'alleluia', 'hallelujah', 'amen', 'благословение', 'покаяние', 'гимн', 'караоке'],
             
             // Уровень 4: Sermon/Preaching keywords (для проповедей)
             sermon: ['проповедь', 'sermon', 'pastor', 'пастор', 'church', 'церковь', 'служение', 'учение', 
