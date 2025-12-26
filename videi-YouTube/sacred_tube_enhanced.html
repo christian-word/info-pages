@@ -480,26 +480,43 @@
 <body>
     <div class="container">
         <header>
-            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; gap: 10px;">
                 <div style="text-align: left;">
                     <h1>🎵 GospelTube</h1>
                     <p class="subtitle">Христианская Музыка & Проповеди на YouTube</p>
                 </div>
-                <button onclick="toggleFavoritesPanel()" style="
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                    padding: 10px 20px;
-                    color: var(--text-main);
-                    font-weight: 500;
-                    font-size: 0.85rem;
-                    cursor: pointer;
-                    transition: all 0.3s;
-                    white-space: nowrap;
-                " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--accent-red)'; this.style.transform='translateY(-2px)';" 
-                   onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='var(--border)'; this.style.transform='translateY(0)';">
-                    <i class="fa-solid fa-heart" style="color: var(--accent-red);"></i> Избранное <span id="favCount" style="background: rgba(239, 68, 68, 0.2); color: var(--accent-red); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; margin-left: 5px; font-weight: 600;">0</span>
-                </button>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="window.open('https://christian-word.github.io/test/stream_AI/sacred_stream_fixed_AI.html#gsc.tab=0', '_blank')" style="
+                        background: rgba(56, 189, 248, 0.1);
+                        border: 1px solid var(--accent-blue);
+                        border-radius: 12px;
+                        padding: 10px 20px;
+                        color: var(--accent-blue);
+                        font-weight: 500;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        white-space: nowrap;
+                    " onmouseover="this.style.background='rgba(56, 189, 248, 0.2)'; this.style.borderColor='var(--accent-blue)'; this.style.transform='translateY(-2px)';" 
+                       onmouseout="this.style.background='rgba(56, 189, 248, 0.1)'; this.style.borderColor='var(--accent-blue)'; this.style.transform='translateY(0)';">
+                        <i class="fa-solid fa-wave-square"></i> Sacred Stream
+                    </button>
+                    <button onclick="toggleFavoritesPanel()" style="
+                        background: rgba(255,255,255,0.05);
+                        border: 1px solid var(--border);
+                        border-radius: 12px;
+                        padding: 10px 20px;
+                        color: var(--text-main);
+                        font-weight: 500;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        white-space: nowrap;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--accent-red)'; this.style.transform='translateY(-2px)';" 
+                       onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='var(--border)'; this.style.transform='translateY(0)';">
+                        <i class="fa-solid fa-heart" style="color: var(--accent-red);"></i> Избранное <span id="favCount" style="background: rgba(239, 68, 68, 0.2); color: var(--accent-red); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; margin-left: 5px; font-weight: 600;">0</span>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -1486,7 +1503,7 @@
                     btn.style.background = 'rgba(239, 68, 68, 0.2)';
                     btn.style.borderColor = 'var(--accent-red)';
                     btn.style.color = 'var(--accent-red)';
-                    btn.innerHTML = '<i class="fa-solid fa-heart"></i> В избранном';
+                    btn.innerHTML = '<i class="fa-solid fa-heart"></i> Избранное';
                 }
                 
                 showNotification('✅ Добавлено в избранное', 'success');
@@ -1506,7 +1523,7 @@
                 showNotification('✅ Удалено из избранного', 'success');
             }
             
-            // Обновляем основные результаты
+            // ✨ ОБНОВЛЯЕМ КАРТОЧКИ В ПОИСКЕ - сердечки синхронизируются!
             if (allVideos.length > 0) {
                 displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
             }
@@ -1537,6 +1554,11 @@
             content.innerHTML = ''; // Останавливаем видео
             
             currentPlayingVideo = null;
+            
+            // ✨ ОБНОВЛЯЕМ РЕЗУЛЬТАТЫ ПОИСКА при закрытии плеера
+            if (allVideos.length > 0) {
+                displayResults(allVideos, totalReceived, totalAfterFilter, nextPageToken);
+            }
         }
 
         function shareVideo(videoId, title) {
