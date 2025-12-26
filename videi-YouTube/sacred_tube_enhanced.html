@@ -406,6 +406,33 @@
             }
         }
 
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #ef4444 rgba(255,255,255,0.05);
+        }
+
         /* UTILITY BAR */
         .utility-bar {
             display: flex;
@@ -754,19 +781,25 @@
             display: none;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
         " onclick="closeVideoPlayer(event)">
             <div style="
                 width: 90%;
                 max-width: 1200px;
+                max-height: 90vh;
                 background: var(--bg-card);
                 border-radius: 16px;
                 padding: 20px;
                 position: relative;
+                overflow-y: auto;
+                margin: auto;
             " onclick="event.stopPropagation()">
                 <button onclick="closeVideoPlayer()" style="
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
+                    position: sticky;
+                    top: 0;
+                    right: 0;
+                    float: right;
                     background: rgba(255,255,255,0.1);
                     border: none;
                     border-radius: 8px;
@@ -780,7 +813,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 
-                <div id="videoPlayerContent" style="margin-top: 20px;">
+                <div id="videoPlayerContent" style="margin-top: 10px; clear: both;">
                     <!-- Player will be injected here -->
                 </div>
             </div>
