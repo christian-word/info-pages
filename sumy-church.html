@@ -1,0 +1,910 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архів Відео | Дім Євангелія</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .header-site {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header-site h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(to right, #f8fafc, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .controls-section {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        
+        .search-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.7);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--accent-green);
+        }
+        
+        .btn-clear-all {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-clear-all:hover {
+            opacity: 0.9;
+        }
+
+        .history-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
+            min-height: 28px;
+        }
+        
+        .history-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .history-btn:hover,
+        .history-btn:focus {
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+            outline: 2px solid var(--accent-green);
+            outline-offset: 2px;
+        }
+
+        .main-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .expandable-panel {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .date-filter-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        input[type="date"] {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 12px;
+            color-scheme: dark;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .tag-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+        
+        .tag-btn:hover,
+        .tag-btn:focus {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: var(--accent-green);
+            outline: 2px solid var(--accent-green);
+            outline-offset: 2px;
+        }
+        
+        .toggle-btn {
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn:hover,
+        .toggle-btn:focus {
+            background: rgba(148, 163, 184, 0.2);
+            outline: 2px solid var(--text-dim);
+            outline-offset: 2px;
+        }
+        
+        .toggle-btn.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+        
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .video-card:hover,
+        .video-card:focus {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            outline: 2px solid var(--accent-green);
+            outline-offset: 2px;
+        }
+        
+        .thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+        
+        .info {
+            padding: 15px;
+        }
+        
+        .video-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            height: 2.8em;
+            line-height: 1.4;
+            color: var(--text-main);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+        }
+        
+        .video-meta i {
+            color: var(--accent-green);
+            margin-right: 4px;
+        }
+        
+        #stats {
+            margin-top: 20px;
+            color: var(--accent-green);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            font-size: 2rem;
+            color: var(--accent-green);
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            width: 95%;
+            max-width: 1000px;
+            position: relative;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            line-height: 1;
+        }
+        
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent-red);
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+        
+        .error-message {
+            color: var(--accent-red);
+            text-align: center;
+            padding: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header-site h1 {
+                font-size: 1.5rem;
+            }
+            
+            .controls-section {
+                padding: 15px;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-site">
+    <h1>АРХІВ ВІДЕО</h1>
+    <p style="color:var(--text-dim)">Церква "Дім Євангелія", м. Суми</p>
+</div>
+
+<div class="controls-section">
+    <div class="search-wrapper">
+        <label for="searchInput" class="visually-hidden">Пошук відео</label>
+        <input type="text" id="searchInput" placeholder="Пошук проповідника або теми..." aria-label="Пошук відео по проповіднику або темі">
+        <button class="btn-clear-all" id="btnAllClear" aria-label="Скинути всі фільтри">Скинути</button>
+    </div>
+
+    <div class="history-tags" id="historyContainer" role="navigation" aria-label="Історія пошуку"></div>
+
+    <div class="filter-group">
+        <span class="filter-label">Проповідники</span>
+        <div class="quick-tags" id="preachersContainer" role="group" aria-label="Фільтр по проповідниках"></div>
+    </div>
+
+    <div class="main-actions" style="margin-top: 20px;">
+        <button class="toggle-btn" id="btnShowCategories" aria-expanded="false" aria-controls="panelCategories">
+            <i class="fas fa-list" aria-hidden="true"></i> Категорії
+        </button>
+        <button class="toggle-btn" id="btnShowDate" aria-expanded="false" aria-controls="panelDate">
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i> По даті
+        </button>
+    </div>
+
+    <div id="panelCategories" class="expandable-panel" role="region" aria-labelledby="btnShowCategories">
+        <div class="quick-tags" id="servicesContainer" role="group" aria-label="Категорії відео"></div>
+    </div>
+
+    <div id="panelDate" class="expandable-panel" role="region" aria-labelledby="btnShowDate">
+        <div class="date-filter-box">
+            <div class="date-input-group">
+                <label for="dateStart">Від:</label>
+                <input type="date" id="dateStart" aria-label="Дата початку">
+            </div>
+            <div class="date-input-group">
+                <label for="dateEnd">До:</label>
+                <input type="date" id="dateEnd" aria-label="Дата кінця">
+            </div>
+        </div>
+    </div>
+
+    <div id="stats" role="status" aria-live="polite">
+        <i class="fas fa-circle-notch loading-spinner" id="spinner" aria-hidden="true"></i>
+        <span id="statsText">Завантаження...</span>
+    </div>
+</div>
+
+<main class="video-grid" id="videoGrid" role="main" aria-label="Список відео"></main>
+
+<div id="videoModal" class="video-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModal" aria-label="Закрити відео">&times;</button>
+        <h2 id="modalTitle" class="visually-hidden">Відтворення відео</h2>
+        <div class="video-container">
+            <iframe id="youtubePlayer" src="" allowfullscreen title="YouTube відео плеєр"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+// Константи
+const CONFIG = {
+    FILE_URL: 'https://raw.githubusercontent.com/ruyriy/Audio-christ/refs/heads/main/filtered_video/filtered_video.txt',
+    STORAGE_KEY: 'churchSearchHistory',
+    MAX_HISTORY: 5,
+    MIN_SEARCH_LENGTH: 3,
+    DEBOUNCE_DELAY: 300
+};
+
+const MONTHS_UA = {
+    "січня": 0, "лютого": 1, "березня": 2, "квітня": 3,
+    "травня": 4, "червня": 5, "липня": 6, "серпня": 7,
+    "вересня": 8, "жовтня": 9, "листопада": 10, "грудня": 11
+};
+
+const PREACHERS = [
+    { key: 'Марйоха', label: 'Марйоха М.' },
+    { key: 'Міщенко', label: 'Міщенко А.' },
+    { key: 'Булигін', label: 'Булигін А.' },
+    { key: 'Зінченко', label: 'Зінченко В.' },
+    { key: 'Лаба', label: 'Лаба В.' },
+    { key: 'Парфило', label: 'Парфило А.' },
+    { key: 'Комисар', label: 'Комисар С.' },
+    { key: 'Іванченко', label: 'Іванченко О.' }
+];
+
+const SERVICES = [
+    { key: 'Богослуж', label: 'Богослужіння' },
+    { key: 'Вірш', label: 'Вірші' },
+    { key: 'Хор', label: 'Хор' },
+    { key: 'Прославлення', label: 'Прославлення' },
+    { key: '', label: 'Всі відео' }
+];
+
+// Глобальні змінні
+let allVideos = [];
+let normalizedVideos = [];
+let searchHistory = [];
+let debounceTimer = null;
+let lastFocusedElement = null;
+
+// Утиліти
+function normalize(text) {
+    if (!text) return '';
+    return text.toLowerCase()
+        .replace(/[ііїi]/g, 'i')
+        .replace(/[иы]/g, 'и')
+        .replace(/[^a-zа-я0-9]/gi, '');
+}
+
+function parseUkrainianDate(dateString) {
+    if (!dateString) return null;
+    const parts = dateString.split(' ');
+    if (parts.length < 3) return null;
+    
+    const day = parseInt(parts[0]);
+    const month = MONTHS_UA[parts[1].toLowerCase()];
+    const year = parseInt(parts[2]);
+    
+    if (isNaN(day) || month === undefined || isNaN(year)) return null;
+    
+    return new Date(year, month, day);
+}
+
+function extractDateFromTitle(title) {
+    const dateMatch = title.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+    if (dateMatch) {
+        return new Date(
+            parseInt(dateMatch[3]),
+            parseInt(dateMatch[2]) - 1,
+            parseInt(dateMatch[1])
+        );
+    }
+    return null;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showError(message) {
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = `<div class="error-message" role="alert">${escapeHtml(message)}</div>`;
+}
+
+// Робота з історією пошуку
+function loadSearchHistory() {
+    try {
+        const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
+        searchHistory = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Помилка завантаження історії:', error);
+        searchHistory = [];
+    }
+}
+
+function saveSearchToHistory(query) {
+    if (!query || query.length < CONFIG.MIN_SEARCH_LENGTH) return;
+    
+    searchHistory = searchHistory.filter(item => item !== query);
+    searchHistory.unshift(query);
+    searchHistory = searchHistory.slice(0, CONFIG.MAX_HISTORY);
+    
+    try {
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(searchHistory));
+    } catch (error) {
+        console.error('Помилка збереження історії:', error);
+    }
+    
+    updateHistoryUI();
+}
+
+function updateHistoryUI() {
+    const container = document.getElementById('historyContainer');
+    
+    if (searchHistory.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = searchHistory
+        .map(query => `
+            <button class="history-btn" 
+                    data-query="${escapeHtml(query)}"
+                    aria-label="Застосувати пошук: ${escapeHtml(query)}">
+                ${escapeHtml(query)}
+            </button>
+        `).join('');
+    
+    // Додаємо обробники подій
+    container.querySelectorAll('.history-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const query = this.getAttribute('data-query');
+            applySearchFromHistory(query);
+        });
+    });
+}
+
+function applySearchFromHistory(query) {
+    document.getElementById('searchInput').value = query;
+    renderVideoGrid();
+}
+
+// Завантаження даних
+async function loadVideoData() {
+    const spinner = document.getElementById('spinner');
+    const statsText = document.getElementById('statsText');
+    
+    spinner.style.display = 'block';
+    statsText.textContent = 'Завантаження...';
+    
+    try {
+        const response = await fetch(`${CONFIG.FILE_URL}?t=${Date.now()}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP помилка! статус: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        
+        allVideos = text
+            .split('\n')
+            .filter(line => line.includes('§'))
+            .map(line => {
+                const parts = line.split('§');
+                return {
+                    year: parts[1],
+                    id: parts[2],
+                    title: parts[3],
+                    dateStr: parts[4],
+                    techDate: parseUkrainianDate(parts[4])
+                };
+            });
+        
+        // Попередня нормалізація для оптимізації
+        normalizedVideos = allVideos.map(video => ({
+            ...video,
+            normalizedTitle: normalize(video.title)
+        }));
+        
+        renderVideoGrid();
+        
+    } catch (error) {
+        console.error('Помилка завантаження даних:', error);
+        statsText.textContent = 'Помилка завантаження';
+        showError(`Не вдалося завантажити відео: ${error.message}`);
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+// Рендеринг відео
+function renderVideoGrid() {
+    const searchInput = document.getElementById('searchInput');
+    const queryRaw = searchInput.value.trim();
+    const query = normalize(queryRaw);
+    const startDate = document.getElementById('dateStart').value;
+    const endDate = document.getElementById('dateEnd').value;
+
+    // Зберігаємо в історію
+    if (query.length >= CONFIG.MIN_SEARCH_LENGTH) {
+        saveSearchToHistory(queryRaw);
+    }
+
+    // Фільтрація
+    const filteredVideos = normalizedVideos.filter(video => {
+        // Текстовий пошук
+        const matchesText = video.normalizedTitle.includes(query);
+        if (!matchesText) return false;
+
+        // Фільтр по даті
+        let videoDate = video.techDate || extractDateFromTitle(video.title);
+        
+        if (videoDate && (startDate || endDate)) {
+            const compareTime = new Date(
+                videoDate.getFullYear(),
+                videoDate.getMonth(),
+                videoDate.getDate()
+            ).getTime();
+            
+            if (startDate) {
+                const startTime = new Date(startDate).getTime();
+                if (compareTime < startTime) return false;
+            }
+            
+            if (endDate) {
+                const endTime = new Date(endDate).getTime();
+                if (compareTime > endTime) return false;
+            }
+        }
+
+        return true;
+    });
+
+    // Рендеринг карток
+    const grid = document.getElementById('videoGrid');
+    
+    if (filteredVideos.length === 0) {
+        grid.innerHTML = '<div class="error-message">Відео не знайдено. Спробуйте змінити параметри пошуку.</div>';
+    } else {
+        grid.innerHTML = filteredVideos
+            .map(video => `
+                <div class="video-card" 
+                     tabindex="0"
+                     role="button"
+                     data-video-id="${escapeHtml(video.id)}"
+                     aria-label="Відкрити відео: ${escapeHtml(video.title)}">
+                    <img class="thumbnail" 
+                         src="https://img.youtube.com/vi/${escapeHtml(video.id)}/mqdefault.jpg" 
+                         alt="Превью відео: ${escapeHtml(video.title)}"
+                         loading="lazy">
+                    <div class="info">
+                        <div class="video-title">${escapeHtml(video.title)}</div>
+                        <div class="video-meta">
+                            <span><i class="far fa-calendar-alt" aria-hidden="true"></i> ${escapeHtml(video.dateStr)}</span>
+                            <span><i class="fab fa-youtube" aria-hidden="true"></i> ${escapeHtml(video.year)} р.</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        
+        // Додаємо обробники подій для карток
+        grid.querySelectorAll('.video-card').forEach(card => {
+            const videoId = card.getAttribute('data-video-id');
+            
+            card.addEventListener('click', () => openVideoModal(videoId));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openVideoModal(videoId);
+                }
+            });
+        });
+    }
+
+    // Оновлюємо статистику
+    document.getElementById('statsText').textContent = `Знайдено: ${filteredVideos.length}`;
+}
+
+// Модальне вікно
+function openVideoModal(videoId) {
+    lastFocusedElement = document.activeElement;
+    
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('youtubePlayer');
+    
+    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Фокус на кнопці закриття
+    setTimeout(() => {
+        document.getElementById('closeModal').focus();
+    }, 100);
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const player = document.getElementById('youtubePlayer');
+    
+    player.src = '';
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // Повертаємо фокус
+    if (lastFocusedElement) {
+        lastFocusedElement.focus();
+        lastFocusedElement = null;
+    }
+}
+
+// Ініціалізація інтерфейсу
+function setupInterface() {
+    // Проповідники
+    const preachersContainer = document.getElementById('preachersContainer');
+    PREACHERS.forEach(preacher => {
+        const button = document.createElement('button');
+        button.className = 'tag-btn';
+        button.textContent = preacher.label;
+        button.setAttribute('aria-label', `Фільтрувати по проповіднику: ${preacher.label}`);
+        button.addEventListener('click', () => {
+            document.getElementById('searchInput').value = preacher.key;
+            renderVideoGrid();
+        });
+        preachersContainer.appendChild(button);
+    });
+
+    // Категорії
+    const servicesContainer = document.getElementById('servicesContainer');
+    SERVICES.forEach(service => {
+        const button = document.createElement('button');
+        button.className = 'tag-btn';
+        button.textContent = service.label;
+        button.setAttribute('aria-label', `Фільтрувати по категорії: ${service.label}`);
+        button.addEventListener('click', () => {
+            document.getElementById('searchInput').value = service.key;
+            renderVideoGrid();
+        });
+        servicesContainer.appendChild(button);
+    });
+
+    // Кнопки розгортання панелей
+    const btnShowCategories = document.getElementById('btnShowCategories');
+    const panelCategories = document.getElementById('panelCategories');
+    
+    btnShowCategories.addEventListener('click', () => {
+        const isVisible = panelCategories.style.display === 'block';
+        panelCategories.style.display = isVisible ? 'none' : 'block';
+        btnShowCategories.classList.toggle('active', !isVisible);
+        btnShowCategories.setAttribute('aria-expanded', !isVisible);
+    });
+
+    const btnShowDate = document.getElementById('btnShowDate');
+    const panelDate = document.getElementById('panelDate');
+    
+    btnShowDate.addEventListener('click', () => {
+        const isVisible = panelDate.style.display === 'block';
+        panelDate.style.display = isVisible ? 'none' : 'block';
+        btnShowDate.classList.toggle('active', !isVisible);
+        btnShowDate.setAttribute('aria-expanded', !isVisible);
+    });
+
+    // Кнопка "Скинути всі фільтри"
+    document.getElementById('btnAllClear').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('dateStart').value = '';
+        document.getElementById('dateEnd').value = '';
+        renderVideoGrid();
+    });
+
+    // Закриття модального вікна
+    document.getElementById('closeModal').addEventListener('click', closeVideoModal);
+    
+    // Закриття по кліку поза контентом
+    document.getElementById('videoModal').addEventListener('click', (e) => {
+        if (e.target.id === 'videoModal') {
+            closeVideoModal();
+        }
+    });
+
+    // Обробка клавіатури
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('videoModal');
+        
+        // ESC для закриття модального вікна
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeVideoModal();
+        }
+        
+        // Tab trap для модального вікна
+        if (e.key === 'Tab' && modal.style.display === 'flex') {
+            const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            if (e.shiftKey && document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+            } else if (!e.shiftKey && document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+            }
+        }
+    });
+
+    // Пошук з debounce
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            renderVideoGrid();
+        }, CONFIG.DEBOUNCE_DELAY);
+    });
+
+    // Зміна дат
+    document.getElementById('dateStart').addEventListener('change', renderVideoGrid);
+    document.getElementById('dateEnd').addEventListener('change', renderVideoGrid);
+}
+
+// Ініціалізація при завантаженні сторінки
+function init() {
+    loadSearchHistory();
+    updateHistoryUI();
+    setupInterface();
+    loadVideoData();
+}
+
+// Запуск
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+</script>
+</body>
+</html>
