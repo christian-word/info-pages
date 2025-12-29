@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -81,19 +81,24 @@
         }
         
         .btn-clear-all {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 0 20px;
+            background: rgba(239, 68, 68, 0.15);
+            backdrop-filter: blur(10px);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0 16px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.85rem;
-            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
-        .btn-clear-all:hover {
-            opacity: 0.9;
+        .btn-clear-all:hover,
+        .btn-clear-all:focus {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: var(--accent-red);
         }
 
         .history-tags {
@@ -116,12 +121,9 @@
             transition: all 0.2s;
         }
         
-        .history-btn:hover,
-        .history-btn:focus {
+        .history-btn:hover {
             color: var(--accent-green);
             border-color: var(--accent-green);
-            outline: 2px solid var(--accent-green);
-            outline-offset: 2px;
         }
 
         .main-actions {
@@ -165,17 +167,6 @@
             color-scheme: dark;
         }
         
-        .filter-label {
-            display: block;
-            margin-bottom: 12px;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
         .quick-tags {
             display: flex;
             flex-wrap: wrap;
@@ -194,12 +185,9 @@
             font-size: 0.85rem;
         }
         
-        .tag-btn:hover,
-        .tag-btn:focus {
+        .tag-btn:hover {
             background: rgba(34, 197, 94, 0.2);
             border-color: var(--accent-green);
-            outline: 2px solid var(--accent-green);
-            outline-offset: 2px;
         }
         
         .toggle-btn {
@@ -216,11 +204,8 @@
             transition: all 0.2s;
         }
         
-        .toggle-btn:hover,
-        .toggle-btn:focus {
+        .toggle-btn:hover {
             background: rgba(148, 163, 184, 0.2);
-            outline: 2px solid var(--text-dim);
-            outline-offset: 2px;
         }
         
         .toggle-btn.active {
@@ -246,13 +231,10 @@
             cursor: pointer;
         }
         
-        .video-card:hover,
-        .video-card:focus {
+        .video-card:hover {
             transform: translateY(-5px);
             border-color: var(--accent-green);
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-            outline: 2px solid var(--accent-green);
-            outline-offset: 2px;
         }
         
         .thumbnail {
@@ -360,11 +342,8 @@
             line-height: 1;
         }
         
-        .close-modal:hover,
-        .close-modal:focus {
+        .close-modal:hover {
             color: var(--accent-red);
-            outline: 2px solid white;
-            outline-offset: 2px;
         }
         
         .error-message {
@@ -374,18 +353,6 @@
             background: rgba(239, 68, 68, 0.1);
             border-radius: 12px;
             margin: 20px 0;
-        }
-        
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
         }
 
         @media (max-width: 768px) {
@@ -413,58 +380,58 @@
 
 <div class="controls-section">
     <div class="search-wrapper">
-        <label for="searchInput" class="visually-hidden">Пошук відео</label>
-        <input type="text" id="searchInput" placeholder="Пошук проповідника або теми..." aria-label="Пошук відео по проповіднику або темі">
-        <button class="btn-clear-all" id="btnAllClear" aria-label="Скинути всі фільтри">Скинути</button>
+        <input type="text" id="searchInput" placeholder="Пошук проповідника або теми...">
+        <button class="btn-clear-all" id="btnAllClear">Скинути</button>
     </div>
 
-    <div class="history-tags" id="historyContainer" role="navigation" aria-label="Історія пошуку"></div>
+    <div class="history-tags" id="historyContainer"></div>
 
-    <div class="filter-group">
-        <span class="filter-label">Проповідники</span>
-        <div class="quick-tags" id="preachersContainer" role="group" aria-label="Фільтр по проповідниках"></div>
-    </div>
-
-    <div class="main-actions" style="margin-top: 20px;">
-        <button class="toggle-btn" id="btnShowCategories" aria-expanded="false" aria-controls="panelCategories">
-            <i class="fas fa-list" aria-hidden="true"></i> Категорії
+    <div class="main-actions">
+        <button class="toggle-btn" id="btnShowPreachers">
+            <i class="fas fa-user"></i> Проповідники
         </button>
-        <button class="toggle-btn" id="btnShowDate" aria-expanded="false" aria-controls="panelDate">
-            <i class="fas fa-calendar-alt" aria-hidden="true"></i> По даті
+        <button class="toggle-btn" id="btnShowCategories">
+            <i class="fas fa-list"></i> Категорії
+        </button>
+        <button class="toggle-btn" id="btnShowDate">
+            <i class="fas fa-calendar-alt"></i> По даті
         </button>
     </div>
 
-    <div id="panelCategories" class="expandable-panel" role="region" aria-labelledby="btnShowCategories">
-        <div class="quick-tags" id="servicesContainer" role="group" aria-label="Категорії відео"></div>
+    <div id="panelPreachers" class="expandable-panel">
+        <div class="quick-tags" id="preachersContainer"></div>
     </div>
 
-    <div id="panelDate" class="expandable-panel" role="region" aria-labelledby="btnShowDate">
+    <div id="panelCategories" class="expandable-panel">
+        <div class="quick-tags" id="servicesContainer"></div>
+    </div>
+
+    <div id="panelDate" class="expandable-panel">
         <div class="date-filter-box">
             <div class="date-input-group">
-                <label for="dateStart">Від:</label>
-                <input type="date" id="dateStart" aria-label="Дата початку">
+                <span>Від:</span>
+                <input type="date" id="dateStart">
             </div>
             <div class="date-input-group">
-                <label for="dateEnd">До:</label>
-                <input type="date" id="dateEnd" aria-label="Дата кінця">
+                <span>До:</span>
+                <input type="date" id="dateEnd">
             </div>
         </div>
     </div>
 
-    <div id="stats" role="status" aria-live="polite">
-        <i class="fas fa-circle-notch loading-spinner" id="spinner" aria-hidden="true"></i>
+    <div id="stats">
+        <i class="fas fa-circle-notch loading-spinner" id="spinner"></i>
         <span id="statsText">Завантаження...</span>
     </div>
 </div>
 
-<main class="video-grid" id="videoGrid" role="main" aria-label="Список відео"></main>
+<div class="video-grid" id="videoGrid"></div>
 
-<div id="videoModal" class="video-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div id="videoModal" class="video-modal">
     <div class="modal-content">
-        <button class="close-modal" id="closeModal" aria-label="Закрити відео">&times;</button>
-        <h2 id="modalTitle" class="visually-hidden">Відтворення відео</h2>
+        <button class="close-modal" id="closeModal">&times;</button>
         <div class="video-container">
-            <iframe id="youtubePlayer" src="" allowfullscreen title="YouTube відео плеєр"></iframe>
+            <iframe id="youtubePlayer" src="" allowfullscreen></iframe>
         </div>
     </div>
 </div>
@@ -554,7 +521,7 @@ function escapeHtml(text) {
 
 function showError(message) {
     const grid = document.getElementById('videoGrid');
-    grid.innerHTML = `<div class="error-message" role="alert">${escapeHtml(message)}</div>`;
+    grid.innerHTML = `<div class="error-message">${escapeHtml(message)}</div>`;
 }
 
 // Робота з історією пошуку
@@ -594,25 +561,18 @@ function updateHistoryUI() {
     
     container.innerHTML = searchHistory
         .map(query => `
-            <button class="history-btn" 
-                    data-query="${escapeHtml(query)}"
-                    aria-label="Застосувати пошук: ${escapeHtml(query)}">
+            <button class="history-btn" data-query="${escapeHtml(query)}">
                 ${escapeHtml(query)}
             </button>
         `).join('');
     
-    // Додаємо обробники подій
     container.querySelectorAll('.history-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const query = this.getAttribute('data-query');
-            applySearchFromHistory(query);
+            document.getElementById('searchInput').value = query;
+            renderVideoGrid();
         });
     });
-}
-
-function applySearchFromHistory(query) {
-    document.getElementById('searchInput').value = query;
-    renderVideoGrid();
 }
 
 // Завантаження даних
@@ -646,7 +606,6 @@ async function loadVideoData() {
                 };
             });
         
-        // Попередня нормалізація для оптимізації
         normalizedVideos = allVideos.map(video => ({
             ...video,
             normalizedTitle: normalize(video.title)
@@ -671,18 +630,14 @@ function renderVideoGrid() {
     const startDate = document.getElementById('dateStart').value;
     const endDate = document.getElementById('dateEnd').value;
 
-    // Зберігаємо в історію
     if (query.length >= CONFIG.MIN_SEARCH_LENGTH) {
         saveSearchToHistory(queryRaw);
     }
 
-    // Фільтрація
     const filteredVideos = normalizedVideos.filter(video => {
-        // Текстовий пошук
         const matchesText = video.normalizedTitle.includes(query);
         if (!matchesText) return false;
 
-        // Фільтр по даті
         let videoDate = video.techDate || extractDateFromTitle(video.title);
         
         if (videoDate && (startDate || endDate)) {
@@ -706,7 +661,6 @@ function renderVideoGrid() {
         return true;
     });
 
-    // Рендеринг карток
     const grid = document.getElementById('videoGrid');
     
     if (filteredVideos.length === 0) {
@@ -714,40 +668,27 @@ function renderVideoGrid() {
     } else {
         grid.innerHTML = filteredVideos
             .map(video => `
-                <div class="video-card" 
-                     tabindex="0"
-                     role="button"
-                     data-video-id="${escapeHtml(video.id)}"
-                     aria-label="Відкрити відео: ${escapeHtml(video.title)}">
+                <div class="video-card" data-video-id="${escapeHtml(video.id)}">
                     <img class="thumbnail" 
                          src="https://img.youtube.com/vi/${escapeHtml(video.id)}/mqdefault.jpg" 
-                         alt="Превью відео: ${escapeHtml(video.title)}"
+                         alt="${escapeHtml(video.title)}"
                          loading="lazy">
                     <div class="info">
                         <div class="video-title">${escapeHtml(video.title)}</div>
                         <div class="video-meta">
-                            <span><i class="far fa-calendar-alt" aria-hidden="true"></i> ${escapeHtml(video.dateStr)}</span>
-                            <span><i class="fab fa-youtube" aria-hidden="true"></i> ${escapeHtml(video.year)} р.</span>
+                            <span><i class="far fa-calendar-alt"></i> ${escapeHtml(video.dateStr)}</span>
+                            <span><i class="fab fa-youtube"></i> ${escapeHtml(video.year)} р.</span>
                         </div>
                     </div>
                 </div>
             `).join('');
         
-        // Додаємо обробники подій для карток
         grid.querySelectorAll('.video-card').forEach(card => {
             const videoId = card.getAttribute('data-video-id');
-            
             card.addEventListener('click', () => openVideoModal(videoId));
-            card.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openVideoModal(videoId);
-                }
-            });
         });
     }
 
-    // Оновлюємо статистику
     document.getElementById('statsText').textContent = `Знайдено: ${filteredVideos.length}`;
 }
 
@@ -762,7 +703,6 @@ function openVideoModal(videoId) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     
-    // Фокус на кнопці закриття
     setTimeout(() => {
         document.getElementById('closeModal').focus();
     }, 100);
@@ -776,7 +716,6 @@ function closeVideoModal() {
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
     
-    // Повертаємо фокус
     if (lastFocusedElement) {
         lastFocusedElement.focus();
         lastFocusedElement = null;
@@ -791,7 +730,6 @@ function setupInterface() {
         const button = document.createElement('button');
         button.className = 'tag-btn';
         button.textContent = preacher.label;
-        button.setAttribute('aria-label', `Фільтрувати по проповіднику: ${preacher.label}`);
         button.addEventListener('click', () => {
             document.getElementById('searchInput').value = preacher.key;
             renderVideoGrid();
@@ -805,7 +743,6 @@ function setupInterface() {
         const button = document.createElement('button');
         button.className = 'tag-btn';
         button.textContent = service.label;
-        button.setAttribute('aria-label', `Фільтрувати по категорії: ${service.label}`);
         button.addEventListener('click', () => {
             document.getElementById('searchInput').value = service.key;
             renderVideoGrid();
@@ -814,6 +751,15 @@ function setupInterface() {
     });
 
     // Кнопки розгортання панелей
+    const btnShowPreachers = document.getElementById('btnShowPreachers');
+    const panelPreachers = document.getElementById('panelPreachers');
+    
+    btnShowPreachers.addEventListener('click', () => {
+        const isVisible = panelPreachers.style.display === 'block';
+        panelPreachers.style.display = isVisible ? 'none' : 'block';
+        btnShowPreachers.classList.toggle('active', !isVisible);
+    });
+
     const btnShowCategories = document.getElementById('btnShowCategories');
     const panelCategories = document.getElementById('panelCategories');
     
@@ -821,7 +767,6 @@ function setupInterface() {
         const isVisible = panelCategories.style.display === 'block';
         panelCategories.style.display = isVisible ? 'none' : 'block';
         btnShowCategories.classList.toggle('active', !isVisible);
-        btnShowCategories.setAttribute('aria-expanded', !isVisible);
     });
 
     const btnShowDate = document.getElementById('btnShowDate');
@@ -831,7 +776,6 @@ function setupInterface() {
         const isVisible = panelDate.style.display === 'block';
         panelDate.style.display = isVisible ? 'none' : 'block';
         btnShowDate.classList.toggle('active', !isVisible);
-        btnShowDate.setAttribute('aria-expanded', !isVisible);
     });
 
     // Кнопка "Скинути всі фільтри"
@@ -845,7 +789,6 @@ function setupInterface() {
     // Закриття модального вікна
     document.getElementById('closeModal').addEventListener('click', closeVideoModal);
     
-    // Закриття по кліку поза контентом
     document.getElementById('videoModal').addEventListener('click', (e) => {
         if (e.target.id === 'videoModal') {
             closeVideoModal();
@@ -856,24 +799,8 @@ function setupInterface() {
     document.addEventListener('keydown', (e) => {
         const modal = document.getElementById('videoModal');
         
-        // ESC для закриття модального вікна
         if (e.key === 'Escape' && modal.style.display === 'flex') {
             closeVideoModal();
-        }
-        
-        // Tab trap для модального вікна
-        if (e.key === 'Tab' && modal.style.display === 'flex') {
-            const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-            const firstElement = focusableElements[0];
-            const lastElement = focusableElements[focusableElements.length - 1];
-            
-            if (e.shiftKey && document.activeElement === firstElement) {
-                e.preventDefault();
-                lastElement.focus();
-            } else if (!e.shiftKey && document.activeElement === lastElement) {
-                e.preventDefault();
-                firstElement.focus();
-            }
         }
     });
 
@@ -899,7 +826,6 @@ function init() {
     loadVideoData();
 }
 
-// Запуск
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
