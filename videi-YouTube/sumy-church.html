@@ -192,6 +192,13 @@
             border-color: var(--accent-green);
         }
         
+        .tag-btn.active {
+            background: rgba(34, 197, 94, 0.25);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        }
+        
         .toggle-btn {
             background: rgba(148, 163, 184, 0.1);
             border: 1px solid rgba(255,255,255,0.2);
@@ -366,9 +373,35 @@
                 padding: 15px;
             }
             
+            input[type="text"] {
+                font-size: 0.9rem;
+                padding: 12px 16px;
+            }
+            
+            .btn-clear-all {
+                font-size: 0.7rem;
+                padding: 0 12px;
+            }
+            
             .video-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
                 gap: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .search-wrapper {
+                gap: 6px;
+            }
+            
+            input[type="text"] {
+                font-size: 0.85rem;
+                padding: 10px 14px;
+            }
+            
+            .btn-clear-all {
+                font-size: 0.65rem;
+                padding: 0 10px;
             }
         }
     </style>
@@ -418,6 +451,9 @@
                 <span>До:</span>
                 <input type="date" id="dateEnd">
             </div>
+            <button class="tag-btn" id="btnClearDates" style="margin-top: 5px;">
+                <i class="fas fa-times"></i> Скинути дати
+            </button>
         </div>
     </div>
 
@@ -629,35 +665,43 @@ function renderVideoGrid() {
     const searchInput = document.getElementById('searchInput');
     const queryRaw = searchInput.value.trim();
     const query = normalize(queryRaw);
-    const startDate = document.getElementById('dateStart').value;
-    const endDate = document.getElementById('dateEnd').value;
+    const startVal = document.getElementById('dateStart').value;
+    const endVal = document.getElementById('dateEnd').value;
 
     if (query.length >= CONFIG.MIN_SEARCH_LENGTH) {
         saveSearchToHistory(queryRaw);
     }
 
+    // Оновлюємо активні кнопки фільтрів
+    updateActiveFilters(queryRaw);
+
     const filteredVideos = normalizedVideos.filter(video => {
         const matchesText = video.normalizedTitle.includes(query);
         if (!matchesText) return false;
 
-        let videoDate = video.techDate || extractDateFromTitle(video.title);
+        // Отримуємо дату відео
+        let vDate = video.techDate;
+        const dateMatch = video.title.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+        if (dateMatch) {
+            vDate = new Date(parseInt(dateMatch[3]), parseInt(dateMatch[2]) - 1, parseInt(dateMatch[1]));
+        }
+
+        // Якщо немає дати - показуємо відео
+        if (!vDate) return true;
+
+        // Перевірка діапазону дат
+        const cTime = new Date(vDate.getFullYear(), vDate.getMonth(), vDate.getDate()).getTime();
         
-        if (videoDate && (startDate || endDate)) {
-            const compareTime = new Date(
-                videoDate.getFullYear(),
-                videoDate.getMonth(),
-                videoDate.getDate()
-            ).getTime();
-            
-            if (startDate) {
-                const startTime = new Date(startDate).getTime();
-                if (compareTime < startTime) return false;
-            }
-            
-            if (endDate) {
-                const endTime = new Date(endDate).getTime();
-                if (compareTime > endTime) return false;
-            }
+        if (startVal) {
+            const s = new Date(startVal);
+            const startTime = new Date(s.getFullYear(), s.getMonth(), s.getDate()).getTime();
+            if (cTime < startTime) return false;
+        }
+        
+        if (endVal) {
+            const e = new Date(endVal);
+            const endTime = new Date(e.getFullYear(), e.getMonth(), e.getDate()).getTime();
+            if (cTime > endTime) return false;
         }
 
         return true;
@@ -692,6 +736,35 @@ function renderVideoGrid() {
     }
 
     document.getElementById('statsText').textContent = `Знайдено: ${filteredVideos.length}`;
+}
+
+// Оновлення активних кнопок фільтрів
+function updateActiveFilters(currentQuery) {
+    const normalizedQuery = normalize(currentQuery);
+    
+    // Перевіряємо всі кнопки проповідників
+    document.querySelectorAll('#preachersContainer .tag-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        const normalizedKey = normalize(key);
+        if (normalizedKey && normalizedQuery.includes(normalizedKey)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Перевіряємо всі кнопки категорій
+    document.querySelectorAll('#servicesContainer .tag-btn').forEach(btn => {
+        const key = btn.getAttribute('data-key');
+        const normalizedKey = normalize(key);
+        if (key === '' && currentQuery === '') {
+            btn.classList.add('active');
+        } else if (normalizedKey && normalizedQuery.includes(normalizedKey)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 // Модальне вікно
@@ -732,6 +805,7 @@ function setupInterface() {
         const button = document.createElement('button');
         button.className = 'tag-btn';
         button.textContent = preacher.label;
+        button.setAttribute('data-key', preacher.key);
         button.addEventListener('click', () => {
             document.getElementById('searchInput').value = preacher.key;
             renderVideoGrid();
@@ -745,6 +819,7 @@ function setupInterface() {
         const button = document.createElement('button');
         button.className = 'tag-btn';
         button.textContent = service.label;
+        button.setAttribute('data-key', service.key);
         button.addEventListener('click', () => {
             document.getElementById('searchInput').value = service.key;
             renderVideoGrid();
@@ -783,6 +858,13 @@ function setupInterface() {
     // Кнопка "Скинути всі фільтри"
     document.getElementById('btnAllClear').addEventListener('click', () => {
         document.getElementById('searchInput').value = '';
+        document.getElementById('dateStart').value = '';
+        document.getElementById('dateEnd').value = '';
+        renderVideoGrid();
+    });
+
+    // Кнопка "Скинути дати"
+    document.getElementById('btnClearDates').addEventListener('click', () => {
         document.getElementById('dateStart').value = '';
         document.getElementById('dateEnd').value = '';
         renderVideoGrid();
