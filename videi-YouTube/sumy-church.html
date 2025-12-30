@@ -31,6 +31,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overscroll-behavior: contain;
         }
         
         .header-site {
@@ -237,6 +238,19 @@
             border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.3s;
             cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .video-card:hover {
@@ -249,6 +263,27 @@
             width: 100%;
             aspect-ratio: 16/9;
             object-fit: cover;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .thumbnail.loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .thumbnail.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            100% { left: 100%; }
         }
         
         .info {
@@ -300,6 +335,69 @@
             to { transform: rotate(360deg); }
         }
 
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+        }
+        
+        .skeleton-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .skeleton-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skeleton-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        .skeleton-text {
+            padding: 15px;
+        }
+        
+        .skeleton-line {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skeleton-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        .skeleton-line.short {
+            width: 60%;
+        }
+
         .video-modal {
             display: none;
             position: fixed;
@@ -312,12 +410,14 @@
             backdrop-filter: blur(10px);
             justify-content: center;
             align-items: center;
+            touch-action: none;
         }
         
         .modal-content {
             width: 95%;
             max-width: 1000px;
             position: relative;
+            transition: transform 0.3s ease;
         }
         
         .video-container {
@@ -362,6 +462,27 @@
             border-radius: 12px;
             margin: 20px 0;
         }
+        
+        .pull-to-refresh {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 10px 20px;
+            border-radius: 0 0 15px 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+        
+        .pull-to-refresh.active {
+            transform: translateX(-50%) translateY(0);
+        }
 
         @media (max-width: 768px) {
             .header-site h1 {
@@ -402,10 +523,23 @@
                 font-size: 0.65rem;
                 padding: 0 10px;
             }
+            
+            .tag-btn {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+            
+            .tag-btn.active {
+                padding: 5px 11px;
+            }
         }
     </style>
 </head>
 <body>
+
+<div class="pull-to-refresh" id="pullToRefresh">
+    <i class="fas fa-sync-alt"></i> Оновити
+</div>
 
 <div class="header-site">
     <h1>АРХІВ ВІДЕО</h1>
@@ -465,7 +599,7 @@
 <div class="video-grid" id="videoGrid"></div>
 
 <div id="videoModal" class="video-modal">
-    <div class="modal-content">
+    <div class="modal-content" id="modalContent">
         <button class="close-modal" id="closeModal">&times;</button>
         <div class="video-container">
             <iframe id="youtubePlayer" src="" allowfullscreen></iframe>
@@ -497,7 +631,8 @@ const PREACHERS = [
     { key: 'Лаба', label: 'Лаба В.' },
     { key: 'Парфило', label: 'Парфило А.' },
     { key: 'Комисар', label: 'Комисар С.' },
-    { key: 'Іванченко', label: 'Іванченко О.' }
+    { key: 'Іванченко', label: 'Іванченко О.' },
+    { key: 'Савченко', label: 'Савченко С.' }
 ];
 
 const SERVICES = [
@@ -514,6 +649,15 @@ let normalizedVideos = [];
 let searchHistory = [];
 let debounceTimer = null;
 let lastFocusedElement = null;
+
+// Pull-to-refresh змінні
+let touchStartY = 0;
+let touchEndY = 0;
+let isPulling = false;
+
+// Swipe to close modal змінні
+let modalTouchStartY = 0;
+let modalTouchDeltaY = 0;
 
 // Утиліти
 function normalize(text) {
@@ -559,6 +703,25 @@ function escapeHtml(text) {
 function showError(message) {
     const grid = document.getElementById('videoGrid');
     grid.innerHTML = `<div class="error-message">${escapeHtml(message)}</div>`;
+}
+
+function showSkeletonLoader() {
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = '';
+    grid.className = 'skeleton-grid';
+    
+    for (let i = 0; i < 8; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'skeleton-card';
+        skeleton.innerHTML = `
+            <div class="skeleton-img"></div>
+            <div class="skeleton-text">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `;
+        grid.appendChild(skeleton);
+    }
 }
 
 // Робота з історією пошуку
@@ -614,10 +777,9 @@ function updateHistoryUI() {
 
 // Завантаження даних
 async function loadVideoData() {
-    const spinner = document.getElementById('spinner');
     const statsText = document.getElementById('statsText');
     
-    spinner.style.display = 'block';
+    showSkeletonLoader();
     statsText.textContent = 'Завантаження...';
     
     try {
@@ -654,8 +816,6 @@ async function loadVideoData() {
         console.error('Помилка завантаження даних:', error);
         statsText.textContent = 'Помилка завантаження';
         showError(`Не вдалося завантажити відео: ${error.message}`);
-    } finally {
-        spinner.style.display = 'none';
     }
 }
 
@@ -671,24 +831,20 @@ function renderVideoGrid() {
         saveSearchToHistory(queryRaw);
     }
 
-    // Оновлюємо активні кнопки фільтрів
     updateActiveFilters(queryRaw);
 
     const filteredVideos = normalizedVideos.filter(video => {
         const matchesText = video.normalizedTitle.includes(query);
         if (!matchesText) return false;
 
-        // Отримуємо дату відео
         let vDate = video.techDate;
         const dateMatch = video.title.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
         if (dateMatch) {
             vDate = new Date(parseInt(dateMatch[3]), parseInt(dateMatch[2]) - 1, parseInt(dateMatch[1]));
         }
 
-        // Якщо немає дати - показуємо відео
         if (!vDate) return true;
 
-        // Перевірка діапазону дат
         const cTime = new Date(vDate.getFullYear(), vDate.getMonth(), vDate.getDate()).getTime();
         
         if (startVal) {
@@ -707,17 +863,19 @@ function renderVideoGrid() {
     });
 
     const grid = document.getElementById('videoGrid');
+    grid.className = 'video-grid';
     
     if (filteredVideos.length === 0) {
         grid.innerHTML = '<div class="error-message">Відео не знайдено. Спробуйте змінити параметри пошуку.</div>';
     } else {
         grid.innerHTML = filteredVideos
-            .map(video => `
-                <div class="video-card" data-video-id="${escapeHtml(video.id)}">
-                    <img class="thumbnail" 
+            .map((video, index) => `
+                <div class="video-card" data-video-id="${escapeHtml(video.id)}" style="animation-delay: ${index * 0.05}s">
+                    <img class="thumbnail loading" 
                          src="https://img.youtube.com/vi/${escapeHtml(video.id)}/mqdefault.jpg" 
                          alt="${escapeHtml(video.title)}"
-                         loading="lazy">
+                         loading="lazy"
+                         onload="this.classList.remove('loading')">
                     <div class="info">
                         <div class="video-title">${escapeHtml(video.title)}</div>
                         <div class="video-meta">
@@ -737,11 +895,9 @@ function renderVideoGrid() {
     document.getElementById('statsText').textContent = `Знайдено: ${filteredVideos.length}`;
 }
 
-// Оновлення активних кнопок фільтрів
 function updateActiveFilters(currentQuery) {
     const normalizedQuery = normalize(currentQuery);
     
-    // Перевіряємо всі кнопки проповідників
     document.querySelectorAll('#preachersContainer .tag-btn').forEach(btn => {
         const key = btn.getAttribute('data-key');
         const normalizedKey = normalize(key);
@@ -752,7 +908,6 @@ function updateActiveFilters(currentQuery) {
         }
     });
     
-    // Перевіряємо всі кнопки категорій
     document.querySelectorAll('#servicesContainer .tag-btn').forEach(btn => {
         const key = btn.getAttribute('data-key');
         const normalizedKey = normalize(key);
@@ -766,7 +921,6 @@ function updateActiveFilters(currentQuery) {
     });
 }
 
-// Модальне вікно
 function openVideoModal(videoId) {
     lastFocusedElement = document.activeElement;
     
@@ -785,10 +939,12 @@ function openVideoModal(videoId) {
 function closeVideoModal() {
     const modal = document.getElementById('videoModal');
     const player = document.getElementById('youtubePlayer');
+    const modalContent = document.getElementById('modalContent');
     
     player.src = '';
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
+    modalContent.style.transform = '';
     
     if (lastFocusedElement) {
         lastFocusedElement.focus();
@@ -796,9 +952,7 @@ function closeVideoModal() {
     }
 }
 
-// Ініціалізація інтерфейсу
 function setupInterface() {
-    // Проповідники
     const preachersContainer = document.getElementById('preachersContainer');
     PREACHERS.forEach(preacher => {
         const button = document.createElement('button');
@@ -812,7 +966,6 @@ function setupInterface() {
         preachersContainer.appendChild(button);
     });
 
-    // Категорії
     const servicesContainer = document.getElementById('servicesContainer');
     SERVICES.forEach(service => {
         const button = document.createElement('button');
@@ -826,7 +979,6 @@ function setupInterface() {
         servicesContainer.appendChild(button);
     });
 
-    // Кнопки розгортання панелей
     const btnShowPreachers = document.getElementById('btnShowPreachers');
     const panelPreachers = document.getElementById('panelPreachers');
     
@@ -854,7 +1006,6 @@ function setupInterface() {
         btnShowDate.classList.toggle('active', !isVisible);
     });
 
-    // Кнопка "Скинути всі фільтри"
     document.getElementById('btnAllClear').addEventListener('click', () => {
         document.getElementById('searchInput').value = '';
         document.getElementById('dateStart').value = '';
@@ -862,14 +1013,12 @@ function setupInterface() {
         renderVideoGrid();
     });
 
-    // Кнопка "Скинути дати"
     document.getElementById('btnClearDates').addEventListener('click', () => {
         document.getElementById('dateStart').value = '';
         document.getElementById('dateEnd').value = '';
         renderVideoGrid();
     });
 
-    // Закриття модального вікна
     document.getElementById('closeModal').addEventListener('click', closeVideoModal);
     
     document.getElementById('videoModal').addEventListener('click', (e) => {
@@ -878,16 +1027,13 @@ function setupInterface() {
         }
     });
 
-    // Обробка клавіатури
     document.addEventListener('keydown', (e) => {
         const modal = document.getElementById('videoModal');
-        
         if (e.key === 'Escape' && modal.style.display === 'flex') {
             closeVideoModal();
         }
     });
 
-    // Пошук з debounce
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', () => {
         clearTimeout(debounceTimer);
@@ -896,12 +1042,73 @@ function setupInterface() {
         }, CONFIG.DEBOUNCE_DELAY);
     });
 
-    // Зміна дат
     document.getElementById('dateStart').addEventListener('change', renderVideoGrid);
     document.getElementById('dateEnd').addEventListener('change', renderVideoGrid);
+    
+    setupPullToRefresh();
+    setupModalSwipe();
 }
 
-// Ініціалізація при завантаженні сторінки
+function setupPullToRefresh() {
+    const pullIndicator = document.getElementById('pullToRefresh');
+    let startY = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+        if (window.scrollY === 0) {
+            startY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+    
+    document.addEventListener('touchmove', (e) => {
+        if (window.scrollY === 0 && startY > 0) {
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            
+            if (diff > 0 && diff < 100) {
+                isPulling = true;
+                pullIndicator.classList.add('active');
+            }
+        }
+    }, { passive: true });
+    
+    document.addEventListener('touchend', () => {
+        if (isPulling) {
+            isPulling = false;
+            pullIndicator.classList.remove('active');
+            loadVideoData();
+        }
+        startY = 0;
+    }, { passive: true });
+}
+
+function setupModalSwipe() {
+    const modal = document.getElementById('videoModal');
+    const modalContent = document.getElementById('modalContent');
+    
+    modalContent.addEventListener('touchstart', (e) => {
+        modalTouchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    
+    modalContent.addEventListener('touchmove', (e) => {
+        if (modalTouchStartY > 0) {
+            modalTouchDeltaY = e.touches[0].clientY - modalTouchStartY;
+            if (modalTouchDeltaY > 0) {
+                modalContent.style.transform = `translateY(${modalTouchDeltaY}px)`;
+            }
+        }
+    }, { passive: true });
+    
+    modalContent.addEventListener('touchend', () => {
+        if (modalTouchDeltaY > 100) {
+            closeVideoModal();
+        } else {
+            modalContent.style.transform = '';
+        }
+        modalTouchStartY = 0;
+        modalTouchDeltaY = 0;
+    }, { passive: true });
+}
+
 function init() {
     loadSearchHistory();
     updateHistoryUI();
