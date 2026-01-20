@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Search Panel</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .search-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 90%; max-width: 500px; }
+        h2 { text-align: center; color: #333; font-size: 1.2rem; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #0088cc; }
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
+        .btn-google { background: #4285F4; }
+        .btn-yt { background: #FF0000; }
+        .btn-pic { background: #34A853; }
+        .btn-wiki { background: #555; }
+        button:hover { opacity: 0.8; }
+        .hint { font-size: 12px; color: #777; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <h2>🔎 Быстрый поиск</h2>
+    <input type="text" id="searchInput" placeholder="Введите запрос..." onkeypress="handleKeyPress(event)">
+    
+    <div class="buttons">
+        <button class="btn-google" onclick="search('google')">Google (Web)</button>
+        <button class="btn-yt" onclick="search('yt')">YouTube (Video)</button>
+        <button class="btn-pic" onclick="search('pic')">Images (Картинки)</button>
+        <button class="btn-wiki" onclick="search('wiki')">Wikipedia</button>
+    </div>
+    <div class="hint">Введите текст и выберите, где искать</div>
+</div>
+
+<script>
+    function search(type) {
+        const query = document.getElementById('searchInput').value;
+        if (!query) return alert('Сначала введите запрос');
+        
+        let url = '';
+        switch(type) {
+            case 'google': url = `https://www.google.com/search?q=${encodeURIComponent(query)}`; break;
+            case 'yt': url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`; break;
+            case 'pic': url = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`; break;
+            case 'wiki': url = `https://ru.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`; break;
+        }
+        window.open(url, '_blank');
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') search('google');
+    }
+</script>
+
+</body>
+</html>
