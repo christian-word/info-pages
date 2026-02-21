@@ -1,0 +1,718 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="Image.png">
+    <title>Архів Відео | Дім Євангелія</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --accent-green: #22c55e;
+            --accent-green-dim: rgba(34, 197, 94, 0.15);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            margin: 0; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .header-site { text-align: center; margin-bottom: 20px; }
+        .header-site h1 {
+            font-size: 2rem; margin: 0;
+            background: linear-gradient(to right, #f8fafc, #22c55e);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        .header-site p { color: var(--text-dim); font-size: 0.9rem; margin: 5px 0 0; }
+
+        /* ── CONTROLS ── */
+        .controls-section {
+            width: 100%; max-width: 1000px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 25px; border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .search-wrapper { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] {
+            flex: 1; padding: 14px 20px; border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.7); color: white;
+            font-size: 1rem; outline: none; transition: 0.3s;
+            font-family: inherit;
+        }
+        input[type="text"]:focus { border-color: var(--accent-green); }
+
+        .btn-clear-all {
+            background: var(--danger); color: white; border: none;
+            padding: 0 12px; border-radius: 50px; cursor: pointer;
+            font-weight: 600; font-size: 0.85rem; transition: 0.3s;
+            height: 32px;
+        }
+        .btn-clear-all:hover { background: #dc2626; }
+
+        .main-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .expandable-panel { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        .date-filter-box { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; align-items: center; padding: 10px; }
+        .date-input-group { display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 0.9rem; }
+        input[type="date"] {
+            background: #1e293b; border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 10px; border-radius: 12px; color-scheme: dark;
+        }
+
+        .filter-label {
+            display: block; margin-bottom: 12px; text-align: center;
+            font-size: 0.7rem; font-weight: 700; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .quick-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+        .tag-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main); padding: 8px 16px; border-radius: 50px;
+            cursor: pointer; transition: 0.2s; font-size: 0.85rem;
+        }
+        .tag-btn:hover { background: var(--accent-green-dim); border-color: var(--accent-green); }
+        .tag-btn.active {
+            background: var(--accent-green-dim);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        .toggle-btn {
+            background: rgba(148,163,184,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main); font-size: 0.85rem; padding: 10px 20px;
+            border-radius: 50px; cursor: pointer; display: flex; align-items: center;
+            gap: 8px; transition: 0.2s;
+        }
+        .toggle-btn.active { border-color: var(--accent-green); color: var(--accent-green); }
+
+        /* Sort + stats row */
+        .bottom-bar {
+            display: flex; flex-wrap: wrap; align-items: center;
+            justify-content: space-between; gap: 10px; margin-top: 16px;
+        }
+        #stats { color: var(--accent-green); font-weight: 700; font-size: 0.9rem; }
+
+        .sort-group { display: flex; gap: 6px; }
+        .sort-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim); padding: 5px 12px; border-radius: 50px;
+            cursor: pointer; font-size: 0.75rem; transition: 0.2s;
+        }
+        .sort-btn.active { background: var(--accent-green-dim); border-color: var(--accent-green); color: var(--accent-green); font-weight: 700; }
+
+        /* ── GRID ── */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; width: 100%; max-width: 1200px; margin-top: 30px;
+        }
+
+        .video-card {
+            background: var(--card-bg); border-radius: 20px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05); transition: transform 0.25s, border-color 0.25s;
+            cursor: pointer; position: relative;
+        }
+        .video-card:hover { transform: translateY(-5px); border-color: var(--accent-green); }
+
+        .thumbnail { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+        .info { padding: 15px; }
+        .video-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; height: 2.8em; overflow: hidden; line-height: 1.4; }
+        .video-meta { display: flex; justify-content: space-between; color: var(--text-dim); font-size: 0.7rem; }
+
+        /* Favourite button */
+        .fav-btn {
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(0,0,0,0.55); border: none;
+            color: #94a3b8; width: 34px; height: 34px; border-radius: 50%;
+            cursor: pointer; font-size: 15px; display: flex; align-items: center;
+            justify-content: center; transition: 0.2s; backdrop-filter: blur(4px);
+            z-index: 2;
+        }
+        .fav-btn:hover { color: #f87171; background: rgba(0,0,0,0.7); }
+        .fav-btn.active { color: #f87171; }
+
+        /* Load more */
+        .load-more-wrap { width: 100%; max-width: 1200px; text-align: center; margin: 20px 0 40px; }
+        #btnLoadMore {
+            background: var(--accent-green-dim); border: 1px solid var(--accent-green);
+            color: var(--accent-green); padding: 12px 36px; border-radius: 50px;
+            cursor: pointer; font-size: 0.95rem; font-weight: 700;
+            transition: 0.2s; display: none;
+        }
+        #btnLoadMore:hover { background: rgba(34,197,94,0.3); }
+
+        /* Share toast */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: #1e293b; border: 1px solid var(--accent-green); color: var(--text-main);
+            padding: 12px 24px; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+            transition: transform 0.35s cubic-bezier(.34,1.56,.64,1); z-index: 99999;
+            pointer-events: none; white-space: nowrap;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ── MODAL ── */
+        #videoModal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.92); z-index: 9999;
+            justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal-content {
+            position: relative; width: 100%; max-width: 1080px;
+            aspect-ratio: 16/9; background: #000;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        }
+        #ytPlayer { width: 100%; height: 100%; border: none; }
+        #closeModalBtn {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(0,0,0,0.6); color: white; border: none;
+            width: 42px; height: 42px; border-radius: 50%; font-size: 24px;
+            cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: background 0.2s;
+        }
+        #closeModalBtn:hover { background: rgba(220,38,38,0.8); }
+
+        /* ── SHARE OVERLAY ON PLAYER ── */
+        .share-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 16px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+            display: flex; align-items: center; gap: 10px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .share-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .share-overlay-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-right: 4px;
+        }
+        .share-icon-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; color: white;
+            transition: transform 0.2s, filter 0.2s;
+            flex-shrink: 0;
+        }
+        .share-icon-btn:hover { transform: scale(1.15); filter: brightness(1.2); }
+        .share-icon-btn.fb   { background: #1877f2; }
+        .share-icon-btn.tg   { background: #229ed9; }
+        .share-icon-btn.vb   { background: #7360f2; }
+        .share-icon-btn.tw   { background: #000; }
+        .share-icon-btn.wa   { background: #25d366; }
+        .share-icon-btn.copy { background: rgba(255,255,255,0.18); backdrop-filter: blur(4px); }
+        .share-icon-btn.copy:hover { background: rgba(255,255,255,0.3); }
+
+        /* ── FAVORITES TAB ── */
+        .fav-indicator {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3);
+            color: #f87171; padding: 8px 16px; border-radius: 50px;
+            cursor: pointer; font-size: 0.85rem; font-weight: 700;
+            transition: 0.2s;
+        }
+        .fav-indicator:hover { background: rgba(248,113,113,0.2); }
+        .fav-indicator.active { background: rgba(248,113,113,0.2); border-color: #f87171; }
+
+        @media (max-width: 480px) {
+            .search-wrapper { flex-wrap: wrap; }
+            .btn-clear-all { width: 100%; padding: 12px; text-align: center; }
+            .bottom-bar { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-site">
+    <h1>АРХІВ ВІДЕО</h1>
+    <p>Церква "Дім Євангелія", м. Суми</p>
+</div>
+
+<div class="controls-section">
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Пошук (прізвище, тема)...">
+        <button class="btn-clear-all" id="btnAllClear">Скинути все</button>
+    </div>
+
+    <div class="filter-group">
+        <span class="filter-label">Проповідники</span>
+        <div class="quick-tags" id="preachersContainer"></div>
+    </div>
+
+    <div class="main-actions" style="margin-top: 20px;">
+        <button class="toggle-btn" id="btnShowCategories"><i class="fas fa-list"></i> Більше категорій</button>
+        <button class="toggle-btn" id="btnShowDate"><i class="fas fa-calendar-alt"></i> По даті</button>
+        <button class="fav-indicator" id="btnFavFilter"><i class="fas fa-heart"></i> Улюблені <span id="favCount">0</span></button>
+    </div>
+
+    <div id="panelCategories" class="expandable-panel">
+        <span class="filter-label">Категорії служінь</span>
+        <div class="quick-tags" id="servicesContainer"></div>
+    </div>
+
+    <div id="panelDate" class="expandable-panel">
+        <span class="filter-label">Виберіть період</span>
+        <div class="date-filter-box">
+            <div class="date-input-group"><span>Від:</span> <input type="date" id="dateStart"></div>
+            <div class="date-input-group"><span>До:</span> <input type="date" id="dateEnd"></div>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div id="stats">Завантаження...</div>
+        <div class="sort-group">
+            <button class="sort-btn active" data-sort="new"><i class="fas fa-arrow-down-wide-short"></i> Нові</button>
+            <button class="sort-btn" data-sort="old"><i class="fas fa-arrow-up-wide-short"></i> Старі</button>
+        </div>
+    </div>
+</div>
+
+<div class="video-grid" id="videoGrid"></div>
+<div class="load-more-wrap"><button id="btnLoadMore">Показати більше</button></div>
+
+<!-- Modal -->
+<div id="videoModal">
+    <div class="modal-content" id="modalContent">
+        <iframe id="ytPlayer" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        <button id="closeModalBtn">×</button>
+        <div class="share-overlay" id="shareOverlay">
+            <span class="share-overlay-label">Поділитись:</span>
+            <button class="share-icon-btn fb"     id="shareBtn_fb"   title="Facebook"><i class="fab fa-facebook-f"></i></button>
+            <button class="share-icon-btn tg"     id="shareBtn_tg"   title="Telegram"><i class="fab fa-telegram-plane"></i></button>
+            <button class="share-icon-btn vb"     id="shareBtn_vb"   title="Viber"><i class="fab fa-viber"></i></button>
+            <button class="share-icon-btn wa"     id="shareBtn_wa"   title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
+            <button class="share-icon-btn tw"     id="shareBtn_tw"   title="X / Twitter"><i class="fab fa-x-twitter"></i></button>
+            <button class="share-icon-btn copy"   id="shareBtn_copy" title="Копіювати посилання"><i class="fas fa-link"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const FILE_URL = 'https://raw.githubusercontent.com/ruyriy/Audio-christ/refs/heads/main/filtered_video/filtered_video.txt';
+const PAGE_SIZE = 30;
+
+// ── State ──
+let allVideos = [];
+let filteredVideos = [];
+let displayedCount = 0;
+let sortOrder = 'new';
+let showFavOnly = false;
+let activePreachers = new Set();
+let favorites = new Set(JSON.parse(localStorage.getItem('yt_favorites') || '[]'));
+
+// ── Preachers & Services ──
+const preachers = [
+    { key: 'Марйоха', label: 'Марйоха М.' }, { key: 'Міщенко', label: 'Міщенко А.' },
+    { key: 'Булигін', label: 'Булигін А.' }, { key: 'Зінченко', label: 'Зінченко В.' },
+    { key: 'Лаба', label: 'Лаба В.' }, { key: 'Парфило', label: 'Парфило А.' },
+    { key: 'Комисар', label: 'Комисар С.' }, { key: 'Іванченко', label: 'Іванченко О.' },
+    { key: 'Савченко', label: 'Савченко О.' }
+];
+
+const services = [
+    { key: 'Богослуж', label: 'Богослужіння' }, { key: 'Вірш', label: 'Вірші' },
+    { key: 'Хор', label: 'Хори' }, { key: 'Служіння', label: 'Служіння' },
+    { key: 'Прославлення', label: 'Прославлення' }, { key: 'Хрещення', label: 'Хрещення' },
+    { key: '', label: 'Всі відео' }
+];
+
+// ── Helpers ──
+function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function normalize(t) {
+    return t ? t.toLowerCase().replace(/[ііїi]/g,'i').replace(/[иы]/g,'и').replace(/[^a-zа-я0-9]/gi,'') : '';
+}
+
+function parseUkrainianDate(str) {
+    if (!str) return null;
+    const months = {"січня":0,"лютого":1,"березня":2,"квітня":3,"травня":4,"червня":5,"липня":6,"серпня":7,"вересня":8,"жовтня":9,"листопада":10,"грудня":11};
+    const parts = str.split(' ');
+    if (parts.length < 3) return null;
+    return new Date(parseInt(parts[2]), months[parts[1].toLowerCase()], parseInt(parts[0]));
+}
+
+function saveFavorites() {
+    localStorage.setItem('yt_favorites', JSON.stringify([...favorites]));
+    updateFavCount();
+}
+
+function updateFavCount() {
+    document.getElementById('favCount').textContent = favorites.size;
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── URL State ──
+function getUrlParams() {
+    const p = new URLSearchParams(location.search);
+    return {
+        search: p.get('q') || '',
+        from:   p.get('from') || '',
+        to:     p.get('to') || '',
+        sort:   p.get('sort') || 'new',
+        preachers: p.get('p') ? p.get('p').split(',') : []
+    };
+}
+
+function pushUrlState() {
+    const p = new URLSearchParams();
+    const q = document.getElementById('searchInput').value;
+    const from = document.getElementById('dateStart').value;
+    const to = document.getElementById('dateEnd').value;
+    if (q) p.set('q', q);
+    if (from) p.set('from', from);
+    if (to) p.set('to', to);
+    if (sortOrder !== 'new') p.set('sort', sortOrder);
+    if (activePreachers.size) p.set('p', [...activePreachers].join(','));
+    const str = p.toString();
+    history.replaceState(null, '', str ? '?' + str : location.pathname);
+}
+
+// ── Load ──
+async function loadData() {
+    try {
+        const r = await fetch(FILE_URL + '?t=' + Date.now());
+        const t = await r.text();
+        allVideos = t.split('\n').filter(l => l.includes('§')).map(line => {
+            const p = line.split('§');
+            const dateStr = p[4] || '';
+            let techDate = parseUkrainianDate(dateStr);
+            // Also check for dd.mm.yyyy in title
+            const dm = (p[3] || '').match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+            if (dm) techDate = new Date(+dm[3], +dm[2]-1, +dm[1]);
+            return { year: p[1], id: p[2], title: p[3] || '', dateStr, techDate };
+        });
+        restoreFromUrl();
+        render();
+    } catch(e) {
+        document.getElementById('stats').textContent = 'Помилка завантаження!';
+    }
+}
+
+function restoreFromUrl() {
+    const s = getUrlParams();
+    if (s.search) document.getElementById('searchInput').value = s.search;
+    if (s.from)   document.getElementById('dateStart').value = s.from;
+    if (s.to)     document.getElementById('dateEnd').value = s.to;
+    if (s.sort)   { sortOrder = s.sort; document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === sortOrder)); }
+    s.preachers.forEach(k => activePreachers.add(k));
+}
+
+// ── Render ──
+function render() {
+    const query = normalize(document.getElementById('searchInput').value);
+    const startVal = document.getElementById('dateStart').value;
+    const endVal = document.getElementById('dateEnd').value;
+
+    let list = allVideos.filter(v => {
+        if (showFavOnly && !favorites.has(v.id)) return false;
+
+        // Text filter: search OR active preachers
+        const normTitle = normalize(v.title);
+        const matchSearch = query ? normTitle.includes(query) : true;
+        const matchPreachers = activePreachers.size
+            ? [...activePreachers].some(k => normTitle.includes(normalize(k)))
+            : true;
+        if (!matchSearch || !matchPreachers) return false;
+
+        // Date filter
+        const vDate = v.techDate;
+        if (!vDate) return true;
+        const ts = new Date(vDate.getFullYear(), vDate.getMonth(), vDate.getDate()).getTime();
+        if (startVal) {
+            const s = new Date(startVal);
+            if (ts < new Date(s.getFullYear(), s.getMonth(), s.getDate()).getTime()) return false;
+        }
+        if (endVal) {
+            const e = new Date(endVal);
+            if (ts > new Date(e.getFullYear(), e.getMonth(), e.getDate()).getTime()) return false;
+        }
+        return true;
+    });
+
+    // Sort
+    list.sort((a, b) => {
+        const ta = a.techDate ? a.techDate.getTime() : 0;
+        const tb = b.techDate ? b.techDate.getTime() : 0;
+        return sortOrder === 'new' ? tb - ta : ta - tb;
+    });
+
+    filteredVideos = list;
+    displayedCount = 0;
+    document.getElementById('videoGrid').innerHTML = '';
+    loadMore();
+
+    document.getElementById('stats').innerHTML = `<i class="fas fa-database"></i> Знайдено: ${list.length}`;
+    pushUrlState();
+}
+
+function loadMore() {
+    const grid = document.getElementById('videoGrid');
+    const slice = filteredVideos.slice(displayedCount, displayedCount + PAGE_SIZE);
+    slice.forEach(v => grid.appendChild(createCard(v)));
+    displayedCount += slice.length;
+
+    const btn = document.getElementById('btnLoadMore');
+    btn.style.display = displayedCount < filteredVideos.length ? 'inline-block' : 'none';
+}
+
+function createCard(v) {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.setAttribute('data-id', v.id);
+
+    const isFav = favorites.has(v.id);
+    const safeTitle = escapeHtml(v.title);
+    const safeDateStr = escapeHtml(v.dateStr || '');
+    const safeYear = escapeHtml(v.year || '');
+
+    card.innerHTML = `
+        <img class="thumbnail" src="https://img.youtube.com/vi/${escapeHtml(v.id)}/mqdefault.jpg" loading="lazy" alt="${safeTitle}">
+        <button class="fav-btn ${isFav ? 'active' : ''}" title="Улюблене"><i class="fas fa-heart"></i></button>
+        <div class="info">
+            <div class="video-title">${safeTitle}</div>
+            <div class="video-meta"><span>${safeDateStr}</span><span>${safeYear} р.</span></div>
+        </div>`;
+
+    card.querySelector('.fav-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        if (favorites.has(v.id)) {
+            favorites.delete(v.id);
+            btn.classList.remove('active');
+        } else {
+            favorites.add(v.id);
+            btn.classList.add('active');
+            showToast('❤️ Додано до улюблених');
+        }
+        saveFavorites();
+        if (showFavOnly) render();
+    });
+
+    card.addEventListener('click', () => openVideoModal(v.id));
+    return card;
+}
+
+// ── Modal ──
+let currentVideoId = null;
+let overlayHideTimer = null;
+
+function openVideoModal(videoId) {
+    currentVideoId = videoId;
+    document.getElementById('ytPlayer').src =
+        `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+    document.getElementById('videoModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+    document.getElementById('ytPlayer').src = '';
+    document.getElementById('videoModal').style.display = 'none';
+    document.body.style.overflow = '';
+    currentVideoId = null;
+    hideShareOverlay(true);
+}
+
+function showShareOverlay() {
+    clearTimeout(overlayHideTimer);
+    document.getElementById('shareOverlay').classList.add('visible');
+    overlayHideTimer = setTimeout(hideShareOverlay, 3500);
+}
+
+function hideShareOverlay(immediate) {
+    clearTimeout(overlayHideTimer);
+    if (immediate) {
+        document.getElementById('shareOverlay').classList.remove('visible');
+    } else {
+        overlayHideTimer = setTimeout(() => {
+            document.getElementById('shareOverlay').classList.remove('visible');
+        }, 200);
+    }
+}
+
+// Show overlay on mouse move / touch inside modal content
+document.getElementById('videoModal').addEventListener('mousemove', showShareOverlay);
+document.getElementById('videoModal').addEventListener('touchstart', showShareOverlay, { passive: true });
+
+// Keep visible while hovering over the overlay itself
+document.addEventListener('DOMContentLoaded', () => {});
+// (shareOverlay is accessible after HTML is parsed)
+
+document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this || e.target.id === 'closeModalBtn') closeVideoModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideoModal(); });
+
+// Share buttons
+function getVideoUrl() {
+    return currentVideoId ? `https://www.youtube.com/watch?v=${currentVideoId}` : location.href;
+}
+
+document.getElementById('shareBtn_fb').addEventListener('click', e => {
+    e.stopPropagation();
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getVideoUrl())}`, '_blank');
+});
+document.getElementById('shareBtn_tg').addEventListener('click', e => {
+    e.stopPropagation();
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(getVideoUrl())}`, '_blank');
+});
+document.getElementById('shareBtn_vb').addEventListener('click', e => {
+    e.stopPropagation();
+    window.open(`viber://forward?text=${encodeURIComponent(getVideoUrl())}`, '_blank');
+});
+document.getElementById('shareBtn_tw').addEventListener('click', e => {
+    e.stopPropagation();
+    window.open(`https://x.com/intent/tweet?url=${encodeURIComponent(getVideoUrl())}`, '_blank');
+});
+document.getElementById('shareBtn_wa').addEventListener('click', e => {
+    e.stopPropagation();
+    window.open(`https://wa.me/?text=${encodeURIComponent(getVideoUrl())}`, '_blank');
+});
+document.getElementById('shareBtn_copy').addEventListener('click', e => {
+    e.stopPropagation();
+    const url = getVideoUrl();
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast('🔗 Посилання скопійовано!'));
+    }
+    showShareOverlay(); // reset timer
+});
+
+// ── Setup ──
+function setup() {
+    // Preachers
+    const pc = document.getElementById('preachersContainer');
+    preachers.forEach(p => {
+        const b = document.createElement('button');
+        b.className = 'tag-btn'; b.textContent = p.label;
+        b.addEventListener('click', () => {
+            if (activePreachers.has(p.key)) {
+                activePreachers.delete(p.key); b.classList.remove('active');
+            } else {
+                activePreachers.add(p.key); b.classList.add('active');
+            }
+            render();
+        });
+        pc.appendChild(b);
+    });
+
+    // Services
+    const sc = document.getElementById('servicesContainer');
+    services.forEach(s => {
+        const b = document.createElement('button');
+        b.className = 'tag-btn'; b.textContent = s.label;
+        b.addEventListener('click', () => {
+            document.getElementById('searchInput').value = s.key;
+            activePreachers.clear();
+            pc.querySelectorAll('.tag-btn').forEach(x => x.classList.remove('active'));
+            render();
+        });
+        sc.appendChild(b);
+    });
+
+    // Toggle panels
+    function makeToggle(btnId, panelId) {
+        const btn = document.getElementById(btnId);
+        const panel = document.getElementById(panelId);
+        btn.addEventListener('click', () => {
+            const open = panel.style.display === 'block';
+            panel.style.display = open ? 'none' : 'block';
+            btn.classList.toggle('active', !open);
+        });
+    }
+    makeToggle('btnShowCategories', 'panelCategories');
+    makeToggle('btnShowDate', 'panelDate');
+
+    // Clear all
+    document.getElementById('btnAllClear').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('dateStart').value = '';
+        document.getElementById('dateEnd').value = '';
+        activePreachers.clear();
+        showFavOnly = false;
+        document.getElementById('btnFavFilter').classList.remove('active');
+        document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+        ['panelCategories','panelDate'].forEach(id => document.getElementById(id).style.display = 'none');
+        ['btnShowCategories','btnShowDate'].forEach(id => document.getElementById(id).classList.remove('active'));
+        render();
+    });
+
+    // Sort
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            sortOrder = btn.dataset.sort;
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+            render();
+        });
+    });
+
+    // Favorites filter
+    document.getElementById('btnFavFilter').addEventListener('click', () => {
+        showFavOnly = !showFavOnly;
+        document.getElementById('btnFavFilter').classList.toggle('active', showFavOnly);
+        render();
+    });
+
+    // Load more
+    document.getElementById('btnLoadMore').addEventListener('click', loadMore);
+
+    // Inputs with debounce
+    let debounce;
+    document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(debounce); debounce = setTimeout(render, 280);
+    });
+    document.getElementById('dateStart').addEventListener('change', render);
+    document.getElementById('dateEnd').addEventListener('change', render);
+
+    updateFavCount();
+    loadData();
+}
+
+setup();
+</script>
+</body>
+</html>
