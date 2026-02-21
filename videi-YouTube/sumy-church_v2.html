@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:image" content="Image.png">
     <title>Архів Відео | Дім Євангелія</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -185,7 +184,7 @@
             border-radius: 12px; overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,0.7);
         }
-        #ytPlayer { width: 100%; height: 100%; border: none; }
+        #ytPlayer { width: 100%; height: 100%; border: none; display: block; }
         #closeModalBtn {
             position: absolute; top: 12px; right: 12px;
             background: rgba(0,0,0,0.6); color: white; border: none;
@@ -193,6 +192,20 @@
             cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: background 0.2s;
         }
         #closeModalBtn:hover { background: rgba(220,38,38,0.8); }
+
+        @media (max-width: 768px) {
+            #videoModal {
+                padding: 0;
+                background: #000;
+                align-items: stretch;
+            }
+            .modal-content {
+                max-width: 100%; width: 100%;
+                aspect-ratio: unset; height: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
 
         /* ── SHARE OVERLAY ON PLAYER ── */
         .share-overlay {
@@ -548,6 +561,8 @@ function openVideoModal(videoId) {
         `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
     document.getElementById('videoModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    // Одразу показуємо оверлей (особливо важливо для мобільних)
+    showShareOverlay();
 }
 
 function closeVideoModal() {
@@ -561,7 +576,7 @@ function closeVideoModal() {
 function showShareOverlay() {
     clearTimeout(overlayHideTimer);
     document.getElementById('shareOverlay').classList.add('visible');
-    overlayHideTimer = setTimeout(hideShareOverlay, 3500);
+    overlayHideTimer = setTimeout(hideShareOverlay, 4000);
 }
 
 function hideShareOverlay(immediate) {
@@ -575,13 +590,15 @@ function hideShareOverlay(immediate) {
     }
 }
 
-// Show overlay on mouse move / touch inside modal content
+// ПК: рух миші показує оверлей
 document.getElementById('videoModal').addEventListener('mousemove', showShareOverlay);
-document.getElementById('videoModal').addEventListener('touchstart', showShareOverlay, { passive: true });
-
-// Keep visible while hovering over the overlay itself
-document.addEventListener('DOMContentLoaded', () => {});
-// (shareOverlay is accessible after HTML is parsed)
+// Мобільні: дотик до затемненої зони навколо плеєра показує оверлей
+document.getElementById('videoModal').addEventListener('touchstart', function(e) {
+    // Якщо торкнулись не самого iframe — показуємо оверлей
+    if (e.target.id !== 'ytPlayer') showShareOverlay();
+    // Якщо торкнулись iframe — теж показуємо, бо перший дотик ще не передається плеєру
+    else showShareOverlay();
+}, { passive: true });
 
 document.getElementById('videoModal').addEventListener('click', function(e) {
     if (e.target === this || e.target.id === 'closeModalBtn') closeVideoModal();
