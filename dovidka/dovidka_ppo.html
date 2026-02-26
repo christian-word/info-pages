@@ -1,0 +1,882 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Реєстр довідок РРО</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+:root {
+    --blue: #1a56db;
+    --blue-dark: #1342b0;
+    --blue-light: #e8f0fe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --orange: #ea580c;
+    --orange-light: #fff7ed;
+    --red: #dc2626;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-500: #64748b;
+    --gray-700: #334155;
+    --gray-900: #0f172a;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    font-size: 7pt;
+    line-height: 0.95;
+    margin: 0;
+    padding: 24px 16px;
+    background: var(--gray-100);
+    color: var(--gray-900);
+}
+
+/* ── ПАНЕЛЬ УПРАВЛІННЯ ── */
+.control-panel {
+    background: white;
+    padding: 24px;
+    margin-bottom: 16px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--gray-200);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+.panel-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+.panel-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--blue-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+}
+.panel-desc {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin: 0 0 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.4;
+}
+
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'IBM Plex Sans', sans-serif;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    line-height: 1;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--blue); color: white; box-shadow: 0 1px 3px rgba(26,86,219,0.3); }
+.btn-primary:hover { background: var(--blue-dark); box-shadow: 0 2px 6px rgba(26,86,219,0.4); }
+
+.btn-ghost { background: white; color: var(--gray-700); border: 1px solid var(--gray-200); }
+.btn-ghost:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+.btn-success { background: var(--green); color: white; box-shadow: 0 1px 3px rgba(22,163,74,0.3); }
+.btn-success:hover { background: #15803d; }
+
+.btn-warning { background: var(--orange); color: white; box-shadow: 0 1px 3px rgba(234,88,12,0.3); }
+.btn-warning:hover { background: #c2410c; }
+
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* Прогрес-бар */
+#progressWrap {
+    margin-top: 14px;
+    display: none;
+}
+#progressWrap .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-bottom: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+.progress-bar-bg {
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 99px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+/* Статус */
+#statusText {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--gray-500);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 18px;
+}
+#statusText.success { color: var(--green); }
+#statusText.error { color: var(--red); }
+
+/* ── СПИСОК ФАЙЛІВ ── */
+#fileListContainer {
+    max-width: 860px;
+    margin: 0 auto 16px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+    display: none;
+    overflow: hidden;
+}
+
+.list-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+}
+.list-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.list-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+    font-family: 'IBM Plex Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.list-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Пошук */
+.search-wrap {
+    position: relative;
+}
+.search-wrap input {
+    width: 100%;
+    padding: 7px 12px 7px 34px;
+    font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+    color: var(--gray-900);
+    background: white;
+}
+.search-wrap input:focus { border-color: var(--blue); }
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-300);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Інфо про вибрані */
+.selection-info {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--orange-light);
+    border: 1px solid #fed7aa;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--orange);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+    margin-top: 10px;
+}
+.selection-info.show { display: flex; }
+.selection-info span { font-weight: 700; }
+
+/* Елементи файлів */
+#filesList {
+    max-height: 420px;
+    overflow-y: auto;
+}
+#filesList::-webkit-scrollbar { width: 6px; }
+#filesList::-webkit-scrollbar-track { background: var(--gray-100); }
+#filesList::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    cursor: pointer;
+    transition: background 0.12s;
+    gap: 10px;
+}
+.file-item:last-child { border-bottom: none; }
+.file-item:hover { background: var(--gray-50); }
+.file-item.selected { background: var(--blue-light); }
+.file-item.hidden { display: none; }
+
+.file-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+.file-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--blue);
+    flex-shrink: 0;
+}
+.file-info { min-width: 0; }
+.file-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--gray-900);
+    font-family: 'IBM Plex Sans', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.file-hname {
+    font-size: 12px;
+    color: var(--blue);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.file-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 1px;
+}
+
+/* ── КОНТЕЙНЕР ДОКУМЕНТА ── */
+.documents-container {
+    display: none;
+    max-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    padding: 10px;
+}
+
+/* Кнопка "назад" над документом */
+#backBtn {
+    display: none;
+    max-width: 860px;
+    margin: 0 auto 12px;
+}
+
+/* ── ФОРМА ДОКУМЕНТА (без змін — поліграфія) ── */
+.document-page {
+    width: 100%;
+    page-break-after: always;
+    page-break-inside: avoid;
+    margin-bottom: 0;
+}
+.last-page { page-break-after: auto; }
+
+.document-half {
+    width: 100%;
+    padding: 2mm;
+    background: white;
+    border-bottom: 2px dashed #999;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-bottom: 5mm;
+}
+.document-half:last-child { border-bottom: none; margin-bottom: 0; }
+
+.form-header { text-align: center; margin-bottom: 0.3mm; }
+.header-top { margin-bottom: 0.2mm; }
+.form-title-small { font-size: 5.5pt; margin-bottom: 0.1mm; line-height: 1.0; }
+.header-main { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 0.2mm; }
+.header-left { flex: 1; text-align: left; font-size: 7pt; padding-left: 2px; }
+.header-center { flex: 1; text-align: center; }
+.header-right { flex: 1; text-align: right; font-size: 8.5pt; font-weight: bold; padding-right: 2px; }
+.form-title-main { font-size: 9pt; font-weight: bold; text-transform: uppercase; margin: 0; line-height: 1.0; }
+.form-subtitle { font-size: 6.5pt; margin-top: 0.1mm; line-height: 1.0; }
+.main-table { width: 100%; border-collapse: collapse; margin-bottom: 0.3mm; font-size: 7pt; table-layout: fixed; }
+.main-table td { border: 0.5px solid #ccc; padding: 0.5px 2px; vertical-align: middle; line-height: 1.05; }
+.main-table .label { background: #fcfcfc; font-weight: normal; white-space: nowrap; font-size: 7pt; }
+.main-table .value { font-weight: bold; font-size: 8.5pt; }
+.main-table .section { font-weight: bold; text-align: center; background: #f5f5f5; border: 0.5px solid #ccc; font-size: 7pt; padding: 0.5px 0; }
+.main-table .subtext { font-size: 5.5pt; color: #666; text-align: center; }
+.bottom-table { width: 100%; border-collapse: collapse; margin-top: 0.3mm; margin-bottom: 0.3mm; font-size: 7pt; table-layout: fixed; }
+.bottom-table td { border: 0.5px solid #ccc; padding: 0.5px 2px; vertical-align: middle; line-height: 1.05; }
+.bottom-table .label { background: #fcfcfc; font-size: 7pt; }
+.bottom-table .value { font-weight: bold; font-size: 8.5pt; }
+.bottom-table .datetime-value { font-weight: bold; font-size: 8.5pt; text-align: left; }
+.signature-block { margin-top: 0.3mm; }
+.signature-line { border-bottom: 0.5px solid #ccc; min-height: 6px; margin-top: 0; padding-bottom: 0; line-height: 1.0; }
+.signature-label { font-size: 5.5pt; text-align: center; margin-top: 0; line-height: 1.0; }
+.footnotes { font-size: 4.5pt; line-height: 1.0; margin-top: 0.3mm; }
+.footnotes div { margin-bottom: 0.1mm; }
+.rejection-section { margin-top: 0.3mm; font-size: 5.5pt; line-height: 1.0; }
+.rejection-title { font-weight: bold; text-align: center; margin-bottom: 0.2mm; font-size: 6pt; }
+.standalone-text { margin: 0.3mm 0; font-size: 7pt; font-style: italic; text-align: justify; line-height: 1.0; font-weight: bold; }
+.usage-row { margin: 0.2mm 0; font-size: 7pt; font-weight: bold; line-height: 1.0; }
+
+/* ── ДРУК ── */
+@media print {
+    body { background: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4; margin: 5mm; }
+    .control-panel, #fileListContainer, .no-print, #backBtn { display: none !important; }
+    .documents-container { display: block !important; width: 100%; margin: 0; padding: 0; }
+    .document-page { page-break-after: always; margin: 0; padding: 0; }
+    .last-page { page-break-after: auto; }
+    .document-half { margin-bottom: 5mm; page-break-inside: avoid; }
+}
+
+/* Порожній стан */
+.empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--gray-500);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+}
+.empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- Панель управління -->
+<div class="control-panel">
+    <div class="panel-header">
+        <div class="panel-icon">📂</div>
+        <h2>Реєстр довідок РРО</h2>
+    </div>
+    <p class="panel-desc">Оберіть папку з XML-файлами (формат 1819.XML) для перегляду та друку довідок про опломбування РРО.</p>
+
+    <input type="file" id="fileInput" webkitdirectory multiple style="display:none">
+
+    <div class="btn-row">
+        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+            📂 Вибрати папку з XML
+        </button>
+        <button class="btn btn-ghost" onclick="clearAll()">
+            🧹 Очистити
+        </button>
+    </div>
+
+    <div id="progressWrap">
+        <div class="progress-label">
+            <span id="progressText">Обробка файлів...</span>
+            <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <div id="statusText"></div>
+</div>
+
+<!-- Кнопка повернення -->
+<div id="backBtn" class="no-print">
+    <button class="btn btn-ghost" onclick="backToList()">← Повернутись до списку</button>
+</div>
+
+<!-- Список файлів -->
+<div id="fileListContainer">
+    <div class="list-header">
+        <div class="list-header-top">
+            <div class="list-title">
+                Знайдені документи
+                <span class="badge" id="totalBadge">0</span>
+            </div>
+            <div class="list-actions">
+                <button class="btn btn-ghost btn-sm" id="toggleAllBtn" onclick="toggleAll()">✅ Виділити всі</button>
+                <button class="btn btn-success btn-sm" onclick="printAll()">🖨️ Друк всіх</button>
+                <button class="btn btn-warning btn-sm" onclick="printSelected()">🖨️ Друк обраних</button>
+            </div>
+        </div>
+
+        <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Пошук за назвою файлу або ЦСО..." oninput="filterList()">
+        </div>
+
+        <div id="selectionInfo" class="selection-info">
+            🖊️ Обрано документів: <span id="selectedCount">0</span>
+        </div>
+    </div>
+
+    <div id="filesList"></div>
+</div>
+
+<!-- Контейнер для перегляду/друку -->
+<div id="documentsContainer" class="documents-container"></div>
+
+<script>
+let allDocumentsData = [];
+let selectedIndices = new Set();
+let allSelected = false;
+
+// ── ЗАВАНТАЖЕННЯ ФАЙЛІВ ──
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files).filter(f => f.name.toLowerCase().endsWith('.xml'));
+    if (files.length === 0) {
+        setStatus('XML файли не знайдено у вибраній папці', 'error');
+        return;
+    }
+
+    allDocumentsData = [];
+    selectedIndices.clear();
+    allSelected = false;
+
+    const progressWrap = document.getElementById('progressWrap');
+    progressWrap.style.display = 'block';
+    setStatus('');
+    updateSelectionInfo();
+
+    let processedCount = 0;
+    const tempData = new Array(files.length);
+
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(e.target.result, 'text/xml');
+                const data = extractData(xmlDoc);
+                data.fileName = file.name;
+                tempData[index] = data;
+            } catch (error) {
+                console.error(`Помилка у файлі ${file.name}:`, error);
+                tempData[index] = null;
+            }
+
+            processedCount++;
+            const pct = Math.round(processedCount / files.length * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressPercent').textContent = pct + '%';
+            document.getElementById('progressText').textContent = `Оброблено ${processedCount} з ${files.length}...`;
+
+            if (processedCount === files.length) {
+                allDocumentsData = tempData.filter(Boolean);
+                progressWrap.style.display = 'none';
+                renderFileList();
+                setStatus(`✅ Готово! Завантажено документів: ${allDocumentsData.length}${allDocumentsData.length < files.length ? ` (помилок: ${files.length - allDocumentsData.length})` : ''}`, 'success');
+            }
+        };
+        reader.readAsText(file, 'windows-1251');
+    });
+});
+
+// ── ПАРСИНГ XML ──
+function extractData(xmlDoc) {
+    const get = (tag) => {
+        const el = xmlDoc.getElementsByTagName(tag)[0];
+        return el ? el.textContent.trim() : '';
+    };
+    const getWithRowNum = (tag, rowNum) => {
+        const elements = xmlDoc.getElementsByTagName(tag);
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].getAttribute('ROWNUM') === rowNum) return elements[i].textContent.trim();
+        }
+        return '';
+    };
+    function formatDate(d) {
+        if (!d || d.length !== 8) return d;
+        return d.slice(0,2) + '.' + d.slice(2,4) + '.' + d.slice(4,8);
+    }
+    function formatDateTime(dateTag, hourTag, minuteTag) {
+        const date = formatDate(get(dateTag));
+        const hour = get(hourTag);
+        const minute = get(minuteTag);
+        if (!date && !hour && !minute) return '';
+        let result = '';
+        if (date) result += date + ' ';
+        if (hour) result += 'о ' + hour + '-год';
+        if (minute) result += (hour ? ' : ' : '') + minute + '-ХВ';
+        return result.trim();
+    }
+    return {
+        date: formatDate(get('D_FILL')),
+        number: get('HNUM'),
+        ksti: get('HKSTI'),
+        sti: get('HSTI'),
+        csoName: get('HNAME'),
+        csoTin: get('HTIN'),
+        contractNum: get('R0101G1S'),
+        contractDate: formatDate(get('R0102G1D')),
+        contractEndDate: formatDate(get('R0104G1D')),
+        fiscalNum: get('R0105G1S'),
+        modelCode: get('R0106G1'),
+        modelName: get('R0106G1S'),
+        serialNum: get('R0107G1S'),
+        softwareCode: get('R0108G1'),
+        softwareVer: get('R0108G1S'),
+        manufacturer: get('R0111G1S'),
+        manufactureDate: formatDate(get('R0112G1D')),
+        operationDate: formatDate(get('R0113G1D')),
+        unsealDate: formatDate(get('R0114G1D')),
+        unsealHour: get('R0114G2') || '',
+        unsealMinute: get('R0114G3') || '',
+        unsealReason: get('R0115G1S'),
+        entityName: get('R0118G1S'),
+        entityTin: get('R0119G1S'),
+        unitName: get('R0120G1S'),
+        unitAddress: get('R0121G1S'),
+        territoryCode: get('R0122G1S'),
+        responsiblePerson: get('HBOS'),
+        csoPosition: get('R0203G1S'),
+        csoPerson: get('R0203G2S'),
+        personalizationDateTime: formatDateTime('R0201G1D', 'R0201G2', 'R0201G3'),
+        sealingDateTime: formatDateTime('R0202G1D', 'R0202G2', 'R0202G3'),
+        controlMeansNumbers: getWithRowNum('T1RXXXXG1S', '1'),
+        modemModel: get('R0109G1S'),
+        modemSerial: get('R0110G1S')
+    };
+}
+
+// ── РЕНДЕР СПИСКУ ──
+function renderFileList() {
+    const container = document.getElementById('filesList');
+    const listContainer = document.getElementById('fileListContainer');
+
+    if (allDocumentsData.length === 0) {
+        listContainer.style.display = 'none';
+        return;
+    }
+
+    document.getElementById('totalBadge').textContent = allDocumentsData.length;
+
+    // Будуємо HTML масивом — не innerHTML +=
+    const parts = allDocumentsData.map((data, index) => `
+        <div class="file-item${selectedIndices.has(index) ? ' selected' : ''}" 
+             data-index="${index}"
+             data-name="${(data.fileName || '').toLowerCase()}"
+             data-cso="${(data.csoName || '').toLowerCase()}"
+             onclick="onItemClick(event, ${index})">
+            <div class="file-left">
+                <input type="checkbox" class="file-checkbox" 
+                       ${selectedIndices.has(index) ? 'checked' : ''}
+                       onclick="event.stopPropagation(); toggleSelection(${index})">
+                <div class="file-info">
+                    <div class="file-name">${data.entityName || data.fileName}</div>
+                    <div class="file-hname">🏢 ${data.csoName || 'Без назви'}</div>
+                    ${data.date ? `<div class="file-meta">📅 ${data.date} &nbsp;|&nbsp; № ${data.number}</div>` : ''}
+                </div>
+            </div>
+            <div class="file-actions">
+                <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); showDocument(${index})">👁 Перегляд</button>
+            </div>
+        </div>
+    `);
+
+    container.innerHTML = parts.join('');
+    listContainer.style.display = 'block';
+    document.getElementById('documentsContainer').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
+    updateSelectionInfo();
+    filterList(); // застосувати поточний пошук
+}
+
+function onItemClick(e, index) {
+    if (e.target.type !== 'checkbox' && e.target.tagName !== 'BUTTON') {
+        toggleSelection(index);
+    }
+}
+
+// ── ВИБІР (оновлює тільки один елемент) ──
+function toggleSelection(index) {
+    if (selectedIndices.has(index)) {
+        selectedIndices.delete(index);
+    } else {
+        selectedIndices.add(index);
+    }
+    // Оновлюємо лише конкретний рядок, а не весь список
+    const item = document.querySelector(`.file-item[data-index="${index}"]`);
+    if (item) {
+        const isNowSelected = selectedIndices.has(index);
+        item.classList.toggle('selected', isNowSelected);
+        const cb = item.querySelector('.file-checkbox');
+        if (cb) cb.checked = isNowSelected;
+    }
+    updateSelectionInfo();
+    updateToggleAllBtn();
+}
+
+function toggleAll() {
+    if (selectedIndices.size < allDocumentsData.length) {
+        allDocumentsData.forEach((_, i) => selectedIndices.add(i));
+    } else {
+        selectedIndices.clear();
+    }
+    // Оновлюємо всі рядки без повного перерендеру
+    document.querySelectorAll('.file-item').forEach(item => {
+        const index = parseInt(item.dataset.index);
+        const sel = selectedIndices.has(index);
+        item.classList.toggle('selected', sel);
+        const cb = item.querySelector('.file-checkbox');
+        if (cb) cb.checked = sel;
+    });
+    updateSelectionInfo();
+    updateToggleAllBtn();
+}
+
+function updateToggleAllBtn() {
+    const btn = document.getElementById('toggleAllBtn');
+    if (selectedIndices.size >= allDocumentsData.length && allDocumentsData.length > 0) {
+        btn.textContent = '❌ Зняти виділення';
+    } else {
+        btn.textContent = '✅ Виділити всі';
+    }
+}
+
+function updateSelectionInfo() {
+    const info = document.getElementById('selectionInfo');
+    const count = document.getElementById('selectedCount');
+    count.textContent = selectedIndices.size;
+    info.classList.toggle('show', selectedIndices.size > 0);
+}
+
+// ── ПОШУК ──
+function filterList() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    let visible = 0;
+    document.querySelectorAll('.file-item').forEach(item => {
+        const name = item.dataset.name || '';
+        const cso = item.dataset.cso || '';
+        const match = !query || name.includes(query) || cso.includes(query);
+        item.classList.toggle('hidden', !match);
+        if (match) visible++;
+    });
+
+    // Показати порожній стан якщо нічого не знайдено
+    let empty = document.getElementById('emptySearch');
+    if (!visible && query) {
+        if (!empty) {
+            empty = document.createElement('div');
+            empty.id = 'emptySearch';
+            empty.className = 'empty-state';
+            empty.innerHTML = '<div class="emoji">🔍</div>Нічого не знайдено за запитом «' + query + '»';
+            document.getElementById('filesList').appendChild(empty);
+        }
+    } else if (empty) {
+        empty.remove();
+    }
+}
+
+// ── ПЕРЕГЛЯД ──
+function showDocument(index) {
+    const data = allDocumentsData[index];
+    const container = document.getElementById('documentsContainer');
+    container.innerHTML = renderDocumentPage(data, false);
+    container.style.display = 'block';
+    document.getElementById('backBtn').style.display = 'block';
+    container.scrollIntoView({behavior: 'smooth'});
+}
+
+function backToList() {
+    document.getElementById('documentsContainer').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('fileListContainer').scrollIntoView({behavior: 'smooth'});
+}
+
+// ── РЕНДЕР ДОКУМЕНТА ──
+function renderDocumentPage(data, isLast = false) {
+    return `<div class="document-page ${isLast ? 'last-page' : ''}">${renderDocumentHTML(data)}${renderDocumentHTML(data, true)}</div>`;
+}
+
+function renderDocumentHTML(data, isSecond = false) {
+    return `
+<div class="document-half ${isSecond ? 'last-document' : ''}">
+<div class="form-header">
+<div class="header-top">
+<div class="form-title-small">F13I6105</div>
+<div class="form-title-small">Додаток 2 до Порядку складання реєстратора розрахункових операцій (пункт 7 розділу II)</div>
+</div>
+<div class="header-main">
+<div class="header-left"><strong>${data.date}</strong> року № <strong>${data.number}</strong></div>
+<div class="header-center">
+<div class="form-title-main">ДОВІДКА</div>
+<div class="form-subtitle">про опломбування реєстратора розрахункових операцій</div>
+</div>
+<div class="header-right">ФОРМА № 1-ЦСО</div>
+</div>
+</div>
+<table class="main-table">
+<colgroup><col style="width: 20%;"><col style="width: 30%;"><col style="width: 20%;"><col style="width: 30%;"></colgroup>
+<tr><td class="label" colspan="4">Направлено до <strong>${data.ksti}</strong> <strong>${data.sti}</strong></td></tr>
+<tr><td colspan="4" class="section">центром сервісного обслуговування (дані щодо ЦСО):</td></tr>
+<tr><td class="label" colspan="2"><strong>${data.csoName}</strong></td><td class="value subtext" colspan="2">(найменування / прізвище, ім'я, по батькові)</td></tr>
+<tr><td class="label" colspan="2">податковий номер / серія та номер паспорта</td><td class="value" colspan="2"><strong>${data.csoTin}</strong></td></tr>
+<tr><td class="label">номер договору з ЦСО</td><td class="value"><strong>${data.contractNum}</strong></td><td class="label">дата договору з ЦСО</td><td class="value"><strong>${data.contractDate}</strong></td></tr>
+<tr><td class="label" colspan="2">строк дії договору до:</td><td class="value" colspan="2"><strong>${data.contractEndDate}</strong></td></tr>
+<tr><td colspan="4" class="section">Дані щодо РРО:</td></tr>
+<tr><td class="label" colspan="2">зарезервований/присвоєний фіскальний номер</td><td class="value" colspan="2"><strong>${data.fiscalNum}</strong></td></tr>
+<tr><td class="label">модель (код / найменування)</td><td class="value"><strong>${data.modelCode} ${data.modelName}</strong></td><td class="label">заводський номер</td><td class="value"><strong>${data.serialNum}</strong></td></tr>
+<tr><td class="label">версія ПЗ (код / назва)</td><td class="value"><strong>${data.softwareCode} ${data.softwareVer}</strong></td><td class="label">виробник (постачальник)</td><td class="value"><strong>${data.manufacturer}</strong></td></tr>
+<tr><td class="label">модель модема **</td><td class="value"><strong>${data.modemModel}</strong></td><td class="label">дата виготовлення</td><td class="value"><strong>${data.manufactureDate}</strong></td></tr>
+<tr><td class="label">зав. номер модема **</td><td class="value"><strong>${data.modemSerial}</strong></td><td class="label">дата введення в експлуатацію</td><td class="value"><strong>${data.operationDate}</strong></td></tr>
+<tr><td colspan="4" class="section">Дата здійснення розпломбування <strong>${data.unsealDate}</strong> О <strong>${data.unsealHour}</strong> год <strong>${data.unsealMinute}</strong> ХВ</td></tr>
+<tr><td class="label" colspan="2">Причина розпломбування</td><td class="value" colspan="2"><strong>${data.unsealReason}</strong></td></tr>
+<tr><td class="label" colspan="2">характер виявленої несправності РРО</td><td class="value" colspan="2">-</td></tr>
+<tr><td class="label" colspan="2">сума денної виручки на момент розпломбування</td><td class="value" colspan="2">-</td></tr>
+</table>
+<div class="usage-row"><strong>РРО використовується (дані щодо суб'єкта господарювання): ${data.responsiblePerson}</strong></div>
+<table class="main-table">
+<colgroup><col style="width: 20%;"><col style="width: 30%;"><col style="width: 20%;"><col style="width: 30%;"></colgroup>
+<tr><td colspan="4" class="section">в господарській одиниці (дані щодо господарської одиниці):</td></tr>
+<tr><td class="label" colspan="2">податковий номер / серія та номер паспорта</td><td class="label">код території</td><td class="value"><strong>${data.territoryCode}</strong></td></tr>
+<tr><td class="label" colspan="2">податковий номер (значення)</td><td class="value" colspan="2"><strong>${data.entityTin}</strong></td></tr>
+<tr><td class="label" colspan="2">назва господарської одиниці /структурного підрозділу</td><td class="value" colspan="2"><strong>${data.unitName}</strong></td></tr>
+<tr><td class="label" colspan="2">адреса господарської одиниці / структурного підрозділу</td><td class="value" colspan="2"><strong>${data.unitAddress}</strong></td></tr>
+</table>
+<div class="signature-block">
+<div><strong>Відповідальна особа суб'єкта господарювання :</strong></div>
+<div style="display: flex; margin-top: 0.3mm;">
+<div style="flex: 2;"><div class="signature-line"><strong>${data.responsiblePerson}</strong></div><div class="signature-label">(прізвище та ініціали) (підпис)</div></div>
+<div style="flex: 1; text-align: right; padding-right: 6px;"><div class="signature-line"><strong>${data.date}</strong></div></div>
+</div>
+</div>
+<div class="standalone-text"><strong>Конструкція та програмне забезпечення РРО відповідають документації виробника. РРО працює у фіскальному режимі роботи. РРО опломбовано</strong></div>
+<table class="bottom-table">
+<colgroup><col style="width: 20%;"><col style="width: 30%;"><col style="width: 20%;"><col style="width: 30%;"></colgroup>
+<tr><td class="label">Дата персоналізації</td><td class="datetime-value">${data.personalizationDateTime || '-'}</td><td class="label">Дата опломбування</td><td class="datetime-value">${data.sealingDateTime || '-'}</td></tr>
+<tr><td class="label" colspan="2">Номери засобів контролю на РРО</td><td class="datetime-value" colspan="2">${data.controlMeansNumbers || '-'}</td></tr>
+</table>
+<div class="signature-block">
+<div><strong>Відповідальна особа ЦСО</strong></div>
+<div style="display: flex; margin-top: 0.3mm;">
+<div style="flex: 1;"><div class="signature-line"><strong>${data.csoPosition}</strong></div><div class="signature-label">(посада)</div></div>
+<div style="flex: 1;"><div class="signature-line"><strong>${data.csoPerson}</strong></div><div class="signature-label">(прізвище та ініціали) (підпис)</div></div>
+</div>
+</div>
+<div class="rejection-section">
+<div class="rejection-title">Відмовлено в опломбуванні РРО</div>
+<table class="bottom-table">
+<colgroup><col style="width: 20%;"><col style="width: 30%;"><col style="width: 20%;"><col style="width: 30%;"></colgroup>
+<tr><td class="label">Дата відмови .. о - год - ХВ</td><td class="value"></td><td class="label">Причина відмови в опломбуванні</td><td class="value">-</td></tr>
+</table>
+<div class="signature-block" style="margin-top: 0.2mm;">
+<div style="display: flex; margin-top: 0.2mm;">
+<div style="flex: 1; font-size: 5.5pt;"><div class="signature-line"></div><div class="signature-label">(посада)</div></div>
+<div style="flex: 1; font-size: 5.5pt;"><div class="signature-line"></div><div class="signature-label">(прізвище та ініціали) (підпис)</div></div>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<div>1 Серія та номер паспорта / номер ID картки (для фізичних осіб, які через свої релігійні переконання відмовились від прийняття реєстраційного номера облікової картки платника податків та офіційно повідомили про це відповідний контролюючий орган і мають відповідну відмітку в паспорті).</div>
+<div>2 Графа заповнюється в разі наявності у РРО зовнішнього модема.</div>
+</div>
+</div>`;
+}
+
+// ── ДРУК ──
+function printAll() {
+    if (allDocumentsData.length === 0) { alert('Спочатку виберіть папку з файлами'); return; }
+    const container = document.getElementById('documentsContainer');
+    // ✅ Масив замість innerHTML +=
+    const parts = allDocumentsData.map((data, i) => renderDocumentPage(data, i === allDocumentsData.length - 1));
+    container.innerHTML = parts.join('');
+    container.style.display = 'block';
+    setTimeout(() => window.print(), 100);
+}
+
+function printSelected() {
+    if (selectedIndices.size === 0) { alert('Оберіть хоча б один документ для друку!'); return; }
+    const container = document.getElementById('documentsContainer');
+    const indices = Array.from(selectedIndices).sort((a, b) => a - b);
+    // ✅ Масив замість innerHTML +=
+    const parts = indices.map((index, i) => renderDocumentPage(allDocumentsData[index], i === indices.length - 1));
+    container.innerHTML = parts.join('');
+    container.style.display = 'block';
+    setTimeout(() => window.print(), 100);
+}
+
+// ── УТИЛІТИ ──
+function clearAll() {
+    allDocumentsData = [];
+    selectedIndices.clear();
+    allSelected = false;
+    document.getElementById('fileListContainer').style.display = 'none';
+    document.getElementById('documentsContainer').style.display = 'none';
+    document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('progressWrap').style.display = 'none';
+    setStatus('');
+    updateSelectionInfo();
+    updateToggleAllBtn();
+}
+
+function setStatus(msg, type = '') {
+    const el = document.getElementById('statusText');
+    el.textContent = msg;
+    el.className = type;
+}
+</script>
+</body>
+</html>
