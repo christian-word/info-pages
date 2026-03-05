@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>📸 Мобильный Сканер v10 - Оптимизация размера</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 10px; background-color: #f4f7f9; }
+h3 { color: #333; margin-top: 5px; }
+.container { margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+label { background-color: #007bff; color: white; padding: 12px 20px; border-radius: 6px; cursor: pointer; display: inline-block; font-weight: bold; }
+#fileInput { display: none; }
+#processBtn { background-color: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+#processBtn:disabled { background-color: #90ee90; cursor: not-allowed; }
+#status { margin-top: 10px; color: #dc3545; font-weight: bold; }
+#crop-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    touch-action: none;
+    line-height: 0;
+}
+#sourceCanvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.handle {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    cursor: move;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    transition: transform 0.1s;
+}
+.handle:active {
+    transform: translate(-50%, -50%) scale(1.2);
+    background-color: #ff4757;
+}
+.control-group { margin-top: 15px; padding: 10px; border: 1px solid #eee; border-radius: 6px; }
+.slider-control { width: 100%; margin: 5px 0 10px; }
+.control-label { background: none; color: #333; padding: 0; display: block; margin-bottom: 5px; font-weight: normal; }
+.quad-line {
+    stroke: #dc3545;
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 5,5;
+    opacity: 0.8;
+}
+#canvasOutput {
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.size-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+.size-option {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+.size-option:hover {
+    border-color: #007bff;
+    background-color: #f0f7ff;
+}
+.size-option.selected {
+    border-color: #007bff;
+    background-color: #e6f2ff;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+.size-option .icon { font-size: 1.5em; margin-bottom: 5px; }
+.size-option .name { font-weight: bold; color: #333; }
+.size-option .desc { font-size: 0.85em; color: #666; margin-top: 3px; }
+.size-option .size-estimate { font-size: 0.8em; color: #28a745; margin-top: 3px; }
+.quality-control {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+#downloadBtn {
+    display: none;
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#fileSizeInfo {
+    margin-top: 10px;
+    padding: 10px;
+    background: #e8f5e9;
+    border-radius: 6px;
+    color: #2e7d32;
+    font-weight: 500;
+    display: none;
+}
+.format-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.format-option {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+}
+.format-option.selected {
+    border-color: #007bff;
+    background: #e6f2ff;
+}
+</style>
+</head>
+<body>
+<h3>📸 Мобильный Сканер v10 - Оптимизация размера</h3>
+
+<div class="container">
+    <label for="fileInput">1. Выбрать фото документа</label>
+    <input type="file" id="fileInput" accept="image/*">
+    <p id="status">Ожидание загрузки OpenCV.js...</p>
+</div>
+
+<div class="container">
+    <h4>🖼️ Настройка обрезки:</h4>
+    <p style="font-size: 0.9em; color: #555;">Перетащите красные точки на углы документа</p>
+    <div id="crop-container">
+        <canvas id="sourceCanvas"></canvas>
+        <svg id="overlay">
+            <polygon id="quad" class="quad-line" points=""/>
+        </svg>
+        <div class="handle" id="tl" style="display: none;"></div>
+        <div class="handle" id="tr" style="display: none;"></div>
+        <div class="handle" id="br" style="display: none;"></div>
+        <div class="handle" id="bl" style="display: none;"></div>
+    </div>
+    
+    <p style="margin-top: 15px;">
+        <strong>Тип обработки:</strong>
+        <select id="processingType">
+            <option value="color">🌈 Цветной</option>
+            <option value="grayscale">⚫ Серый (меньше размер)</option>
+            <option value="binary">⬛ Чёрно-белый (мин. размер)</option>
+        </select>
+    </p>
+    
+    <div id="processingControlsGroup" class="control-group" style="display: none;">
+        <label class="control-label">Контраст: <span id="contrastValue">1.0</span></label>
+        <input type="range" id="contrastControl" class="slider-control" min="50" max="200" value="100">
+        <label class="control-label">Яркость: <span id="brightnessValue">50</span></label>
+        <input type="range" id="brightnessControl" class="slider-control" min="0" max="100" value="50">
+    </div>
+    
+    <button id="processBtn" disabled>2. Выполнить сканирование</button>
+</div>
+
+<div class="container">
+    <h4>✅ Результат:</h4>
+    <canvas id="canvasOutput"></canvas>
+    
+    <h4 style="margin-top: 20px;">💾 Настройки сохранения:</h4>
+    
+    <label class="control-label">📐 Разрешение:</label>
+    <div class="size-options">
+        <div class="size-option selected" data-scale="1" data-name="original">
+            <div class="icon">📊</div>
+            <div class="name">Оригинал</div>
+            <div class="desc">100% размер</div>
+            <div class="size-estimate">~2-5 MB</div>
+        </div>
+        <div class="size-option" data-scale="0.75" data-name="high">
+            <div class="icon">👍</div>
+            <div class="name">Высокое</div>
+            <div class="desc">75% размер</div>
+            <div class="size-estimate">~1-2 MB</div>
+        </div>
+        <div class="size-option" data-scale="0.5" data-name="medium">
+            <div class="icon">👌</div>
+            <div class="name">Среднее</div>
+            <div class="desc">50% размер</div>
+            <div class="size-estimate">~500 KB-1 MB</div>
+        </div>
+        <div class="size-option" data-scale="0.25" data-name="low">
+            <div class="icon">📱</div>
+            <div class="name">Низкое</div>
+            <div class="desc">25% размер</div>
+            <div class="size-estimate">~100-300 KB</div>
+        </div>
+    </div>
+    
+    <label class="control-label" style="margin-top: 15px;">🖼️ Формат:</label>
+    <div class="format-options">
+        <div class="format-option selected" data-format="jpeg" data-quality="0.85">
+            <div><strong>JPEG</strong></div>
+            <div style="font-size: 0.8em; color: #666;">85% качество (рекомендуется)</div>
+        </div>
+        <div class="format-option" data-format="jpeg" data-quality="0.6">
+            <div><strong>JPEG</strong></div>
+            <div style="font-size: 0.8em; color: #666;">60% качество (мин. размер)</div>
+        </div>
+        <div class="format-option" data-format="png" data-quality="1">
+            <div><strong>PNG</strong></div>
+            <div style="font-size: 0.8em; color: #666;">Без потерь (больше размер)</div>
+        </div>
+    </div>
+    
+    <div id="fileSizeInfo"></div>
+    
+    <button id="downloadBtn">💾 Сохранить файл</button>
+</div>
+
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+<script>
+// === Глобальные переменные ===
+let sourceCanvas = document.getElementById('sourceCanvas');
+let sourceCtx = sourceCanvas.getContext('2d');
+let statusElement = document.getElementById('status');
+let processBtn = document.getElementById('processBtn');
+let downloadBtn = document.getElementById('downloadBtn');
+let cropContainer = document.getElementById('crop-container');
+let overlay = document.getElementById('overlay');
+let quad = document.getElementById('quad');
+let fileSizeInfo = document.getElementById('fileSizeInfo');
+
+const handles = {
+    tl: document.getElementById('tl'),
+    tr: document.getElementById('tr'),
+    br: document.getElementById('br'),
+    bl: document.getElementById('bl')
+};
+
+let activeHandle = null;
+let originalImage = null;
+let displayScale = 1;
+let outputScale = 1; // Масштаб выходного изображения
+let outputFormat = 'jpeg';
+let outputQuality = 0.85;
+
+// Контролы
+const contrastControl = document.getElementById('contrastControl');
+const brightnessControl = document.getElementById('brightnessControl');
+
+// === Инициализация ===
+document.getElementById('fileInput').addEventListener('change', loadImage);
+processBtn.addEventListener('click', processImage);
+downloadBtn.addEventListener('click', downloadResult);
+document.getElementById('processingType').addEventListener('change', toggleBrightnessControl);
+
+contrastControl.addEventListener('input', (e) => {
+    document.getElementById('contrastValue').textContent = (e.target.value / 100).toFixed(1);
+});
+
+brightnessControl.addEventListener('input', (e) => {
+    document.getElementById('brightnessValue').textContent = e.target.value;
+});
+
+// Выбор разрешения
+document.querySelectorAll('.size-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        outputScale = parseFloat(option.dataset.scale);
+        updateFileSizeEstimate();
+    });
+});
+
+// Выбор формата
+document.querySelectorAll('.format-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        outputFormat = option.dataset.format;
+        outputQuality = parseFloat(option.dataset.quality);
+        updateFileSizeEstimate();
+    });
+});
+
+function onOpenCvReady() {
+    statusElement.innerHTML = '✅ OpenCV готов. Загрузите фото.';
+    toggleBrightnessControl();
+}
+
+function toggleBrightnessControl() {
+    const type = document.getElementById('processingType').value;
+    document.getElementById('processingControlsGroup').style.display =
+        (type === 'color' || type === 'grayscale') ? 'block' : 'none';
+}
+
+// === Загрузка изображения ===
+function loadImage(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    
+    let reader = new FileReader();
+    reader.onload = function(event) {
+        let img = new Image();
+        img.onload = function() {
+            originalImage = img;
+            sourceCanvas.width = img.width;
+            sourceCanvas.height = img.height;
+            sourceCtx.drawImage(img, 0, 0);
+            updateDisplayScale();
+            initializeHandles();
+            processBtn.disabled = false;
+            statusElement.innerHTML = '✅ Изображение загружено. Настройте углы.';
+            
+            let outputCanvas = document.getElementById('canvasOutput');
+            outputCanvas.getContext('2d').clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+            downloadBtn.style.display = 'none';
+            fileSizeInfo.style.display = 'none';
+            
+            // Обновляем оценку размера
+            updateFileSizeEstimate(file.size);
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function updateDisplayScale() {
+    let rect = sourceCanvas.getBoundingClientRect();
+    displayScale = sourceCanvas.width / rect.width;
+    overlay.style.width = rect.width + 'px';
+    overlay.style.height = rect.height + 'px';
+}
+
+function initializeHandles() {
+    const margin = 0.15;
+    const w = sourceCanvas.width;
+    const h = sourceCanvas.height;
+    const positions = {
+        tl: { x: margin * w, y: margin * h },
+        tr: { x: (1 - margin) * w, y: margin * h },
+        br: { x: (1 - margin) * w, y: (1 - margin) * h },
+        bl: { x: margin * w, y: (1 - margin) * h }
+    };
+    
+    for (let key in handles) {
+        setHandlePosition(handles[key], positions[key].x, positions[key].y);
+        handles[key].style.display = 'block';
+    }
+    updateQuadLine();
+}
+
+function setHandlePosition(handle, imgX, imgY) {
+    let screenX = imgX / displayScale;
+    let screenY = imgY / displayScale;
+    handle.style.left = screenX + 'px';
+    handle.style.top = screenY + 'px';
+}
+
+function getHandleImageCoords(handle) {
+    let rect = cropContainer.getBoundingClientRect();
+    let handleRect = handle.getBoundingClientRect();
+    let screenX = handleRect.left - rect.left + handleRect.width / 2;
+    let screenY = handleRect.top - rect.top + handleRect.height / 2;
+    return {
+        x: screenX * displayScale,
+        y: screenY * displayScale
+    };
+}
+
+function updateQuadLine() {
+    let coords = ['tl', 'tr', 'br', 'bl'].map(id => {
+        let pos = getHandleImageCoords(handles[id]);
+        return `${pos.x / displayScale},${pos.y / displayScale}`;
+    });
+    quad.setAttribute('points', coords.join(' '));
+}
+
+// === Drag and Drop ===
+function dragStart(e) {
+    if (e.target.classList.contains('handle')) {
+        activeHandle = e.target;
+        e.preventDefault();
+    }
+}
+
+function dragMove(e) {
+    if (!activeHandle) return;
+    e.preventDefault();
+    let clientX, clientY;
+    if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    
+    let containerRect = cropContainer.getBoundingClientRect();
+    let newX = clientX - containerRect.left;
+    let newY = clientY - containerRect.top;
+    newX = Math.max(0, Math.min(newX, containerRect.width));
+    newY = Math.max(0, Math.min(newY, containerRect.height));
+    
+    activeHandle.style.left = newX + 'px';
+    activeHandle.style.top = newY + 'px';
+    updateQuadLine();
+}
+
+function dragEnd() {
+    activeHandle = null;
+}
+
+cropContainer.addEventListener('mousedown', dragStart);
+document.addEventListener('mousemove', dragMove);
+document.addEventListener('mouseup', dragEnd);
+cropContainer.addEventListener('touchstart', dragStart, {passive: false});
+cropContainer.addEventListener('touchmove', dragMove, {passive: false});
+cropContainer.addEventListener('touchend', dragEnd);
+
+window.addEventListener('resize', () => {
+    if (originalImage) {
+        updateDisplayScale();
+        for (let key in handles) {
+            let pos = getHandleImageCoords(handles[key]);
+            setHandlePosition(handles[key], pos.x, pos.y);
+        }
+        updateQuadLine();
+    }
+});
+
+// === Оценка размера файла ===
+function updateFileSizeEstimate(originalSize = 0) {
+    const processingType = document.getElementById('processingType').value;
+    const selectedOption = document.querySelector('.size-option.selected');
+    const formatOption = document.querySelector('.format-option.selected');
+    
+    let baseEstimate = originalSize || 3000000; // 3MB по умолчанию
+    
+    // Влияние типа обработки
+    let typeMultiplier = 1;
+    if (processingType === 'grayscale') typeMultiplier = 0.7;
+    if (processingType === 'binary') typeMultiplier = 0.3;
+    
+    // Влияние масштаба
+    let scaleMultiplier = outputScale * outputScale;
+    
+    // Влияние формата
+    let formatMultiplier = 1;
+    if (outputFormat === 'jpeg') formatMultiplier = outputQuality;
+    if (outputFormat === 'png' && processingType === 'binary') formatMultiplier = 0.5;
+    
+    let estimatedSize = baseEstimate * typeMultiplier * scaleMultiplier * formatMultiplier;
+    
+    let sizeText;
+    if (estimatedSize > 1000000) {
+        sizeText = (estimatedSize / 1000000).toFixed(2) + ' MB';
+    } else {
+        sizeText = (estimatedSize / 1000).toFixed(0) + ' KB';
+    }
+    
+    fileSizeInfo.innerHTML = `📊 Ожидаемый размер: <strong>${sizeText}</strong> | 
+                              Разрешение: ${Math.round(100 * outputScale)}% | 
+                              Формат: ${outputFormat.toUpperCase()} (${Math.round(outputQuality * 100)}%)`;
+    fileSizeInfo.style.display = 'block';
+}
+
+// === Обработка изображения ===
+function applyContrastAndBrightness(mat) {
+    const alpha = parseFloat(contrastControl.value) / 100;
+    const beta = parseInt(brightnessControl.value) - 50;
+    cv.addWeighted(mat, alpha, new cv.Mat.zeros(mat.rows, mat.cols, mat.type()), 0, beta, mat);
+}
+
+function processImage() {
+    if (!cv || !originalImage) {
+        statusElement.innerHTML = '❌ Ошибка: OpenCV или изображение не готовы.';
+        return;
+    }
+    
+    statusElement.innerHTML = '⏳ Обработка...';
+    processBtn.disabled = true;
+    
+    setTimeout(() => {
+        try {
+            let src = cv.imread(sourceCanvas);
+            let dst = new cv.Mat();
+            
+            let tl = getHandleImageCoords(handles.tl);
+            let tr = getHandleImageCoords(handles.tr);
+            let br = getHandleImageCoords(handles.br);
+            let bl = getHandleImageCoords(handles.bl);
+            
+            let widthTop = Math.hypot(tr.x - tl.x, tr.y - tl.y);
+            let widthBottom = Math.hypot(br.x - bl.x, br.y - bl.y);
+            let outputWidth = Math.max(widthTop, widthBottom);
+            let heightLeft = Math.hypot(bl.x - tl.x, bl.y - tl.y);
+            let heightRight = Math.hypot(br.x - tr.x, br.y - tr.y);
+            let outputHeight = Math.max(heightLeft, heightRight);
+            
+            if (outputWidth < 100 || outputHeight < 100) {
+                throw new Error('Слишком маленькая область выделения');
+            }
+            
+            // Применяем масштаб к выходному размеру
+            outputWidth = Math.round(outputWidth * outputScale);
+            outputHeight = Math.round(outputHeight * outputScale);
+            
+            let srcPts = cv.matFromArray(4, 1, cv.CV_32FC2, [
+                tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y
+            ]);
+            let dstPts = cv.matFromArray(4, 1, cv.CV_32FC2, [
+                0, 0, outputWidth, 0, outputWidth, outputHeight, 0, outputHeight
+            ]);
+            
+            let M = cv.getPerspectiveTransform(srcPts, dstPts);
+            let dsize = new cv.Size(outputWidth, outputHeight);
+            cv.warpPerspective(src, dst, M, dsize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar(255, 255, 255, 255));
+            
+            let processingType = document.getElementById('processingType').value;
+            if (processingType === 'binary') {
+                cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY, 0);
+                cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 10);
+            } else if (processingType === 'grayscale') {
+                cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY, 0);
+                applyContrastAndBrightness(dst);
+            } else if (processingType === 'color') {
+                applyContrastAndBrightness(dst);
+            }
+            
+            cv.imshow('canvasOutput', dst);
+            downloadBtn.style.display = 'inline-block';
+            statusElement.innerHTML = '✅ Готово!';
+            
+            // Обновляем оценку размера после обработки
+            updateFileSizeEstimate();
+            
+            src.delete();
+            dst.delete();
+            M.delete();
+            srcPts.delete();
+            dstPts.delete();
+            
+        } catch (error) {
+            statusElement.innerHTML = '❌ Ошибка: ' + error.message;
+            console.error(error);
+        } finally {
+            processBtn.disabled = false;
+        }
+    }, 100);
+}
+
+function downloadResult() {
+    let canvas = document.getElementById('canvasOutput');
+    if (!canvas || canvas.width === 0) {
+        statusElement.innerHTML = '❌ Нет результата для сохранения';
+        return;
+    }
+    
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('ru-RU').replace(/\./g, '-');
+    const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+    
+    let link = document.createElement('a');
+    link.download = `skan_${dateStr}_${timeStr}.${outputFormat}`;
+    
+    if (outputFormat === 'jpeg') {
+        link.href = canvas.toDataURL('image/jpeg', outputQuality);
+    } else {
+        link.href = canvas.toDataURL('image/png');
+    }
+    
+    link.click();
+    statusElement.innerHTML = '✅ Файл сохранён!';
+    
+    // Показываем фактический размер (примерно)
+    const dataUrl = link.href;
+    const sizeInBytes = Math.round((dataUrl.length * 3) / 4);
+    let sizeText = sizeInBytes > 1000000 
+        ? (sizeInBytes / 1000000).toFixed(2) + ' MB' 
+        : (sizeInBytes / 1000).toFixed(0) + ' KB';
+    
+    fileSizeInfo.innerHTML += `<br>📥 Фактический размер: <strong>${sizeText}</strong>`;
+}
+
+if (typeof cv !== 'undefined') {
+    onOpenCvReady();
+} else {
+    window.onOpenCvReady = onOpenCvReady;
+}
+</script>
+</body>
+</html>
