@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
@@ -322,6 +322,57 @@
     color: var(--gold);
     font-size: 18px;
     flex-shrink: 0;
+  }
+
+  /* Audio player */
+  .audio-section {
+    margin-top: 70px;
+    padding: 30px 36px;
+    background: linear-gradient(135deg, #1a0d0b44, #0d1a2a33);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    border-radius: 2px;
+  }
+
+  .audio-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .audio-icon {
+    font-size: 22px;
+  }
+
+  .audio-title-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--gold-light);
+    letter-spacing: 0.5px;
+  }
+
+  audio {
+    filter: sepia(30%) saturate(0.8);
+    border-radius: 4px;
+  }
+
+  .audio-hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #7a6840;
+    text-align: center;
+  }
+
+  .audio-hint a {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dark);
+  }
+
+  .audio-hint a:hover {
+    color: var(--gold-light);
   }
 
   /* Footer */
@@ -785,7 +836,32 @@
 
   </div><!-- end dialogue -->
 
-  <footer>
+  <div class="audio-section">
+    <div class="audio-label">
+      <span class="audio-icon">🎙</span>
+      <span class="audio-title-text">Аудіо подкаст — послухати розмову</span>
+    </div>
+    <iframe
+      src="https://drive.google.com/file/d/1G00sRPUaOrCK3wkewZ3SSOV8i2LBB6W2/preview"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      style="width:100%; height:80px; border-radius:6px; border:none; background:#000;">
+    </iframe>
+    <p class="audio-hint">Якщо аудіо не завантажується — <a href="https://drive.google.com/file/d/1G00sRPUaOrCK3wkewZ3SSOV8i2LBB6W2/view?usp=sharing" target="_blank">відкрити на Google Drive</a></p>
+ 
+    <iframe
+      src="https://drive.google.com/file/d/1YrUqnp5Io2rQC2UYMwRBglXrMkDChxcu/preview"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      style="width:100%; height:80px; border-radius:6px; border:none; background:#000;">
+    </iframe>
+    <p class="audio-hint">Якщо аудіо не завантажується — <a href="https://drive.google.com/file/d/1YrUqnp5Io2rQC2UYMwRBglXrMkDChxcu/view?usp=sharing" target="_blank">відкрити на Google Drive</a></p>
+
+ </div>
+
+ 
+
+ <footer>
     <span class="footer-cross">✝</span>
     <p>Опубліковано для роздумів і духовного пошуку</p>
     <p style="margin-top:8px; font-size:12px; opacity:0.5;">«Стережіться, щоб хто не ввів вас в оману» — Матвій 24:4</p>
