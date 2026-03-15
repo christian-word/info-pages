@@ -1,11 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Церковная библиотека | Духовні ресурси</title>
     <meta property="og:image" content="photo.jpg" />
     <style>
+        /* Базовые стили (для ПК) остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +20,7 @@
 
         /* Навігація */
         .navbar {
-            background: #1a4b7a; /* Темно-синій, часто використовується в баптистській символіці */
+            background: #1a4b7a;
             color: white;
             padding: 1rem 2rem;
             display: flex;
@@ -62,7 +63,7 @@
         }
 
         .nav-links a.active {
-            background: #c49a2b; /* Золотистий для активного пункту */
+            background: #c49a2b;
         }
 
         /* Головний контейнер */
@@ -450,24 +451,318 @@
             color: #1a4b7a;
         }
 
-        /* Адаптивність */
-        @media (max-width: 768px) {
+        /* ========== МОБИЛЬНЫЕ СТИЛИ (ТОЛЬКО ДЛЯ ТЕЛЕФОНОВ) ========== */
+        @media screen and (max-width: 768px) {
+            /* Навигация */
             .navbar {
                 flex-direction: column;
-                gap: 10px;
+                padding: 0.8rem 1rem;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+                margin-bottom: 8px;
+                width: 100%;
+                justify-content: center;
             }
             
             .nav-links {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 8px;
+                width: 100%;
             }
             
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                flex: 0 1 auto;
+                text-align: center;
+                min-width: 70px;
+            }
+
+            /* Контейнер */
+            .container {
+                padding: 0 12px;
+                margin: 10px auto;
+            }
+
+            /* Статистика */
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .stat-card {
+                padding: 15px 10px;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            /* Поиск */
+            .search-section {
+                padding: 15px;
+            }
+
             .search-box {
                 flex-direction: column;
+                gap: 8px;
+            }
+
+            .search-box input {
+                padding: 12px;
+                font-size: 16px; /* Предотвращает зум на iOS */
+            }
+
+            .search-box button {
+                padding: 12px;
+                width: 100%;
+            }
+
+            .filters {
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+                flex: 0 1 auto;
+            }
+
+            /* Категории */
+            .category-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+
+            .category-title span {
+                font-size: 1.8rem;
+            }
+
+            /* Сетка ресурсов */
+            .resources-grid {
+                grid-template-columns: 1fr; /* Одна колонка на мобильных */
+                gap: 15px;
+            }
+
+            /* Карточка ресурса */
+            .resource-card {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .resource-image {
+                height: 180px; /* Чуть выше на мобильных */
+            }
+
+            .resource-type {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            .resource-title {
+                font-size: 1.1rem;
+            }
+
+            .resource-meta {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .status-badge {
+                font-size: 0.75rem;
+            }
+
+            .borrower-info {
+                font-size: 0.85rem;
+            }
+
+            .resource-actions {
+                flex-direction: column; /* Кнопки друг под другом */
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 12px; /* Больше область касания */
+                font-size: 1rem;
+            }
+
+            /* Админ панель */
+            .admin-section {
+                padding: 20px 15px;
+            }
+
+            .admin-title {
+                font-size: 1.3rem;
+            }
+
+            .add-resource-form {
+                grid-template-columns: 1fr; /* Одна колонка */
+                gap: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            .form-group input, 
+            .form-group select, 
+            .form-group textarea {
+                padding: 12px; /* Больше область касания */
+                font-size: 16px;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+
+            .btn-submit {
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+
+            /* Модальное окно */
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+                width: 95%;
+                max-height: 85vh;
+            }
+
+            .close {
+                font-size: 32px;
+                top: 10px;
+                right: 15px;
+            }
+
+            .resource-detail-image {
+                height: 200px;
+            }
+
+            .detail-row {
+                flex-direction: column; /* Лейбл сверху, значение снизу */
+                padding: 12px;
+            }
+
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+                font-size: 0.9rem;
+            }
+
+            .detail-value {
+                font-size: 1rem;
+                line-height: 1.4;
+            }
+
+            /* Список выданных книг */
+            #borrowed-list .resource-card {
+                margin-bottom: 12px;
+            }
+
+            #borrowed-list .resource-info {
+                padding: 12px;
+            }
+
+            #borrowed-list .btn {
+                margin-top: 10px;
+            }
+        }
+
+        /* Очень маленькие экраны (до 375px) */
+        @media screen and (max-width: 375px) {
+            .navbar {
+                padding: 0.8rem 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 5px 8px;
+                font-size: 0.8rem;
+                min-width: 60px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr; /* Одна колонка */
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .resource-image {
+                height: 160px;
+            }
+
+            .resource-title {
+                font-size: 1rem;
+            }
+
+            .category-title {
+                font-size: 1.3rem;
+            }
+
+            .category-title span {
+                font-size: 1.5rem;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                padding: 15px;
+            }
+        }
+
+        /* Альбомная ориентация на мобильных */
+        @media screen and (max-width: 900px) and (orientation: landscape) {
+            .resources-grid {
+                grid-template-columns: repeat(2, 1fr); /* Две колонки в ландшафте */
+            }
+
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .navbar {
+                flex-direction: row; /* Возвращаем горизонтальную навигацию */
+                padding: 1rem;
+            }
+
+            .logo {
+                width: auto;
+                margin-bottom: 0;
+            }
+
+            .nav-links {
+                width: auto;
+            }
+        }
+
+        /* Стили для touch-устройств */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none; /* Убираем hover-эффекты на тач-устройствах */
             }
             
-            .resources-grid {
-                grid-template-columns: 1fr;
+            .resource-card:hover {
+                transform: none;
+            }
+            
+            .filter-btn:active {
+                background: #1a4b7a;
+                color: white;
+            }
+            
+            .btn:active {
+                opacity: 0.8;
             }
         }
     </style>
