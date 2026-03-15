@@ -1,0 +1,1240 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Церковная библиотека | Духовні ресурси</title>
+    <meta property="og:image" content="photo.jpg" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+        }
+
+        /* Навігація */
+        .navbar {
+            background: #1a4b7a; /* Темно-синій, часто використовується в баптистській символіці */
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #2d6ba0;
+        }
+
+        .nav-links a.active {
+            background: #c49a2b; /* Золотистий для активного пункту */
+        }
+
+        /* Головний контейнер */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Пошук і фільтри */
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 12px 30px;
+            background: #1a4b7a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-box button:hover {
+            background: #2d6ba0;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #bdc3c7;
+        }
+
+        .filter-btn.active {
+            background: #1a4b7a;
+            color: white;
+        }
+
+        /* Статистика */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a4b7a;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        /* Категорії ресурсів */
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            color: #1a4b7a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #c49a2b;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* Картка ресурсу */
+        .resource-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .resource-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .resource-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .type-bible { background: #c49a2b; }
+        .type-book { background: #1a4b7a; }
+        .type-video { background: #27ae60; }
+        .type-magazine { background: #9b59b6; }
+        .type-calendar { background: #e67e22; }
+
+        .resource-info {
+            padding: 15px;
+        }
+
+        .resource-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1a4b7a;
+        }
+
+        .resource-author {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .resource-year {
+            color: #95a5a6;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #27ae60;
+            color: white;
+        }
+
+        .status-borrowed {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .borrower-info {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .resource-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .btn-borrow {
+            background: #1a4b7a;
+            color: white;
+        }
+
+        .btn-borrow:hover {
+            background: #2d6ba0;
+        }
+
+        .btn-return {
+            background: #c49a2b;
+            color: white;
+        }
+
+        .btn-return:hover {
+            background: #d4aa3b;
+        }
+
+        .btn-details {
+            background: #ecf0f1;
+            color: #1a4b7a;
+        }
+
+        .btn-details:hover {
+            background: #bdc3c7;
+        }
+
+        /* Форма додавання ресурсу (тільки для адміністратора) */
+        .admin-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1a4b7a;
+            margin-bottom: 20px;
+        }
+
+        .add-resource-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: #1a4b7a;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            grid-column: 1 / -1;
+        }
+
+        .btn-submit:hover {
+            background: #2d6ba0;
+        }
+
+        /* Модальне вікно деталей */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #1a4b7a;
+        }
+
+        .resource-detail-image {
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resource-detail-info {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            width: 120px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #1a4b7a;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навігація -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>✝️</span>
+            <span>Церковная библиотека</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" onclick="showSection('catalog')">Каталог</a>
+            <a href="#" onclick="showSection('bibles')">Біблії</a>
+            <a href="#" onclick="showSection('books')">Книги</a>
+            <a href="#" onclick="showSection('videos')">Відео</a>
+            <a href="#" onclick="showSection('magazines')">Журнали</a>
+            <a href="#" onclick="showSection('calendars')">Календарі</a>
+            <a href="#" onclick="showSection('admin')">Адмін</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Статистика -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalResources">0</div>
+                <div class="stat-label">Всього ресурсів</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="availableResources">0</div>
+                <div class="stat-label">Доступно</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="borrowedResources">0</div>
+                <div class="stat-label">На руках</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="biblesCount">0</div>
+                <div class="stat-label">Біблій</div>
+            </div>
+        </div>
+
+        <!-- Пошук і фільтри -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Пошук за назвою, автором або ключовими словами...">
+                <button onclick="searchResources()">🔍 Пошук</button>
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterByType('all')">Всі</button>
+                <button class="filter-btn" onclick="filterByType('bible')">Біблії</button>
+                <button class="filter-btn" onclick="filterByType('book')">Книги</button>
+                <button class="filter-btn" onclick="filterByType('video')">Відео</button>
+                <button class="filter-btn" onclick="filterByType('magazine')">Журнали</button>
+                <button class="filter-btn" onclick="filterByType('calendar')">Календарі</button>
+                <button class="filter-btn" onclick="filterByStatus('available')">Доступні</button>
+                <button class="filter-btn" onclick="filterByStatus('borrowed')">На руках</button>
+            </div>
+        </div>
+
+        <!-- Категорії ресурсів -->
+        <div id="catalog">
+            <!-- Біблії -->
+            <div class="category-section" id="bibles-section">
+                <div class="category-title">
+                    <span>📖</span>
+                    <h2>Біблії та Нові Заповіти</h2>
+                </div>
+                <div class="resources-grid" id="bibles-list"></div>
+            </div>
+
+            <!-- Книги -->
+            <div class="category-section" id="books-section">
+                <div class="category-title">
+                    <span>📚</span>
+                    <h2>Духовні книги</h2>
+                </div>
+                <div class="resources-grid" id="books-list"></div>
+            </div>
+
+            <!-- Відео -->
+            <div class="category-section" id="videos-section">
+                <div class="category-title">
+                    <span>🎥</span>
+                    <h2>Відеоматеріали</h2>
+                </div>
+                <div class="resources-grid" id="videos-list"></div>
+            </div>
+
+            <!-- Журнали -->
+            <div class="category-section" id="magazines-section">
+                <div class="category-title">
+                    <span>📰</span>
+                    <h2>Журнали та газети</h2>
+                </div>
+                <div class="resources-grid" id="magazines-list"></div>
+            </div>
+
+            <!-- Календарі -->
+            <div class="category-section" id="calendars-section">
+                <div class="category-title">
+                    <span>📅</span>
+                    <h2>Календарі та планери</h2>
+                </div>
+                <div class="resources-grid" id="calendars-list"></div>
+            </div>
+        </div>
+
+        <!-- Адмін-панель (прихована за замовчуванням) -->
+        <div id="admin-panel" style="display: none;">
+            <div class="admin-section">
+                <div class="admin-title">
+                    <span>⚙️</span>
+                    <h2>Додавання нового ресурсу</h2>
+                </div>
+                <form class="add-resource-form" id="addResourceForm">
+                    <div class="form-group">
+                        <label>Тип ресурсу:</label>
+                        <select id="resourceType" required>
+                            <option value="bible">Біблія/Новий Заповіт</option>
+                            <option value="book">Книга</option>
+                            <option value="video">Відео</option>
+                            <option value="magazine">Журнал</option>
+                            <option value="calendar">Календар</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Назва:</label>
+                        <input type="text" id="resourceTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Автор/Видавець:</label>
+                        <input type="text" id="resourceAuthor">
+                    </div>
+                    <div class="form-group">
+                        <label>Рік:</label>
+                        <input type="number" id="resourceYear" min="1000" max="2026">
+                    </div>
+                    <div class="form-group">
+                        <label>Зображення (URL):</label>
+                        <input type="url" id="resourceImage">
+                    </div>
+                    <div class="form-group">
+                        <label>Опис:</label>
+                        <textarea id="resourceDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Кількість примірників:</label>
+                        <input type="number" id="resourceQuantity" value="1" min="1">
+                    </div>
+                    <button type="submit" class="btn-submit">➕ Додати ресурс</button>
+                </form>
+            </div>
+
+            <div class="admin-section">
+                <div class="admin-title">
+                    <span>📋</span>
+                    <h2>Видані ресурси</h2>
+                </div>
+                <div id="borrowed-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно деталей -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        class ChurchLibrary {
+            constructor() {
+                this.resources = [];
+                this.borrowedResources = {};
+                this.currentFilter = 'all';
+                this.currentStatus = 'all';
+                this.searchTerm = '';
+                this.init();
+            }
+
+            init() {
+                this.loadData();
+                this.setupEventListeners();
+                this.render();
+                this.updateStats();
+            }
+
+            loadData() {
+                // Завантажуємо з localStorage або використовуємо початкові дані
+                const saved = localStorage.getItem('baptistLibrary');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    this.resources = data.resources || [];
+                    this.borrowedResources = data.borrowed || {};
+                } else {
+                    // Початкові дані для баптистської бібліотеки
+                    this.resources = [
+                        {
+                            id: 1,
+                            type: 'bible',
+                            title: 'Біблія. Сучасний переклад (UBT)',
+                            author: 'Українське Біблійне Товариство',
+                            year: 2023,
+                            image: 'https://images.pexels.com/photos/2351719/pexels-photo-2351719.jpeg',
+                            description: 'Сучасний переклад Біблії, зрозуміла мова, тверда палітурка',
+                            quantity: 8,
+                            available: 5
+                        },
+                        {
+                            id: 2,
+                            type: 'bible',
+                            title: 'Новий Заповіт з псалмами (кишеньковий)',
+                            author: 'United Bible Societies',
+                            year: 2022,
+                            image: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=400',
+                            description: 'Компактне видання для поширення',
+                            quantity: 15,
+                            available: 12
+                        },
+                        {
+                            id: 3,
+                            type: 'bible',
+                            title: 'Біблія для дітей',
+                            author: 'Kenneth N. Taylor',
+                            year: 2021,
+                            image: 'https://images.pexels.com/photos/5530581/pexels-photo-5530581.jpeg',
+                            description: 'Дитяча Біблія з ілюстраціями, у переказі',
+                            quantity: 5,
+                            available: 3
+                        },
+                        {
+                            id: 4,
+                            type: 'book',
+                            title: 'Основи християнської віри',
+                            author: 'Чарльз Сперджен',
+                            year: 2020,
+                            image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
+                            description: 'Класична праця великого баптистського проповідника',
+                            quantity: 3,
+                            available: 1
+                        },
+                        {
+                            id: 5,
+                            type: 'book',
+                            title: 'Радісне серце',
+                            author: 'Біллі Грем',
+                            year: 2019,
+                            image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400',
+                            description: 'Про радість і мир у християнському житті',
+                            quantity: 4,
+                            available: 2
+                        },
+                        {
+                            id: 6,
+                            type: 'book',
+                            title: 'Ціна учнівства',
+                            author: 'Дітріх Бонхьоффер',
+                            year: 2021,
+                            image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400',
+                            description: 'Класика християнської думки про слідування за Христом',
+                            quantity: 2,
+                            available: 2
+                        },
+                        {
+                            id: 7,
+                            type: 'book',
+                            title: 'Бог поруч з нами',
+                            author: 'Клайв Льюїс',
+                            year: 2022,
+                            image: 'https://images.unsplash.com/photo-1504615755583-2916b52192a3?w=400',
+                            description: 'Збірка есе про віру',
+                            quantity: 3,
+                            available: 3
+                        },
+                        {
+                            id: 8,
+                            type: 'video',
+                            title: 'Життя Ісуса Христа (фільм)',
+                            author: 'Jesus Film Project',
+                            year: 2020,
+                            image: 'https://images.unsplash.com/photo-1536240474400-95dad9685628?w=400',
+                            description: 'Фільм про життя Ісуса за Євангелією від Луки на DVD',
+                            quantity: 4,
+                            available: 3
+                        },
+                        {
+                            id: 9,
+                            type: 'video',
+                            title: 'Біллі Грем: Проповіді',
+                            author: 'BGEA',
+                            year: 2021,
+                            image: 'https://images.unsplash.com/photo-1485095329183-d0797cdc5676?w=400',
+                            description: 'Збірка найкращих проповідей',
+                            quantity: 2,
+                            available: 2
+                        },
+                        {
+                            id: 10,
+                            type: 'video',
+                            title: 'Тріумфуючий Викупитель',
+                            author: 'Crown Productions',
+                            year: 2022,
+                            image: 'https://images.unsplash.com/photo-1515634928627-2a4c8d9f9b9a?w=400',
+                            description: 'Документальний фільм про історію церкви',
+                            quantity: 2,
+                            available: 1
+                        },
+                        {
+                            id: 11,
+                            type: 'magazine',
+                            title: 'Християнське слово',
+                            author: 'Всеукраїнський союз церков євангельських християн-баптистів',
+                            year: 2024,
+                            image: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400',
+                            description: 'Щомісячний журнал, випуск №2 2024',
+                            quantity: 20,
+                            available: 18
+                        },
+                        {
+                            id: 12,
+                            type: 'magazine',
+                            title: 'Віра і життя',
+                            author: 'Видавництво "Протестант"',
+                            year: 2024,
+                            image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400',
+                            description: 'Березневий випуск журналу',
+                            quantity: 15,
+                            available: 14
+                        },
+                        {
+                            id: 13,
+                            type: 'calendar',
+                            title: 'Календар баптистської церкви 2025',
+                            author: 'Церква "Голгофа"',
+                            year: 2025,
+                            image: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=400',
+                            description: 'Настінний календар з біблійними віршами',
+                            quantity: 30,
+                            available: 30
+                        },
+                        {
+                            id: 14,
+                            type: 'calendar',
+                            title: 'План читання Біблії на рік',
+                            author: 'ВСЦ ЄХБ',
+                            year: 2025,
+                            image: 'https://images.unsplash.com/photo-1501139083538-0139583c060f?w=400',
+                            description: 'Кишеньковий календар-планер для читання Писання',
+                            quantity: 50,
+                            available: 45
+                        }
+                    ];
+
+                    // Приклад виданих книг
+                    this.borrowedResources = {
+                        4: [{ name: 'Олексій Петров', date: '2024-03-10', returnDate: '2024-03-24' }],
+                        5: [{ name: 'Наталія Іванова', date: '2024-03-12', returnDate: '2024-03-26' }],
+                        1: [{ name: 'Дмитро Сидоров', date: '2024-03-15', returnDate: '2024-03-29' }],
+                        10: [{ name: 'Олена Козлова', date: '2024-03-14', returnDate: '2024-03-28' }]
+                    };
+
+                    // Оновлюємо кількість доступних
+                    this.updateAvailableCounts();
+                }
+            }
+
+            updateAvailableCounts() {
+                this.resources.forEach(resource => {
+                    const borrowed = this.borrowedResources[resource.id] || [];
+                    resource.available = resource.quantity - borrowed.length;
+                });
+            }
+
+            saveData() {
+                localStorage.setItem('baptistLibrary', JSON.stringify({
+                    resources: this.resources,
+                    borrowed: this.borrowedResources
+                }));
+            }
+
+            addResource(resource) {
+                resource.id = Date.now();
+                resource.available = resource.quantity;
+                this.resources.push(resource);
+                this.saveData();
+                this.render();
+                this.updateStats();
+            }
+
+            borrowResource(resourceId, borrowerName) {
+                if (!this.borrowedResources[resourceId]) {
+                    this.borrowedResources[resourceId] = [];
+                }
+
+                const resource = this.resources.find(r => r.id === resourceId);
+                if (resource && resource.available > 0) {
+                    const today = new Date();
+                    const returnDate = new Date();
+                    returnDate.setDate(returnDate.getDate() + 14); // 14 днів на повернення
+
+                    this.borrowedResources[resourceId].push({
+                        name: borrowerName,
+                        date: today.toISOString().split('T')[0],
+                        returnDate: returnDate.toISOString().split('T')[0]
+                    });
+
+                    resource.available--;
+                    this.saveData();
+                    this.render();
+                    this.updateStats();
+                    return true;
+                }
+                return false;
+            }
+
+            returnResource(resourceId, borrowerIndex) {
+                if (this.borrowedResources[resourceId]) {
+                    this.borrowedResources[resourceId].splice(borrowerIndex, 1);
+                    if (this.borrowedResources[resourceId].length === 0) {
+                        delete this.borrowedResources[resourceId];
+                    }
+
+                    const resource = this.resources.find(r => r.id === resourceId);
+                    if (resource) {
+                        resource.available++;
+                    }
+
+                    this.saveData();
+                    this.render();
+                    this.updateStats();
+                }
+            }
+
+            setupEventListeners() {
+                document.getElementById('addResourceForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const resource = {
+                        type: document.getElementById('resourceType').value,
+                        title: document.getElementById('resourceTitle').value,
+                        author: document.getElementById('resourceAuthor').value,
+                        year: parseInt(document.getElementById('resourceYear').value) || null,
+                        image: document.getElementById('resourceImage').value || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
+                        description: document.getElementById('resourceDescription').value,
+                        quantity: parseInt(document.getElementById('resourceQuantity').value) || 1
+                    };
+
+                    this.addResource(resource);
+                    e.target.reset();
+                    alert('Ресурс успішно додано!');
+                });
+            }
+
+            filterByType(type) {
+                this.currentFilter = type;
+                this.render();
+                
+                // Оновлюємо активну кнопку фільтра
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent.includes('Всі') && type === 'all') btn.classList.add('active');
+                    if (btn.textContent.includes('Біблії') && type === 'bible') btn.classList.add('active');
+                    if (btn.textContent.includes('Книги') && type === 'book') btn.classList.add('active');
+                    if (btn.textContent.includes('Відео') && type === 'video') btn.classList.add('active');
+                    if (btn.textContent.includes('Журнали') && type === 'magazine') btn.classList.add('active');
+                    if (btn.textContent.includes('Календарі') && type === 'calendar') btn.classList.add('active');
+                });
+            }
+
+            filterByStatus(status) {
+                this.currentStatus = status;
+                this.render();
+            }
+
+            searchResources() {
+                this.searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                this.render();
+            }
+
+            getFilteredResources() {
+                let filtered = this.resources;
+
+                // Фільтр за типом
+                if (this.currentFilter !== 'all') {
+                    filtered = filtered.filter(r => r.type === this.currentFilter);
+                }
+
+                // Фільтр за статусом
+                if (this.currentStatus === 'available') {
+                    filtered = filtered.filter(r => r.available > 0);
+                } else if (this.currentStatus === 'borrowed') {
+                    filtered = filtered.filter(r => r.available < r.quantity);
+                }
+
+                // Пошук за текстом
+                if (this.searchTerm) {
+                    filtered = filtered.filter(r => 
+                        r.title.toLowerCase().includes(this.searchTerm) ||
+                        (r.author && r.author.toLowerCase().includes(this.searchTerm)) ||
+                        (r.description && r.description.toLowerCase().includes(this.searchTerm))
+                    );
+                }
+
+                return filtered;
+            }
+
+            renderResourceCard(resource) {
+                const borrowed = this.borrowedResources[resource.id] || [];
+                const typeIcons = {
+                    bible: '📖',
+                    book: '📚',
+                    video: '🎥',
+                    magazine: '📰',
+                    calendar: '📅'
+                };
+
+                return `
+                    <div class="resource-card">
+                        <div class="resource-image" style="background-image: url('${resource.image}')">
+                            <span class="resource-type type-${resource.type}">${typeIcons[resource.type]} ${this.getTypeName(resource.type)}</span>
+                        </div>
+                        <div class="resource-info">
+                            <div class="resource-title">${this.escapeHtml(resource.title)}</div>
+                            <div class="resource-author">${this.escapeHtml(resource.author || 'Невідомо')}</div>
+                            <div class="resource-meta">
+                                <span class="resource-year">${resource.year || 'Рік не вказано'}</span>
+                                <span class="status-badge status-${resource.available > 0 ? 'available' : 'borrowed'}">
+                                    ${resource.available > 0 ? '✅ В наявності' : '❌ На руках'}
+                                </span>
+                            </div>
+                            ${borrowed.length > 0 ? `
+                                <div class="borrower-info">
+                                    <strong>Видано:</strong> ${borrowed.length} шт.<br>
+                                    <small>Останній: ${borrowed[0].name}</small>
+                                </div>
+                            ` : ''}
+                            <div class="resource-actions">
+                                ${resource.available > 0 ? `
+                                    <button class="btn btn-borrow" onclick="library.showBorrowForm(${resource.id})">📕 Взяти</button>
+                                ` : ''}
+                                <button class="btn btn-details" onclick="library.showDetails(${resource.id})">ℹ️ Детальніше</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getTypeName(type) {
+                const names = {
+                    bible: 'Біблія',
+                    book: 'Книга',
+                    video: 'Відео',
+                    magazine: 'Журнал',
+                    calendar: 'Календар'
+                };
+                return names[type] || type;
+            }
+
+            render() {
+                const filtered = this.getFilteredResources();
+                
+                // Групуємо за типами
+                const grouped = {
+                    bible: filtered.filter(r => r.type === 'bible'),
+                    book: filtered.filter(r => r.type === 'book'),
+                    video: filtered.filter(r => r.type === 'video'),
+                    magazine: filtered.filter(r => r.type === 'magazine'),
+                    calendar: filtered.filter(r => r.type === 'calendar')
+                };
+
+                // Рендеримо кожну категорію
+                for (let [type, items] of Object.entries(grouped)) {
+                    const container = document.getElementById(`${type}s-list`);
+                    if (container) {
+                        container.innerHTML = items.map(r => this.renderResourceCard(r)).join('');
+                    }
+                }
+
+                // Рендеримо список виданих книг для адміна
+                this.renderBorrowedList();
+                this.updateStats();
+            }
+
+            renderBorrowedList() {
+                const container = document.getElementById('borrowed-list');
+                if (!container) return;
+
+                let html = '<div class="resources-grid">';
+                
+                for (let [resourceId, borrowers] of Object.entries(this.borrowedResources)) {
+                    const resource = this.resources.find(r => r.id == resourceId);
+                    if (resource) {
+                        borrowers.forEach((borrower, index) => {
+                            html += `
+                                <div class="resource-card">
+                                    <div class="resource-info">
+                                        <div class="resource-title">${this.escapeHtml(resource.title)}</div>
+                                        <div class="resource-author">Взяв: ${this.escapeHtml(borrower.name)}</div>
+                                        <div class="resource-meta">
+                                            <span>📅 ${borrower.date}</span>
+                                            <span>⏰ Повернення: ${borrower.returnDate}</span>
+                                        </div>
+                                        <button class="btn btn-return" onclick="library.returnResource(${resourceId}, ${index})">
+                                            ↩️ Відзначити повернення
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+                
+                html += '</div>';
+                container.innerHTML = html || '<p>Немає виданих ресурсів</p>';
+            }
+
+            showBorrowForm(resourceId) {
+                const name = prompt("Введіть ваше ім'я:");
+                if (name) {
+                    this.borrowResource(resourceId, name);
+                }
+            }
+
+            showDetails(resourceId) {
+                const resource = this.resources.find(r => r.id === resourceId);
+                if (!resource) return;
+
+                const borrowed = this.borrowedResources[resourceId] || [];
+                
+                const modalContent = `
+                    <div class="resource-detail-image" style="background-image: url('${resource.image}')"></div>
+                    <div class="resource-detail-info">
+                        <h2>${this.escapeHtml(resource.title)}</h2>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Тип:</div>
+                            <div class="detail-value">${this.getTypeName(resource.type)}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Автор:</div>
+                            <div class="detail-value">${this.escapeHtml(resource.author || 'Не вказано')}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Рік:</div>
+                            <div class="detail-value">${resource.year || 'Не вказано'}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Опис:</div>
+                            <div class="detail-value">${this.escapeHtml(resource.description || 'Немає опису')}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Всього:</div>
+                            <div class="detail-value">${resource.quantity}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Доступно:</div>
+                            <div class="detail-value">${resource.available}</div>
+                        </div>
+                        
+                        ${borrowed.length > 0 ? `
+                            <h3 style="margin: 20px 0 10px;">Видано:</h3>
+                            ${borrowed.map(b => `
+                                <div class="detail-row">
+                                    <div class="detail-label">${this.escapeHtml(b.name)}</div>
+                                    <div class="detail-value">до ${b.returnDate}</div>
+                                </div>
+                            `).join('')}
+                        ` : ''}
+                    </div>
+                `;
+
+                document.getElementById('modalContent').innerHTML = modalContent;
+                document.getElementById('detailsModal').style.display = 'block';
+            }
+
+            updateStats() {
+                const total = this.resources.reduce((sum, r) => sum + r.quantity, 0);
+                const available = this.resources.reduce((sum, r) => sum + r.available, 0);
+                const borrowed = total - available;
+                const bibles = this.resources.filter(r => r.type === 'bible')
+                    .reduce((sum, r) => sum + r.quantity, 0);
+
+                document.getElementById('totalResources').textContent = total;
+                document.getElementById('availableResources').textContent = available;
+                document.getElementById('borrowedResources').textContent = borrowed;
+                document.getElementById('biblesCount').textContent = bibles;
+            }
+
+            escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Глобальні функції для навігації
+        function showSection(section) {
+            // Оновлюємо активне посилання
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Показуємо потрібну секцію
+            if (section === 'admin') {
+                document.getElementById('catalog').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+            } else {
+                document.getElementById('catalog').style.display = 'block';
+                document.getElementById('admin-panel').style.display = 'none';
+                
+                // Фільтруємо за категорією
+                if (section === 'catalog') {
+                    library.filterByType('all');
+                } else if (section === 'bibles') {
+                    library.filterByType('bible');
+                } else if (section === 'books') {
+                    library.filterByType('book');
+                } else if (section === 'videos') {
+                    library.filterByType('video');
+                } else if (section === 'magazines') {
+                    library.filterByType('magazine');
+                } else if (section === 'calendars') {
+                    library.filterByType('calendar');
+                }
+            }
+        }
+
+        function filterByType(type) {
+            // Забираємо активний клас з усіх кнопок фільтра
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            // Додаємо активний клас натиснутій кнопці
+            event.target.classList.add('active');
+            
+            library.filterByType(type);
+        }
+
+        function filterByStatus(status) {
+            library.filterByStatus(status);
+        }
+
+        function searchResources() {
+            library.searchResources();
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        // Ініціалізація бібліотеки
+        const library = new ChurchLibrary();
+
+        // Закриття модального вікна при кліку поза ним
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailsModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
