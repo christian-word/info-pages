@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Фіто-довідник: Дихальні шляхи (для церкви)</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #fbc02d;
+            --bg: #f0f4f0;
+            --white: #ffffff;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; color: #333; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 20px auto; background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        h1, h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+
+        .toc { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+        .toc ul { list-style: none; padding: 0; margin: 8px 0 0; }
+        .toc li { margin: 4px 0; }
+        .toc a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .toc a:hover { text-decoration: underline; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab { flex: 1; min-width: 120px; padding: 12px; text-align: center; cursor: pointer; background: #e0e0e0; border-radius: 8px; transition: 0.3s; font-weight: bold; }
+        .tab.active { background: var(--primary); color: #fff; }
+
+        .content { display: none; animation: fadeIn 0.5s; }
+        .content.active { display: block; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .block { background: #fefefe; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+
+        label { display: block; margin: 10px 0; font-size: 1.05em; cursor: pointer; transition: 0.2s; }
+        label:hover { color: var(--primary); }
+        input[type="checkbox"] { transform: scale(1.3); margin-right: 10px; }
+
+        .result { margin-top: 20px; padding: 20px; background: #fffde7; border-left: 5px solid var(--secondary); border-radius: 5px; min-height: 50px; }
+
+        /* Herb table in result */
+        .herb-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+        .herb-table th { background: #e8f5e9; color: var(--primary); text-align: left; padding: 7px 10px; border-bottom: 2px solid var(--primary); }
+        .herb-table td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+        .herb-table tr:last-child td { border-bottom: none; }
+        .herb-table .contra { color: #c62828; font-size: 0.88em; }
+        .dose-badge { background: #e8f5e9; color: var(--primary); border-radius: 4px; padding: 1px 6px; font-weight: bold; white-space: nowrap; }
+
+        .course-box { background: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 5px; padding: 10px 14px; margin-top: 14px; font-size: 0.95em; }
+        .course-box strong { color: #1565c0; }
+
+        button { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1em; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 14px; }
+        button:hover { background: #1b5e20; }
+
+        /* Herb reference */
+        .herb-ref-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.93em; }
+        .herb-ref-table th { background: #e8f5e9; color: var(--primary); padding: 8px 10px; text-align: left; border-bottom: 2px solid var(--primary); }
+        .herb-ref-table td { padding: 7px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .herb-ref-table tr:hover td { background: #f9fbe7; }
+        .tag { display: inline-block; background: #e8f5e9; color: #2e7d32; border-radius: 10px; padding: 1px 8px; font-size: 0.82em; margin: 1px 2px; }
+        .tag.warn { background: #fff8e1; color: #f57f17; }
+
+        /* Disease cards */
+        .disease-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+        .disease-card { border-radius: 10px; padding: 18px; border: 1px solid #ddd; }
+        .disease-card h3 { margin: 0 0 10px; font-size: 1.05em; }
+        .disease-card ul { margin: 0; padding-left: 18px; font-size: 0.93em; }
+        .disease-card ul li { margin: 4px 0; }
+        .copd { background: #fce4ec; border-color: #e91e63; }
+        .copd h3 { color: #880e4f; }
+        .arvi { background: #e8f5e9; border-color: #4caf50; }
+        .arvi h3 { color: #1b5e20; }
+        .bronchit { background: #fff3e0; border-color: #ff9800; }
+        .bronchit h3 { color: #e65100; }
+        .flu { background: #e3f2fd; border-color: #2196f3; }
+        .flu h3 { color: #0d47a1; }
+
+        .warning { background: #ffebee; border-left: 5px solid #c62828; padding: 15px; margin-top: 30px; font-size: 0.9em; border-radius: 5px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+            .disease-grid { grid-template-columns: 1fr; }
+            .herb-table, .herb-ref-table { font-size: 0.85em; }
+            .herb-table td, .herb-ref-table td { padding: 5px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌿 Фіто-довідник: Дихальні шляхи (для церкви)</h1>
+    <blockquote style="margin: 0 0 24px; padding: 14px 20px; background: #f1f8e9; border-left: 4px solid #558b2f; border-radius: 0 8px 8px 0; color: #33691e; font-style: italic; font-size: 1.02em; line-height: 1.7;">
+        «Господь створив із землі лікувальні трави, і розумна людина не буде їх зневажати.»
+        <span style="display:block; margin-top:6px; font-style:normal; font-size:0.88em; color:#689f38;">— Сир. 38:4</span>
+    </blockquote>
+
+    <div class="toc">
+        <strong>Зміст:</strong>
+        <ul>
+            <li><a href="#selector">1. Конструктор збору (Ранок / Вечір)</a></li>
+            <li><a href="#info">2. Довідник трав — дія, дозування, протипоказання</a></li>
+            <li><a href="#modes">3. Рекомендації при ХОЗЛ, ГРЗ, Грипі та Бронхіті</a></li>
+        </ul>
+    </div>
+
+    <!-- SECTION 1 -->
+    <h2 id="selector">1. Конструктор збору</h2>
+    <div class="tabs">
+        <div class="tab active" onclick="showTab(0)">🌅 Ранковий (Очищення)</div>
+        <div class="tab" onclick="showTab(1)">🌙 Вечірній (Заспокоєння)</div>
+    </div>
+
+    <div id="morning" class="content active">
+        <div class="grid">
+            <div class="block">
+                <strong>Симптоми:</strong>
+                <label><input type="checkbox" id="m_cough"> Кашель (загальний)</label>
+                <label><input type="checkbox" id="m_phlegm"> Важко відходить мокротиння</label>
+                <label><input type="checkbox" id="m_dry"> Сухий, подразнюючий кашель</label>
+                <label><input type="checkbox" id="m_temp"> Висока температура</label>
+            </div>
+            <div class="block">
+                <strong>Стан:</strong>
+                <label><input type="checkbox" id="m_weak"> Слабкість / Інтоксикація</label>
+                <label><input type="checkbox" id="m_spasm"> Задишка / Спазм (ХОЗЛ)</label>
+            </div>
+        </div>
+        <button onclick="generate('morning')">Сформувати ранковий склад</button>
+        <div class="result" id="morningResult">Оберіть симптоми та натисніть кнопку.</div>
+    </div>
+
+    <div id="evening" class="content">
+        <div class="grid">
+            <div class="block">
+                <strong>Симптоми:</strong>
+                <label><input type="checkbox" id="e_cough"> Нічний кашель</label>
+                <label><input type="checkbox" id="e_dry"> Дертя в горлі</label>
+                <label><input type="checkbox" id="e_temp"> Гарячка</label>
+            </div>
+            <div class="block">
+                <strong>Додатково:</strong>
+                <label><input type="checkbox" id="e_sleep"> Поганий сон через хворобу</label>
+                <label><input type="checkbox" id="e_immune"> Потрібна підтримка імунітету</label>
+            </div>
+        </div>
+        <button onclick="generate('evening')">Сформувати вечірній склад</button>
+        <div class="result" id="eveningResult">Оберіть симптоми та натисніть кнопку.</div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2 id="info">2. Довідник трав</h2>
+    <table class="herb-ref-table">
+        <thead>
+            <tr>
+                <th>Трава</th>
+                <th>Дія</th>
+                <th>Доза в збір</th>
+                <th>⚠️ Обережно при</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Ромашка</b></td>
+                <td>Протизапальна, м'який антисептик, спазмолітик</td>
+                <td><span class="dose-badge">2 ч. л.</span></td>
+                <td>Алергія на складноцвіті (хризантема, полин)</td>
+            </tr>
+            <tr>
+                <td><b>Солодка</b></td>
+                <td>Розріджує мокротиння, знімає запалення бронхів</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Гіпертонія, набряки, вагітність</td>
+            </tr>
+            <tr>
+                <td><b>Чебрець</b></td>
+                <td>Потужний антисептик, відхаркувальне, бронхоспазмолітик</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Хвороби нирок, серцева недостатність</td>
+            </tr>
+            <tr>
+                <td><b>Алтей</b></td>
+                <td>Обволікає слизову, пом'якшує сухий кашель</td>
+                <td><span class="dose-badge">1–2 ч. л.</span></td>
+                <td>Цукровий діабет (містить слизи)</td>
+            </tr>
+            <tr>
+                <td><b>Дев'ясил</b></td>
+                <td>Відхаркувальне, протизапальне, виводить в'язкий слиз</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Вагітність, хвороби нирок</td>
+            </tr>
+            <tr>
+                <td><b>Шавлія</b></td>
+                <td>Антисептик для горла і бронхів, в'яжуче</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Вагітність, годування груддю, гіпотиреоз</td>
+            </tr>
+            <tr>
+                <td><b>Звіробій</b></td>
+                <td>Антибактеріальне, протизапальне ("природний антибіотик")</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Фотосенсибілізація, несумісний з багатьма ліками</td>
+            </tr>
+            <tr>
+                <td><b>Шипшина (плоди)</b></td>
+                <td>Вітамін С, імуностимулюючий, тонізуючий</td>
+                <td><span class="dose-badge">1 ст. л.</span></td>
+                <td>Виразка шлунку, тромбофлебіт</td>
+            </tr>
+            <tr>
+                <td><b>Мати-й-мачуха</b></td>
+                <td>Пом'якшує кашель, бронхоспазмолітик</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Не довше 4–6 тижнів! Печінкова недостатність</td>
+            </tr>
+            <tr>
+                <td><b>Подорожник</b></td>
+                <td>Пом'якшує нічний кашель, обволікає горло</td>
+                <td><span class="dose-badge">1–2 ч. л.</span></td>
+                <td>Гіперацидний гастрит</td>
+            </tr>
+            <tr>
+                <td><b>Липа (квіти)</b></td>
+                <td>Потогінне, жарознижуюче, протизапальне</td>
+                <td><span class="dose-badge">1 ст. л.</span></td>
+                <td>Серцеві захворювання (великі дози)</td>
+            </tr>
+            <tr>
+                <td><b>М'ята</b></td>
+                <td>Заспокійлива, охолоджуюча, легкий спазмолітик</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Грудні діти, гіпотонія</td>
+            </tr>
+            <tr>
+                <td><b>Ехінацея</b></td>
+                <td>Імуностимулюючий, противірусний</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Аутоімунні захворювання, не довше 2 тижнів!</td>
+            </tr>
+            <tr>
+                <td><b>Насіння льону</b></td>
+                <td>Обволікає бронхи, пом'якшує суху слизову</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Запальні процеси кишечника (гостра фаза)</td>
+            </tr>
+            <tr>
+                <td><b>Пустирник</b></td>
+                <td>Заспокійливий, нормалізує сон</td>
+                <td><span class="dose-badge">1 ч. л.</span></td>
+                <td>Гіпотонія, брадикардія</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SECTION 3 -->
+    <h2 id="modes">3. Рекомендації за типом хвороби</h2>
+    <div class="disease-grid">
+        <div class="disease-card copd">
+            <h3>🫁 ХОЗЛ</h3>
+            <ul>
+                <li>Акцент на <b>бронхоспазмолітики</b>: Чебрець, Мати-й-мачуха</li>
+                <li><b>Виведення в'язкого слизу</b>: Дев'ясил, Солодка</li>
+                <li>Обов'язкове <b>ранкове дренажне</b> пиття (300 мл теплого відвару)</li>
+                <li>Курс: <b>3–4 тижні</b>, перерва 2 тижні</li>
+                <li>⚠️ Уникати сильних алергенів</li>
+            </ul>
+        </div>
+        <div class="disease-card arvi">
+            <h3>🤧 ГРЗ (застуда)</h3>
+            <ul>
+                <li>Акцент на <b>детоксикацію</b>: Звіробій, Шипшина</li>
+                <li><b>Потогінне</b>: Липа, Малина (не в збір, окремо)</li>
+                <li>Рясне тепле пиття: <b>до 2 л/добу</b></li>
+                <li>Курс: <b>7–10 днів</b></li>
+                <li>При першому погіршенні — до лікаря</li>
+            </ul>
+        </div>
+        <div class="disease-card flu">
+            <h3>🌡️ Грип</h3>
+            <ul>
+                <li><b>Жарознижуюче</b>: Липа + Малина (при t° до 38,5)</li>
+                <li><b>Противірусне</b>: Ехінацея (не довше 14 днів)</li>
+                <li><b>Протизапальне</b>: Ромашка, Звіробій</li>
+                <li>Фіто — лише <b>допоміжно</b>! Грип потребує лікаря</li>
+                <li>Курс: <b>5–7 днів</b></li>
+            </ul>
+        </div>
+        <div class="disease-card bronchit">
+            <h3>🫧 Бронхіт</h3>
+            <ul>
+                <li><b>Антисептики</b>: Чебрець, Шавлія</li>
+                <li><b>Обволікаючі</b>: Насіння льону, Алтей</li>
+                <li><b>Відхаркувальні</b>: Дев'ясил, Мати-й-мачуха</li>
+                <li>При гнійному бронхіті — антибіотики, трави додатково</li>
+                <li>Курс: <b>10–14 днів</b></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ Важливо:</strong> Фітотерапія є <b>допоміжним</b> методом лікування. Перед застосуванням проконсультуйтеся з лікарем. При ХОЗЛ — обережно з алергенами! При прийомі медикаментів перевіряйте сумісність (особливо Звіробій).
+    </div>
+</div>
+
+<script>
+// Herb data: [name, dose, contraindication]
+const HERBS = {
+    'Ромашка (база)':         ['2 ч. л.', 'Алергія на складноцвіті'],
+    'Солодка':                ['1 ч. л.', 'Гіпертонія, набряки'],
+    'Чебрець':                ['1 ч. л.', 'Хвороби нирок'],
+    'Алтей':                  ['1–2 ч. л.', 'Цукровий діабет'],
+    'Дев\'ясил':              ['1 ч. л.', 'Вагітність'],
+    'Корінь солодки':         ['1 ч. л.', 'Гіпертонія, набряки'],
+    'Шавлія':                 ['1 ч. л.', 'Вагітність, гіпотиреоз'],
+    'Звіробій':               ['1 ч. л.', 'Несумісний з багатьма ліками!'],
+    'Плоди шипшини':          ['1 ст. л.', 'Виразка шлунку'],
+    'Мати-й-мачуха':          ['1 ч. л.', 'Не довше 4–6 тижнів'],
+    'Подорожник':             ['1–2 ч. л.', 'Гіперацидний гастрит'],
+    'Насіння льону':          ['1 ч. л.', 'Гострі запалення кишечника'],
+    'Липа (потогінне)':       ['1 ст. л.', 'Серцева патологія (великі дози)'],
+    'М\'ята':                 ['1 ч. л.', 'Гіпотонія, грудні діти'],
+    'Пустирник':              ['1 ч. л.', 'Гіпотонія, брадикардія'],
+    'Ехінацея':               ['1 ч. л.', 'Не довше 2 тижнів! Аутоімунні захворювання'],
+    'Ромашка (заспокійлива)': ['2 ч. л.', 'Алергія на складноцвіті'],
+};
+
+function showTab(index) {
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===index));
+    document.querySelectorAll('.content').forEach((c,i) => c.classList.toggle('active', i===index));
+}
+
+function generate(type) {
+    let herbs = [];
+    let brew = '', course = '';
+
+    if (type === 'morning') {
+        herbs = ['Ромашка (база)'];
+        if (document.getElementById('m_cough').checked)  herbs.push('Солодка');
+        if (document.getElementById('m_phlegm').checked) herbs.push('Чебрець', 'Дев\'ясил');
+        if (document.getElementById('m_dry').checked)    herbs.push('Алтей', 'Корінь солодки');
+        if (document.getElementById('m_temp').checked)   herbs.push('Шавлія', 'Звіробій');
+        if (document.getElementById('m_weak').checked)   herbs.push('Плоди шипшини');
+        if (document.getElementById('m_spasm').checked)  herbs.push('Мати-й-мачуха');
+
+        brew   = '1 ст. л. суміші на 300 мл окропу. Настояти <b>20 хв</b> під кришкою. Пити теплим після сніданку.';
+        course = 'Ранковий прийом: <b>10–14 днів</b> при ГРЗ / бронхіті; до <b>3–4 тижнів</b> при ХОЗЛ із перервою.';
+        renderResult('morningResult', herbs, brew, course);
+    } else {
+        herbs = ['Ромашка (заспокійлива)'];
+        if (document.getElementById('e_cough').checked)  herbs.push('Подорожник');
+        if (document.getElementById('e_dry').checked)    herbs.push('Насіння льону', 'Алтей');
+        if (document.getElementById('e_temp').checked)   herbs.push('Липа (потогінне)');
+        if (document.getElementById('e_sleep').checked)  herbs.push('М\'ята', 'Пустирник');
+        if (document.getElementById('e_immune').checked) herbs.push('Ехінацея');
+
+        brew   = '1 ч. л. суміші на 250 мл окропу. Настояти <b>15 хв</b>. Пити за 1 год до сну з ч. л. меду.';
+        course = 'Вечірній прийом: <b>7–10 днів</b>. Ехінацею — не довше <b>2 тижнів</b>.';
+        renderResult('eveningResult', herbs, brew, course);
+    }
+}
+
+function renderResult(id, list, brew, course) {
+    const unique = [...new Set(list)];
+    const totalDose = unique.length;
+
+    let rows = unique.map(h => {
+        const info = HERBS[h] || ['—', '—'];
+        return `<tr>
+            <td><b>${h}</b></td>
+            <td><span class="dose-badge">${info[0]}</span></td>
+            <td class="contra">${info[1]}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById(id).innerHTML = `
+        <strong>Рекомендований склад (${totalDose} компонент${totalDose === 1 ? '' : 'и/ів'}):</strong>
+        <table class="herb-table">
+            <thead><tr><th>Трава</th><th>Доза в збір</th><th>⚠️ Обережно</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+        <p style="margin:10px 0 4px"><b>🫖 Заварювання:</b> ${brew}</p>
+        <div class="course-box"><strong>📅 Курс:</strong> ${course}</div>
+    `;
+}
+</script>
+</body>
+</html>
