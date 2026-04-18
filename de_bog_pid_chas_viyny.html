@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Де Бог під час війни?</title>
+<meta property="og:image" content="https://raw.githubusercontent.com/christian-word/info-pages/main/ico-msg/ico_0.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #141c24;
+    --ink-soft: #2e3d50;
+    --ink-muted: #7a8fa6;
+    --accent: #1a4a72;
+    --accent-light: #3a7db5;
+    --paper: #f4f7fb;
+    --paper-warm: #e8f0f8;
+    --paper-mid: #d8e5f2;
+    --rule: #b8cfe0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 21px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  /* Texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(100,140,180,0.05) 28px,
+        rgba(100,140,180,0.05) 29px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 5rem 2rem 6rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: 'EB Garamond', serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--accent-light);
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.8rem, 7vw, 4.2rem);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .opener-cry {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+  }
+
+  /* Scene-setting intro */
+  .intro {
+    background: var(--paper-warm);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.9s 0.1s ease both;
+  }
+
+  .intro p {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    margin-bottom: 0.6rem;
+  }
+
+  .intro p:last-child { margin-bottom: 0; }
+
+  .cry {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+    display: block;
+    margin: 1rem 0 0.5rem;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp 1s 0.15s ease both;
+  }
+
+  .section-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .section p {
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  em {
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  /* Scripture quote */
+  .scripture {
+    background: var(--paper-mid);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent-light);
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .scripture p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    line-height: 1.6;
+  }
+
+  .scripture cite {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-style: normal;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .divider-icon {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-light);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* Closing */
+  .closing {
+    background: #0f2d4a;
+    color: var(--paper);
+    padding: 2.5rem 2rem;
+    margin-top: 4rem;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .closing-where {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    line-height: 1.75;
+  }
+
+  .closing-where span {
+    display: block;
+    padding-left: 1rem;
+    border-left: 2px solid #5aaee8;
+    margin: 0.4rem 0;
+    color: #ddeeff;
+  }
+
+  .closing-promise {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .closing-promise p {
+    font-size: 0.95rem;
+    color: #c8bfad;
+    line-height: 1.8;
+  }
+
+  .closing-promise .final-verse {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    display: block;
+  }
+
+  .closing-promise cite {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #5aaee8;
+    font-style: normal;
+    display: block;
+    margin-top: 0.4rem;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  /* Animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .wrapper { padding: 3rem 1.25rem 4rem; }
+    h1 { font-size: 2.5rem; }
+    .closing { padding: 2rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header class="header">
+    <span class="eyebrow">Роздум · Баптистська громада</span>
+    <h1>Де Бог під час <em>війни?</em></h1>
+    <p class="opener-cry">Питання, яке кричить із підвалу під обстрілом.</p>
+  </header>
+
+  <div class="intro">
+    <p>Це питання не народжується в аудиторії на лекції з філософії. Воно кричить із підвалу під обстрілом. Воно шепоче біля труни сина. Воно застигає в горлі матері, яка дивиться на руїни свого дому.</p>
+    <span class="cry">Де Бог?</span>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-icon"></div><div class="divider-line"></div></div>
+
+  <section class="section">
+    <span class="section-number">Перше</span>
+    <h2>Що треба сказати чесно</h2>
+    <p>Біблія не уникає цього питання.</p>
+    <div class="scripture">
+      <p>«Боже мій, Боже мій, чому Ти мене покинув? Далекий від спасіння мого»</p>
+      <cite>Псалом 22:2</cite>
+    </div>
+    <p>Це не безвір'я — це <strong>молитва</strong>. Значить, Бог не лякається нашого крику.</p>
+    <p>Йов втратив усе — дітей, майно, здоров'я. І він кричав. І Бог відповів йому — не поясненням, а <em>присутністю</em>.</p>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-icon"></div><div class="divider-line"></div></div>
+
+  <section class="section">
+    <span class="section-number">Друге</span>
+    <h2>Бог не є автором зла</h2>
+    <p>Війна — це наслідок людського вибору. Гріх увійшов у світ через людину, і насильство є його плодом. <strong>Бог не посилає ракети.</strong> Їх посилають люди, які вибрали зло.</p>
+    <p>Але тоді — чому Він не зупиняє?</p>
+    <p>Тому що Він створив нас <em>вільними</em>. І свобода — це не іграшка. Це реальна сила, яка може будувати і руйнувати. Бог поважає цю свободу навіть тоді, коли вона завдає болю — і Йому, і нам.</p>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-icon"></div><div class="divider-line"></div></div>
+
+  <section class="section">
+    <span class="section-number">Третє</span>
+    <h2>Він уже був там</h2>
+    <p>Хрест — це не символ перемоги сильних. Це знак того, що <strong>Бог увійшов у саме дно людського страждання</strong>. Він не спостерігав здалеку. Він був невинно засуджений, катований і вбитий.</p>
+    <p>Тобто коли дитина гине під уламками — Бог знає, що це таке. Не теоретично. <em>Він сам через це пройшов.</em></p>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-icon"></div><div class="divider-line"></div></div>
+
+  <div class="closing">
+    <p style="font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase; color:#5aaee8; margin-bottom:1rem;">І останнє — найважливіше</p>
+    <p style="font-size:1.1rem; color:#a8c4dc; line-height:1.8; margin-bottom:1.25rem;">Він не залишив це фіналом. Воскресіння — це відповідь Бога на смерть. Не пояснення страждання, але обіцянка:</p>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-style:italic; color:#ddeeff; margin-bottom:1.5rem;">«Зло не матиме останнього слова».</p>
+
+    <div class="closing-where">
+      Де Бог під час війни?
+      <span>Він — з тими, хто плаче.</span>
+      <span>Він — з тими, хто рятує.</span>
+      <span>Він — з тими, хто не здається.</span>
+    </div>
+
+    <div class="closing-promise">
+      <p>І Він обіцяє день, коли</p>
+      <span class="final-verse">«Він обітре кожну сльозу з їхніх очей, і смерті більше не буде»</span>
+      <cite>Об'явлення 21:4</cite>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Псалом 22 · Книга Йова · Об'явлення 21:4</p>
+  </div>
+
+</div>
+</body>
+</html>
