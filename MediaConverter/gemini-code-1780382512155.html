@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Локальный Видео Конвертер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #313244;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #89b4fa;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a6adc8;
+        }
+        input[type="file"], select, button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #45475a;
+            background-color: #11111b;
+            color: #cdd6f4;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        select:focus, button:focus {
+            outline: 2px solid #89b4fa;
+        }
+        button {
+            background-color: #89b4fa;
+            color: #11111b;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #b4befe;
+        }
+        button:disabled {
+            background-color: #585b70;
+            color: #a6adc8;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #f9e2af;
+        }
+        #videoPreview {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Видео Конвертер</h1>
+    
+    <div class="form-group">
+        <label for="videoInput">Выберите видео файл:</label>
+        <input type="file" id="videoInput" accept="video/*">
+    </div>
+
+    <div class="form-group">
+        <label for="resolutionSelect">Целевое разрешение (высота):</label>
+        <select id="resolutionSelect">
+            <option value="720">720p (HD)</option>
+            <option value="480">480p (SD)</option>
+            <option value="360">360p</option>
+        </select>
+    </div>
+
+    <button id="convertBtn" disabled>Уменьшить разрешение</button>
+    
+    <div class="status" id="statusText">Ожидание файла...</div>
+</div>
+
+<video id="videoPreview" controls></video>
+
+<script>
+    const videoInput = document.getElementById('videoInput');
+    const resolutionSelect = document.getElementById('resolutionSelect');
+    const convertBtn = document.getElementById('convertBtn');
+    const statusText = document.getElementById('statusText');
+    const videoPreview = document.getElementById('videoPreview');
+
+    let videoUrl = null;
+
+    videoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            if (videoUrl) URL.revokeObjectURL(videoUrl);
+            videoUrl = URL.createObjectURL(file);
+            videoPreview.src = videoUrl;
+            statusText.innerText = "Файл загружен. Готов к конвертации.";
+            convertBtn.disabled = false;
+        }
+    });
+
+    convertBtn.addEventListener('click', async () => {
+        const targetHeight = parseInt(resolutionSelect.value);
+        statusText.innerText = "Обработка видео... Пожалуйста, подождите.";
+        convertBtn.disabled = true;
+
+        // Ждем загрузки метаданных видео, если они еще не готовы
+        if (videoPreview.readyState < 1) {
+            await new Promise(resolve => videoPreview.onloadedmetadata = resolve);
+        }
+
+        const originalWidth = videoPreview.videoWidth;
+        const originalHeight = videoPreview.videoHeight;
+
+        // Если видео уже меньше или равно целевому, предупреждаем, но делаем
+        if (originalHeight <= targetHeight) {
+            if (!confirm(`Оригинальное видео (${originalHeight}p) уже меньше или равно выбранному (${targetHeight}p). Продолжить?`)) {
+                statusText.innerText = "Отменено.";
+                convertBtn.disabled = false;
+                return;
+            }
+        }
+
+        // Вычисляем пропорциональную ширину
+        const aspectRatio = originalWidth / originalHeight;
+        const targetWidth = Math.round(targetHeight * aspectRatio);
+
+        // Создаем canvas для перерисовки кадров
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext('2d');
+
+        // Настройка MediaRecorder для записи с холста
+        const stream = canvas.captureStream(30); // 30 FPS
+        
+        // Пытаемся использовать распространенные кодеки
+        let options = { mimeType: 'video/webm; codecs=vp9' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options = { mimeType: 'video/webm; codecs=vp8' };
+        }
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options = { mimeType: 'video/webm' };
+        }
+
+        const mediaRecorder = new MediaRecorder(stream, options);
+        const chunks = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            // Создаем ссылку для скачивания файла
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `converted_${targetHeight}p.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusText.innerText = "Готово! Файл скачан.";
+            convertBtn.disabled = false;
+        };
+
+        // Запуск воспроизведения и записи
+        videoPreview.currentTime = 0;
+        videoPreview.muted = true; // Избегаем проблем с автоплеем
+        
+        mediaRecorder.start();
+        await videoPreview.play();
+
+        // Цикл отрисовки кадров
+        function drawFrame() {
+            if (!videoPreview.paused && !videoPreview.ended) {
+                ctx.drawImage(videoPreview, 0, 0, targetWidth, targetHeight);
+                
+                // Прогресс в текст
+                const progress = Math.round((videoPreview.currentTime / videoPreview.duration) * 100);
+                statusText.innerText = `Конвертация: ${progress}%`;
+                
+                requestAnimationFrame(drawFrame);
+            } else {
+                mediaRecorder.stop();
+            }
+        }
+
+        drawFrame();
+    });
+</script>
+
+</body>
+</html>

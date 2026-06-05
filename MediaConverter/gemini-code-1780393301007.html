@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Универсальный Аудио Конвертер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1a1a24;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .card {
+            background-color: #242538;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid #3f4257;
+        }
+        h2 {
+            color: #a6e3a1;
+            margin-top: 0;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+        .field {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cdd6f4;
+            font-size: 14px;
+        }
+        input[type="file"], select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #45475a;
+            background-color: #11111b;
+            color: #cdd6f4;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        button {
+            background-color: #a6e3a1;
+            color: #11111b;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background-color: #94e2d5;
+            box-shadow: 0 0 10px rgba(166, 227, 161, 0.4);
+        }
+        button:disabled {
+            background-color: #585b70;
+            color: #a6adc8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #181825;
+            border-radius: 8px;
+            border-left: 4px solid #a6e3a1;
+            font-size: 14px;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        .log-output {
+            margin-top: 15px;
+            max-height: 100px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+            color: #7f849c;
+            background: #11111b;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Аудио Конвертер в MP3</h2>
+    
+    <div class="field">
+        <label>Выберите аудио (или видео) файл любого формата:</label>
+        <input type="file" id="audioInput" accept="audio/*,video/*">
+    </div>
+
+    <div class="field">
+        <label>Качество готового MP3 (Битрейт):</label>
+        <select id="bitrateSelect">
+            <option value="320k">320 kbps — Отличное качество (для музыки)</option>
+            <option value="192k" selected>192 kbps — Хорошее качество (стандарт)</option>
+            <option value="128k">128 kbps — Экономия места (разговорный звук)</option>
+            <option value="96k">96 kbps — Минимальный размер (книги, диктофон)</option>
+        </select>
+    </div>
+
+    <button id="startBtn" disabled>Загрузка модулей...</button>
+
+    <div class="status-box" id="status">Инициализация FFmpeg аудио-движка...</div>
+    <div class="log-output" id="logs"></div>
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+
+<script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+
+    const audioInput = document.getElementById('audioInput');
+    const bitrateSelect = document.getElementById('bitrateSelect');
+    const startBtn = document.getElementById('startBtn');
+    const statusDiv = document.getElementById('status');
+    const logsDiv = document.getElementById('logs');
+
+    // Вывод технических логов для наглядности
+    ffmpeg.setLogger(({ type, message }) => {
+        logsDiv.innerText += `[${type}] ${message}\n`;
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+    });
+
+    // Инициализация библиотеки
+    async function initAudioEngine() {
+        try {
+            await ffmpeg.load();
+            statusDiv.innerText = "Конвертер готов. Загрузите файл для обработки.";
+            if (audioInput.files.length > 0) startBtn.disabled = false;
+        } catch (error) {
+            statusDiv.innerText = "Ошибка запуска. Проверьте, что страница открыта через локальный сервер (localhost).";
+            console.error(error);
+        }
+    }
+
+    audioInput.addEventListener('change', () => {
+        if (ffmpeg.isLoaded() && audioInput.files.length > 0) {
+            startBtn.disabled = false;
+            statusDiv.innerText = "Файл успешно выбран. Можно запускать конвертацию.";
+        }
+    });
+
+    startBtn.addEventListener('click', async () => {
+        const file = audioInput.files[0];
+        if (!file) return;
+
+        startBtn.disabled = true;
+        statusDiv.innerText = "Импорт аудио во временную память...";
+
+        const { name } = file;
+        const targetBitrate = bitrateSelect.value;
+        
+        // Изменяем расширение в имени выходного файла на .mp3
+        const outputName = 'converted_audio.mp3';
+
+        try {
+            // Запись во внутреннюю систему файлов FFmpeg
+            ffmpeg.FS('writeFile', name, await fetchFile(file));
+
+            statusDiv.innerText = `Идет конвертация в MP3 (${targetBitrate})...\nПожалуйста, не закрывайте вкладку.`;
+
+            // Команда конвертации:
+            // -i : входной файл
+            // -c:a libmp3lame : используем официальный кодек LAME MP3
+            // -b:a : выставляем выбранный битрейт (поток данных)
+            await ffmpeg.run(
+                '-i', name,
+                '-c:a', 'libmp3lame',
+                '-b:a', targetBitrate,
+                outputName
+            );
+
+            statusDiv.innerText = "Экспорт готового MP3 файла...";
+
+            // Чтение результата
+            const data = ffmpeg.FS('readFile', outputName);
+
+            // Скачивание файла
+            const blob = new Blob([data.buffer], { type: 'audio/mp3' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Сохраняем имя, но меняем расширение для скачивания
+            const baseName = name.substring(0, name.lastIndexOf('.')) || name;
+            a.download = `${baseName}_${targetBitrate}.mp3`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusDiv.innerText = "Готово! Ваш MP3 файл успешно сохранен в Загрузки.";
+            
+            // Очистка виртуальной ФС для экономии RAM
+            ffmpeg.FS('unlink', name);
+            ffmpeg.FS('unlink', outputName);
+        } catch (err) {
+            statusDiv.innerText = "Упс! Произошла ошибка при обработке звука. Подробности в логе ниже.";
+            console.error(err);
+        } finally {
+            startBtn.disabled = false;
+        }
+    });
+
+    // Старт движка
+    initAudioEngine();
+</script>
+
+</body>
+</html>

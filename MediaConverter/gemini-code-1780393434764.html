@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мультиформатный Аудио Конвертер</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1a1a24;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .card {
+            background-color: #242538;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid #3f4257;
+        }
+        h2 {
+            color: #89b4fa;
+            margin-top: 0;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+        .field {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cdd6f4;
+            font-size: 14px;
+        }
+        input[type="file"], select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #45475a;
+            background-color: #11111b;
+            color: #cdd6f4;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        button {
+            background-color: #89b4fa;
+            color: #11111b;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background-color: #b4befe;
+            box-shadow: 0 0 10px rgba(137, 180, 250, 0.4);
+        }
+        button:disabled {
+            background-color: #585b70;
+            color: #a6adc8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #181825;
+            border-radius: 8px;
+            border-left: 4px solid #89b4fa;
+            font-size: 14px;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        .log-output {
+            margin-top: 15px;
+            max-height: 100px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+            color: #7f849c;
+            background: #11111b;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Медиа Конвертер Звука</h2>
+    
+    <div class="field">
+        <label>Выберите исходный файл (аудио или видео):</label>
+        <input type="file" id="audioInput" accept="audio/*,video/*">
+    </div>
+
+    <div class="field">
+        <label>Целевой формат:</label>
+        <select id="formatSelect">
+            <option value="mp3">MP3 (Сжатый, универсальный)</option>
+            <option value="m4a">M4A / AAC (Современный, высокое сжатие)</option>
+            <option value="wav">WAV (Без сжатия, максимальное качество)</option>
+        </select>
+    </div>
+
+    <div class="field" id="bitrateContainer">
+        <label>Качество (Битрейт):</label>
+        <select id="bitrateSelect">
+            <option value="320k">320 kbps — Отличное качество</option>
+            <option value="192k" selected>192 kbps — Стандарт для мобилки</option>
+            <option value="128k">128 kbps — Экономия места</option>
+        </select>
+    </div>
+
+    <button id="startBtn" disabled>Загрузка модулей...</button>
+
+    <div class="status-box" id="status">Инициализация FFmpeg медиа-движка...</div>
+    <div class="log-output" id="logs"></div>
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+
+<script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+
+    const audioInput = document.getElementById('audioInput');
+    const formatSelect = document.getElementById('formatSelect');
+    const bitrateSelect = document.getElementById('bitrateSelect');
+    const bitrateContainer = document.getElementById('bitrateContainer');
+    const startBtn = document.getElementById('startBtn');
+    const statusDiv = document.getElementById('status');
+    const logsDiv = document.getElementById('logs');
+
+    // Скрываем выбор битрейта для формата WAV, так как он несжатый
+    formatSelect.addEventListener('change', () => {
+        if (formatSelect.value === 'wav') {
+            bitrateContainer.classList.add('hidden');
+        } else {
+            bitrateContainer.classList.remove('hidden');
+        }
+    });
+
+    ffmpeg.setLogger(({ type, message }) => {
+        logsDiv.innerText += `[${type}] ${message}\n`;
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+    });
+
+    async function initEngine() {
+        try {
+            await ffmpeg.load();
+            statusDiv.innerText = "Готов к работе. Выберите файл.";
+            if (audioInput.files.length > 0) startBtn.disabled = false;
+        } catch (error) {
+            statusDiv.innerText = "Ошибка запуска. Проверьте подключение или запустите через локальный сервер.";
+            console.error(error);
+        }
+    }
+
+    audioInput.addEventListener('change', () => {
+        if (ffmpeg.isLoaded() && audioInput.files.length > 0) {
+            startBtn.disabled = false;
+            statusDiv.innerText = "Файл выбран. Нажмите кнопку для старта.";
+        }
+    });
+
+    startBtn.addEventListener('click', async () => {
+        const file = audioInput.files[0];
+        if (!file) return;
+
+        startBtn.disabled = true;
+        statusDiv.innerText = "Чтение файла во временную память...";
+
+        const { name } = file;
+        const format = formatSelect.value;
+        const bitrate = bitrateSelect.value;
+        const outputName = `output.${format}`;
+
+        try {
+            ffmpeg.FS('writeFile', name, await fetchFile(file));
+            statusDiv.innerText = `Конвертация в формат ${format.toUpperCase()}...\nПожалуйста, подождите.`;
+
+            // Массив аргументов для FFmpeg под разные форматы
+            let ffmpegArgs = ['-i', name];
+
+            if (format === 'mp3') {
+                ffmpegArgs.push('-c:a', 'libmp3lame', '-b:a', bitrate);
+            } else if (format === 'm4a') {
+                // Кодек aac является стандартным встроенным для m4a контента
+                ffmpegArgs.push('-c:a', 'aac', '-b:a', bitrate);
+            } else if (format === 'wav') {
+                // pcm_s16le — стандартное 16-битное несжатое аудио (CD-качество)
+                ffmpegArgs.push('-c:a', 'pcm_s16le');
+            }
+
+            ffmpegArgs.push(outputName);
+
+            // Запуск собранной команды
+            await ffmpeg.run(...ffmpegArgs);
+
+            statusDiv.innerText = "Подготовка файла к скачиванию...";
+            const data = ffmpeg.FS('readFile', outputName);
+
+            // Определение MIME-типа в зависимости от расширения
+            let mimeType = 'audio/mpeg';
+            if (format === 'm4a') mimeType = 'audio/mp4';
+            if (format === 'wav') mimeType = 'audio/wav';
+
+            const blob = new Blob([data.buffer], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            const baseName = name.substring(0, name.lastIndexOf('.')) || name;
+            a.download = `${baseName}_converted.${format}`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusDiv.innerText = `Успешно! Файл сохранен как .${format}`;
+            
+            ffmpeg.FS('unlink', name);
+            ffmpeg.FS('unlink', outputName);
+        } catch (err) {
+            statusDiv.innerText = "Ошибка конвертации. Подробности в логе.";
+            console.error(err);
+        } finally {
+            startBtn.disabled = false;
+        }
+    });
+
+    initEngine();
+</script>
+
+</body>
+</html>

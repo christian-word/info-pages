@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Медиа Хаб Конвертации</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/coi-serviceworker/0.1.7/coi-service-worker.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #181825;
+            color: #cdd6f4;
+            margin: 0;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .hub-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #1e1e2e;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #313244;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            text-align: center;
+            color: #cba6f7;
+            margin: 25px 0 15px 0;
+            font-size: 26px;
+            letter-spacing: 0.5px;
+        }
+        /* Вкладки навигации */
+        .tabs {
+            display: flex;
+            background-color: #11111b;
+            border-bottom: 1px solid #313244;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: #a6adc8;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .tab-btn:hover {
+            color: #cdd6f4;
+            background-color: #181825;
+        }
+        .tab-btn.active {
+            color: #11111b;
+            background-color: #cba6f7;
+        }
+        /* Содержимое вкладок */
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .field {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #bac2de;
+            font-size: 14px;
+        }
+        input[type="file"], select, button.action-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #45475a;
+            background-color: #11111b;
+            color: #cdd6f4;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        button.action-btn {
+            background-color: #cba6f7;
+            color: #11111b;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button.action-btn:hover:not(:disabled) {
+            background-color: #f5c2e7;
+            box-shadow: 0 0 12px rgba(203, 166, 247, 0.4);
+        }
+        button.action-btn:disabled {
+            background-color: #585b70;
+            color: #a6adc8;
+            cursor: not-allowed;
+        }
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #11111b;
+            border-radius: 8px;
+            border-left: 4px solid #cba6f7;
+            font-size: 14px;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        .log-output {
+            margin-top: 15px;
+            max-height: 90px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+            color: #7f849c;
+            background: #11111b;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none;
+        }
+        /* Футер */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: #585b70;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+    </style>
+
+
+</head>
+<body>
+
+<div class="hub-container">
+    <h1>Медиа Конвертер</h1>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('videoTab', this)">Видео (MP4)</button>
+        <button class="tab-btn" onclick="switchTab('audioTab', this)">Аудио</button>
+    </div>
+
+    <div id="videoTab" class="tab-content active">
+        <div class="field">
+            <label>Выберите исходное видео (любой формат):</label>
+            <input type="file" id="videoInput" accept="video/*">
+        </div>
+        <div class="field">
+            <label>Максимальное разрешение (высота кадра):</label>
+            <select id="videoResSelect">
+                <option value="720">720p (HD) — Отличный баланс</option>
+                <option value="480">480p (SD) — Компактный размер</option>
+                <option value="360">360p — Минимальный размер</option>
+            </select>
+        </div>
+        <button id="videoStartBtn" class="action-btn" disabled>Загрузка модулей...</button>
+    </div>
+
+    <div id="audioTab" class="tab-content">
+        <div class="field">
+            <label>Выберите аудио или видео файл:</label>
+            <input type="file" id="audioInput" accept="audio/*,video/*">
+        </div>
+        <div class="field">
+            <label>Целевой формат:</label>
+            <select id="audioFormatSelect">
+                <option value="mp3">MP3 (Сжатый, универсальный)</option>
+                <option value="m4a">M4A / AAC (Современный, для мобильных)</option>
+                <option value="wav">WAV (Без сжатия, оригинал)</option>
+            </select>
+        </div>
+        <div class="field" id="audioBitrateContainer">
+            <label>Качество (Битрейт):</label>
+            <select id="audioBitrateSelect">
+                <option value="320k">320 kbps — Максимальное качество</option>
+                <option value="192k" selected>192 kbps — Стандарт для мобилки</option>
+                <option value="128k">128 kbps — Экономия места</option>
+            </select>
+        </div>
+        <button id="audioStartBtn" class="action-btn" disabled>Загрузка модулей...</button>
+    </div>
+
+    <div style="padding: 0 30px 30px 30px;">
+        <div class="status-box" id="statusText">Инициализация ядра FFmpeg...</div>
+        <div class="log-output" id="logsText"></div>
+    </div>
+</div>
+
+<div class="footer">
+    Сделано для внутреннего пользования в церкви 2026 г.
+</div>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+
+<script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    // Создаем ОДИН общий экземпляр FFmpeg для всей страницы
+    const ffmpeg = createFFmpeg({ log: true });
+
+    // Элементы управления интерфейса
+    const statusText = document.getElementById('statusText');
+    const logsText = document.getElementById('logsText');
+    const videoInput = document.getElementById('videoInput');
+    const videoResSelect = document.getElementById('videoResSelect');
+    const videoStartBtn = document.getElementById('videoStartBtn');
+    
+    const audioInput = document.getElementById('audioInput');
+    const audioFormatSelect = document.getElementById('audioFormatSelect');
+    const audioBitrateSelect = document.getElementById('audioBitrateSelect');
+    const audioBitrateContainer = document.getElementById('audioBitrateContainer');
+    const audioStartBtn = document.getElementById('audioStartBtn');
+
+    // Функция переключения вкладок
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+    }
+
+    // Управление отображением битрейта аудио
+    audioFormatSelect.addEventListener('change', () => {
+        if (audioFormatSelect.value === 'wav') {
+            audioBitrateContainer.classList.add('hidden');
+        } else {
+            audioBitrateContainer.classList.remove('hidden');
+        }
+    });
+
+    // Логирование движка
+    ffmpeg.setLogger(({ type, message }) => {
+        logsText.innerText += `[${type}] ${message}\n`;
+        logsText.scrollTop = logsText.scrollHeight;
+    });
+
+    // Общая инициализация FFmpeg при загрузке страницы
+    async function initFFmpegHub() {
+        try {
+            await ffmpeg.load();
+            statusText.innerText = "Ядро FFmpeg успешно загружено.\nВыберите нужную вкладку, загрузите файл и начните работу.";
+            checkInputs();
+        } catch (error) {
+            statusText.innerText = "Ошибка запуска ядра. Убедитесь, что страница открыта через локальный веб-сервер (localhost).";
+            console.error(error);
+        }
+    }
+
+    // Проверка, выбраны ли файлы для активации кнопок
+    function checkInputs() {
+        if (!ffmpeg.isLoaded()) return;
+        videoStartBtn.disabled = videoInput.files.length === 0;
+        audioStartBtn.disabled = audioInput.files.length === 0;
+    }
+
+    videoInput.addEventListener('change', checkInputs);
+    audioInput.addEventListener('change', checkInputs);
+
+    // БЛОК ОБРАБОТКИ ВИДЕО
+    videoStartBtn.addEventListener('click', async () => {
+        const file = videoInput.files[0];
+        if (!file) return;
+
+        setUIState(true);
+        statusText.innerText = "Видео: Чтение и импорт файла...";
+
+        const { name } = file;
+        const targetHeight = videoResSelect.value;
+
+        try {
+            ffmpeg.FS('writeFile', name, await fetchFile(file));
+            statusText.innerText = `Видео: Идет пережатие в MP4 (${targetHeight}p)...\nПожалуйста, не закрывайте вкладку, это займет время.`;
+
+            await ffmpeg.run(
+                '-i', name, 
+                '-vf', `scale=-2:${targetHeight}`, 
+                '-c:v', 'libx264', 
+                '-crf', '23', 
+                '-preset', 'medium', 
+                '-c:a', 'aac', 
+                '-b:a', '128k', 
+                'output_video.mp4'
+            );
+
+            statusText.innerText = "Видео: Экспорт сжатого MP4...";
+            const data = ffmpeg.FS('readFile', 'output_video.mp4');
+
+            const blob = new Blob([data.buffer], { type: 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compressed_${targetHeight}p.mp4`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusText.innerText = "Видео: Успешно готово! Файл сохранен в Загрузки.";
+            ffmpeg.FS('unlink', name);
+            ffmpeg.FS('unlink', 'output_video.mp4');
+        } catch (err) {
+            statusText.innerText = "Видео: Произошла ошибка. Подробности смотрите в логах.";
+            console.error(err);
+        } finally {
+            setUIState(false);
+        }
+    });
+
+    // БЛОК ОБРАБОТКИ АУДИО
+    audioStartBtn.addEventListener('click', async () => {
+        const file = audioInput.files[0];
+        if (!file) return;
+
+        setUIState(true);
+        statusText.innerText = "Аудио: Чтение файла...";
+
+        const { name } = file;
+        const format = audioFormatSelect.value;
+        const bitrate = audioBitrateSelect.value;
+        const outputName = `output_audio.${format}`;
+
+        try {
+            ffmpeg.FS('writeFile', name, await fetchFile(file));
+            statusText.innerText = `Аудио: Конвертация в формат ${format.toUpperCase()}...`;
+
+            let args = ['-i', name];
+            if (format === 'mp3') {
+                args.push('-c:a', 'libmp3lame', '-b:a', bitrate);
+            } else if (format === 'm4a') {
+                args.push('-c:a', 'aac', '-b:a', bitrate);
+            } else if (format === 'wav') {
+                args.push('-c:a', 'pcm_s16le');
+            }
+            args.push(outputName);
+
+            await ffmpeg.run(...args);
+
+            statusText.innerText = "Аудио: Подготовка файла к скачиванию...";
+            const data = ffmpeg.FS('readFile', outputName);
+
+            let mimeType = 'audio/mpeg';
+            if (format === 'm4a') mimeType = 'audio/mp4';
+            if (format === 'wav') mimeType = 'audio/wav';
+
+            const blob = new Blob([data.buffer], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            const baseName = name.substring(0, name.lastIndexOf('.')) || name;
+            a.download = `${baseName}_converted.${format}`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            statusText.innerText = `Аудио: Готово! Файл сохранен в формате .${format}`;
+            ffmpeg.FS('unlink', name);
+            ffmpeg.FS('unlink', outputName);
+        } catch (err) {
+            statusText.innerText = "Аудио: Произошла ошибка обработки звука.";
+            console.error(err);
+        } finally {
+            setUIState(false);
+        }
+    });
+
+    // Блокировка интерфейса во время работы
+    function setUIState(isLoading) {
+        videoStartBtn.disabled = isLoading;
+        audioStartBtn.disabled = isLoading;
+        videoInput.disabled = isLoading;
+        audioInput.disabled = isLoading;
+        if (!isLoading) checkInputs();
+    }
+
+    // Запуск движка
+    initFFmpegHub();
+</script>
+
+</body>
+</html>
