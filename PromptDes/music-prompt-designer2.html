@@ -1,0 +1,500 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Prompt Designer 2.8</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#121212;color:#eee;font-family:Arial,sans-serif;font-size:15px}
+
+.header{padding:12px 15px;background:#1a1a1a;border-bottom:2px solid #00ffcc;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.header-title{font-size:18px;font-weight:bold;flex:1}
+.header-counter{font-size:13px;color:#00ffcc;white-space:nowrap}
+
+/* Desktop layout */
+.wrap{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 53px)}
+.left{overflow-y:auto;padding:12px;border-right:1px solid #333}
+.right{padding:12px;display:flex;flex-direction:column;gap:10px}
+
+/* Mobile layout */
+@media(max-width:700px){
+  .wrap{display:flex;flex-direction:column;height:auto;min-height:calc(100vh - 53px)}
+  .left{border-right:none;border-bottom:1px solid #333;max-height:none}
+  .right{flex:none}
+}
+
+.section{margin-bottom:8px;padding:0;background:#1b1b1b;border-radius:8px;border:1px solid #333;overflow:hidden;transition:0.2s}
+.section:hover{border-color:#444}
+.section h3{margin:0;padding:12px;color:#00ffcc;font-size:13px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;background:#1e1e1e}
+.section h3:hover{background:#252525}
+.section h3 .arrow{font-size:11px;color:#00ffcc;transition:transform 0.2s}
+.section h3.collapsed .arrow{transform:rotate(-90deg)}
+
+/* По умолчанию тело меню закрыто */
+.section-body{display:none;padding:10px 12px;background:#171717;border-top:1px solid #252525}
+.section-body.active{display:block}
+
+label{display:flex;align-items:flex-start;gap:8px;margin:5px 0;cursor:pointer;font-size:14px;line-height:1.4;transition:color 0.15s;padding:3px 0}
+label:hover{color:#00ffcc}
+label.disabled{color:#555;cursor:not-allowed;text-decoration:line-through}
+label.disabled input{pointer-events:none}
+label input[type=checkbox]{margin-top:2px;flex-shrink:0;accent-color:#00ffcc;width:15px;height:15px;cursor:pointer}
+
+.topbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+button{padding:7px 13px;background:#2a2a2a;color:#ccc;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;transition:0.15s}
+button:hover{background:#333;color:#00ffcc;border-color:#00ffcc}
+button.preset-btn{background:#1e1e1e;font-size:12px;padding:6px 10px;border-color:#333}
+
+.prompt-wrap{position:relative;flex:1;min-height:160px;display:flex;flex-direction:column}
+@media(max-width:700px){.prompt-wrap{min-height:140px}}
+
+textarea{flex:1;width:100%;background:#0f0f0f;color:#ddd;border:1px solid #444;border-radius:8px;padding:12px;font-size:14px;resize:vertical;line-height:1.5;min-height:120px}
+textarea:focus{border-color:#00ffcc66;outline:none}
+
+.info{font-size:12px;color:#888;margin-top:6px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.info-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.char-val, .quality-val{font-weight:bold}
+.warning-box{color:#ff8800;font-size:12px;display:none}
+.conflict-box{color:#ff4444;font-size:12px;display:none}
+
+.divider{color:#444;font-size:12px}
+
+@keyframes flash{0%,100%{background:#2a2a2a}50%{background:#00ffcc22}}
+.flash{animation:flash 0.4s ease}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🎵 Prompt Designer 2.8 (Pro)</div>
+  <div class="header-counter"><span id="headerCounter">0</span> симв.</div>
+</div>
+
+<div class="wrap">
+  <div class="left" id="left"></div>
+
+  <div class="right">
+    <div class="topbar" id="topbar">
+      <button onclick="copyPrompt(this)">📋 Копировать</button>
+      <button onclick="clearAll()">🧹 Очистить</button>
+      <button onclick="randomPrompt()">🎲 Рандом</button>
+      <span class="divider">|</span>
+      <span style="color:#888;font-size:12px">Пресеты:</span>
+    </div>
+
+    <div class="prompt-wrap">
+      <textarea id="promptTarget" placeholder="Выбирайте параметры из меню или пресеты..."></textarea>
+    </div>
+
+    <div class="info">
+      <div class="info-row">
+        <span>Длина: <span id="charCounter" class="char-val" style="color:#00ffcc">0</span> символов</span>
+        <span class="divider">|</span>
+        <span>Тегов выбрано: <span id="tagCounter" style="color:#00ffcc; font-weight:bold">0</span></span>
+        <span class="divider">|</span>
+        <span>Качество промта: <span id="quality" class="quality-val" style="color:#00ffcc">🟡 Too Short</span></span>
+      </div>
+      <div class="info-row" style="margin-top: 4px;">
+        <span class="warning-box" id="warningBox">⚠️ Близко к лимиту, ИИ может проигнорировать конец</span>
+        <span class="conflict-box" id="conflictBox">🚫 Конфликтующие параметры заблокированы</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  "Genre": [
+    {en:"cinematic ambient", ru:"кинематографичный эмбиент"},
+    {en:"ambient soundtrack", ru:"атмосферный саундтрек"},
+    {en:"orchestral ambient", ru:"оркестровый эмбиент"},
+    {en:"spiritual soundscape", ru:"духовный звуковой пейзаж"},
+    {en:"space ambient", ru:"космический эмбиент"},
+    {en:"fantasy ambient", ru:"фэнтези эмбиент"},
+    {en:"worship ambient", ru:"медитативный эмбиент (worship)"},
+    {en:"epic ambient", ru:"эпический эмбиент"}
+  ],
+  "Atmosphere": [
+    {en:"vast horizons", ru:"бескрайние горизонты"},
+    {en:"endless skies", ru:"бесконечное небо"},
+    {en:"hidden worlds", ru:"скрытые миры"},
+    {en:"ancient light", ru:"древний свет"},
+    {en:"subtle mystery", ru:"тонкая мистика"},
+    {en:"sense of journey", ru:"ощущение путешествия"},
+    {en:"space", ru:"пространство / космос"},
+    {en:"depth", ru:"глубина"},
+    {en:"eternity", ru:"вечность"},
+    {en:"celestial beauty", ru:"неземная красота"},
+    {en:"quiet majesty", ru:"тихое величие"},
+    {en:"wonder", ru:"чувство чуда"},
+    {en:"transcendence", ru:"трансцендентность"},
+    {en:"peaceful reflection", ru:"мирное размышление"}
+  ],
+  "Emotion": [
+    {en:"awe", ru:"благоговение / трепет"},
+    {en:"hope", ru:"надежда"},
+    {en:"serenity", ru:"безмятежность"},
+    {en:"reverence", ru:"почтение / благоговение"},
+    {en:"contemplation", ru:"созерцание"},
+    {en:"inspiration", ru:"вдохновение"},
+    {en:"uplifting", ru:"душевный подъём"},
+    {en:"nostalgia", ru:"ностальгия"},
+    {en:"longing", ru:"тоска / меланхолия"}
+  ],
+  "Melody": [
+    {en:"memorable emotional melody", ru:"запоминающаяся эмоциональная мелодия"},
+    {en:"soaring lead melody", ru:"парящая главная мелодия"},
+    {en:"expressive melodic theme", ru:"выразительная мелодическая тема"},
+    {en:"evolving melodic development", ru:"развивающаяся мелодия"},
+    {en:"heartfelt melodic phrasing", ru:"искренняя мелодическая фразировка"},
+    {en:"cinematic motif", ru:"кинематографичный мотив"}
+  ],
+  "Harmony": [
+    {en:"rich harmonies", ru:"богатые гармонии"},
+    {en:"elegant harmonic flow", ru:"элегантный поток гармонии"},
+    {en:"gentle tension and beautiful resolution", ru:"мягкое напряжение и красивый финал"},
+    {en:"warm harmonic movement", ru:"теплое гармоническое движение"},
+    {en:"lush cinematic chord progressions", ru:"сочные аккордовые прогрессии"},
+    {en:"satisfying tonal resolution", ru:"приятное тональное разрешение"}
+  ],
+  "Instruments": [
+    {en:"felt piano", ru:"фетровое пианино (мягкое)"},
+    {en:"emotional piano", ru:"эмоциональное пианино"},
+    {en:"intimate piano", ru:"интимное близкое пианино"},
+    {en:"warm strings", ru:"теплые смычковые/струнные"},
+    {en:"soaring strings", ru:"взлетающие струнные"},
+    {en:"delicate strings", ru:"нежные тонкие струнные"},
+    {en:"ethereal choirs", ru:"эфирные хоры"},
+    {en:"distant choirs", ru:"далекие хоры"},
+    {en:"celestial choir", ru:"небесный хор"},
+    {en:"atmospheric pads", ru:"атмосферные пэды"},
+    {en:"shimmering textures", ru:"мерцающие текстуры"},
+    {en:"evolving drones", ru:"развивающиеся дроны"},
+    {en:"celtic flute", ru:"кельтская флейта"},
+    {en:"woodwind flute", ru:"деревянная флейта"},
+    {en:"turkish ney", ru:"турецкий ней (флейта)"},
+    {en:"ethnic textures", ru:"этнические текстуры"},
+    {en:"celesta", ru:"челеста (волшебные колокольчики)"},
+    {en:"soft cello", ru:"мягкая виолончель"},
+    {en:"acoustic guitar", ru:"акустическая гитара"},
+    {en:"soft nylon guitar", ru:"мягкая нейлоновая гитара"}
+  ],
+  "Structure": [
+    {en:"intimate opening", ru:"тихое вступление"},
+    {en:"gradual build", ru:"постепенное нарастание"},
+    {en:"emotional journey", ru:"эмоциональное путешествие"},
+    {en:"evolving arrangement", ru:"развивающаяся аранжировка"},
+    {en:"majestic climax", ru:"величественная кульминация"},
+    {en:"peaceful ending", ru:"спокойный финал"}
+  ],
+  "Spatial": [
+    {en:"ultra-wide stereo field", ru:"сверхширокая стереобаза"},
+    {en:"deep spatial imaging", ru:"глубокий 3D объём"},
+    {en:"holographic soundstage", ru:"голографическая звуковая сцена"},
+    {en:"infinite reverb tails", ru:"бесконечные хвосты реверберации"},
+    {en:"high-ceiling acoustics", ru:"высокие потолки (акустика зала)"},
+    {en:"immersive atmosphere", ru:"эффект полного погружения"},
+    {en:"wide soundstage", ru:"широкая звуковая панорама"},
+    {en:"cinematic depth", ru:"кинематографическая глубина"}
+  ],
+  "Production": [
+    {en:"pristine fidelity", ru:"кристальная чистота звука"},
+    {en:"transparent mix", ru:"прозрачный микс (карманы для инструментов)"},
+    {en:"pin-sharp transients", ru:"чёткая, острая атака инструментов"},
+    {en:"high-fidelity digital textures", ru:"цифровые текстуры высокой четкости"},
+    {en:"airy top-end", ru:"воздушные высокие частоты (дорогой верх)"},
+    {en:"soundtrack-quality production", ru:"качество студийного саундтрека"},
+    {en:"orchestral layering", ru:"оркестровое многослойное наслоение"}
+  ],
+  "Low-End": [
+    {en:"subterranean lows", ru:"глубокий суб-бас (ниже 60Гц)"},
+    {en:"focused sub bass", ru:"сфокусированный собранный саб"},
+    {en:"warm low-end foundation", ru:"теплая низкочастотная основа"},
+    {en:"controlled low frequencies", ru:"контролируемый бас"}
+  ],
+  "Restrictions": [
+    {en:"no vocals", ru:"без вокала"},
+    {en:"no drums", ru:"без барабанов"},
+    {en:"no aggressive percussion", ru:"без жёсткой перкуссии"},
+    {en:"no trailer music", ru:"не трейлерная музыка"},
+    {en:"no dark drama", ru:"без мрачной драмы"},
+    {en:"no heroic action cues", ru:"без героического экшена"},
+    {en:"no experimental tonal shifts", ru:"без экспериментальных смен тональности"}
+  ]
+};
+
+const PRESETS = {
+  "silent": [
+    "cinematic ambient", "vast horizons", "space", "depth", "wonder", "quiet majesty", 
+    "felt piano", "warm strings", "ethereal choirs", "atmospheric pads", 
+    "deep spatial imaging", "transparent mix", "infinite reverb tails", "pristine fidelity", "no vocals"
+  ],
+  "ancient": [
+    "spiritual soundscape", "ancient light", "wonder", "transcendence", "reverence", 
+    "warm strings", "ethereal choirs", "rich harmonies", "deep spatial imaging", "pristine fidelity", "no vocals"
+  ],
+  "hidden": [
+    "cinematic ambient", "hidden worlds", "subtle mystery", "sense of journey", 
+    "shimmering textures", "evolving drones", "atmospheric pads", "holographic soundstage", "transparent mix", "no vocals"
+  ],
+  "crystal": [
+    "transparent mix", "pristine fidelity", "deep spatial imaging", "airy top-end", "pin-sharp transients"
+  ],
+  "epicclarity": [
+    "ultra-wide stereo field", "orchestral layering", "subterranean lows", "transparent mix", "cinematic depth"
+  ],
+  "space": [
+    "holographic soundstage", "infinite reverb tails", "deep spatial imaging", "wide soundstage", "space", "depth", "eternity"
+  ],
+  // НОВЫЕ КРУТЫЕ ПРЕСЕТЫ ПОД ВКУС ДВИЖКА FLOWMUSIC:
+  "guitar_dream": [
+    "ambient soundtrack", "soft nylon guitar", "ambient electric guitar with delay", "lush shimmering pads", 
+    "nostalgia", "heartfelt melodic phrasing", "ultra-wide stereo field", "infinite reverb tails", "airy top-end", "no drums"
+  ],
+  "celtic_mist": [
+    "fantasy ambient", "celtic flute", "celesta", "delicate strings", "subtle mystery", "wonder",
+    "deep spatial imaging", "high-ceiling acoustics", "pristine fidelity", "no drums"
+  ],
+  "analog_pulse": [
+    "space ambient", "evolving drones", "shimmering textures", "high-fidelity digital textures", "depth",
+    "holographic soundstage", "focused sub bass", "pin-sharp transients", "minimalist arrangement"
+  ],
+  "worship_peace": [
+    "worship ambient", "intimate piano", "warm strings", "atmospheric pads", "serenity", "peaceful reflection",
+    "transparent mix", "warm low-end foundation", "infinite reverb tails", "no vocals"
+  ],
+  "orchestral_rise": [
+    "orchestral ambient", "soaring strings", "distant choirs", "soaring lead melody", "gradual build", "majestic climax",
+    "orchestral layering", "cinematic depth", "subterranean lows"
+  ]
+};
+
+const PRESET_LABELS = {
+  "silent": "Silent Spaces",
+  "ancient": "Ancient Light",
+  "hidden": "Hidden Worlds",
+  "crystal": "Crystal Clear",
+  "epicclarity": "Epic Clarity",
+  "space": "Endless Space",
+  // Имена для новых пресетов:
+  "guitar_dream": "Guitar Dreamscape",
+  "celtic_mist": "Celtic Fantasy",
+  "analog_pulse": "Analog Textures",
+  "worship_peace": "Worship Reflection",
+  "orchestral_rise": "Orchestral Climax"
+};
+
+const CONFLICTS = [
+  {
+    triggers: ["beautiful guitar solo","ambient electric guitar with delay","soft nylon guitar"],
+    block: ["soft piano","felt piano","intimate piano"],
+    reason: "Два сольных инструмента (гитара + пианино) создадут кашу"
+  },
+  {
+    triggers: ["no vocals"],
+    block: ["ethereal choirs","distant choirs","celestial choir"],
+    reason: "Противоречит ограничению 'без вокала'"
+  },
+  {
+    triggers: ["no drums","no aggressive percussion"],
+    block: ["gradual build","majestic climax"],
+    reason: "Нарастание без ритма может вызвать ошибку движка"
+  },
+  {
+    triggers: ["space ambient"],
+    block: ["cinematic strings","soaring strings","delicate strings","orchestral ambient"],
+    reason: "Космический эмбиент конфликтует с оркестром"
+  }
+];
+
+function makeId(en) {
+  return 'cb_' + en.replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+const leftContainer = document.getElementById('left');
+const topbar = document.getElementById('topbar');
+const promptTA = document.getElementById('promptTarget');
+const charCounter = document.getElementById('charCounter');
+const headerCounter = document.getElementById('headerCounter');
+const tagCounter = document.getElementById('tagCounter');
+const qualityIndicator = document.getElementById('quality');
+const warningBox = document.getElementById('warningBox');
+const conflictBox = document.getElementById('conflictBox');
+
+let manualEdit = false;
+
+function initApp() {
+  for (const cat in DATA) {
+    const sectionId = 'sec_' + cat.replace(/[^a-zA-Z0-9а-яА-Я]/g,'_');
+    
+    // Каждая секция генерируется с классом "collapsed" по умолчанию
+    let html = `<div class="section">
+      <h3 onclick="toggleSection('${sectionId}')" id="h_${sectionId}">
+        ${cat} <span class="arrow" id="arr_${sectionId}">▼</span>
+      </h3>
+      <div class="section-body" id="${sectionId}">`;
+      
+    DATA[cat].forEach(v => {
+      const id = makeId(v.en);
+      html += `<label id="lbl_${id}"><input type="checkbox" id="${id}" value="${v.en}" onchange="onCheck()"> ${v.ru}</label>`;
+    });
+    html += '</div></div>';
+    leftContainer.insertAdjacentHTML('beforeend', html);
+  }
+
+  for (const key in PRESETS) {
+    const btn = document.createElement('button');
+    btn.className = 'preset-btn';
+    btn.textContent = PRESET_LABELS[key] || key;
+    btn.onclick = () => loadPreset(key);
+    topbar.appendChild(btn);
+  }
+
+  promptTA.addEventListener('input', () => {
+    manualEdit = true;
+    updateCounter(promptTA.value.length, 0, true);
+  });
+}
+
+// Новая функция открытия/закрытия меню
+function toggleSection(id) {
+  const body = document.getElementById(id);
+  const arrow = document.getElementById('arr_' + id);
+  
+  const isOpened = body.classList.toggle('active');
+  
+  if (isOpened) {
+    arrow.style.transform = 'rotate(180deg)';
+    arrow.style.color = '#00ffcc';
+  } else {
+    arrow.style.transform = 'rotate(0deg)';
+    arrow.style.color = '#00ffcc';
+  }
+}
+
+function onCheck() {
+  manualEdit = false;
+  checkConflicts();
+  buildPrompt();
+}
+
+function checkConflicts() {
+  document.querySelectorAll('label').forEach(l => l.classList.remove('disabled'));
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.disabled = false);
+
+  const active = [...document.querySelectorAll('input[type=checkbox]:checked')].map(x => x.value);
+  let hasConflict = false;
+
+  CONFLICTS.forEach(rule => {
+    const triggered = rule.triggers.some(t => active.includes(t));
+    if (!triggered) return;
+
+    rule.block.forEach(b => {
+      const cb = document.querySelector(`input[type=checkbox][value="${CSS.escape(b)}"]`);
+      if (!cb) return;
+      if (cb.checked) { cb.checked = false; hasConflict = true; }
+      cb.disabled = true;
+      const lbl = document.getElementById('lbl_' + makeId(b));
+      if (lbl) lbl.classList.add('disabled');
+    });
+  });
+
+  conflictBox.style.display = hasConflict ? 'inline' : 'none';
+}
+
+function buildPrompt() {
+  if (manualEdit) return;
+  const arr = [...document.querySelectorAll('input[type=checkbox]:checked')].map(x => x.value);
+  promptTA.value = arr.join(', ');
+  updateCounter(promptTA.value.length, arr.length, false);
+}
+
+function updateCounter(len, count, isManual) {
+  charCounter.textContent = len;
+  headerCounter.textContent = len;
+  
+  if (!isManual) {
+    tagCounter.textContent = count;
+    
+    let qualityText = "";
+    if(count < 6) {
+        qualityText = "🟡 Too Short";
+        qualityIndicator.style.color = "#ffbb00";
+    } else if(count <= 15) {
+        qualityText = "🟢 Optimal";
+        qualityIndicator.style.color = "#00ffcc";
+    } else if(count <= 25) {
+        qualityText = "🟠 Large";
+        qualityIndicator.style.color = "#ff8800";
+    } else {
+        qualityText = "🔴 Overloaded";
+        qualityIndicator.style.color = "#ff4444";
+    }
+    qualityIndicator.textContent = qualityText;
+  } else {
+    tagCounter.textContent = "—";
+    qualityIndicator.textContent = "📝 Manual Mode";
+    qualityIndicator.style.color = "#aaa";
+  }
+
+  if (len > 280) {
+    charCounter.style.color = '#ff4444';
+    warningBox.style.display = 'inline';
+    warningBox.style.color = '#ff4444';
+  } else if (len > 180) {
+    charCounter.style.color = '#ffbb00';
+    warningBox.style.display = 'inline';
+    warningBox.style.color = '#ffbb00';
+  } else {
+    charCounter.style.color = '#00ffcc';
+    warningBox.style.display = 'none';
+  }
+}
+
+function clearAll() {
+  manualEdit = false;
+  document.querySelectorAll('input[type=checkbox]').forEach(x => { x.checked = false; x.disabled = false; });
+  document.querySelectorAll('label').forEach(l => l.classList.remove('disabled'));
+  conflictBox.style.display = 'none';
+  warningBox.style.display = 'none';
+  buildPrompt();
+}
+
+function loadPreset(name) {
+  clearAll();
+  if (!PRESETS[name]) return;
+  PRESETS[name].forEach(v => {
+    const cb = document.querySelector(`input[type=checkbox][value="${CSS.escape(v)}"]`);
+    if (cb) cb.checked = true;
+  });
+  checkConflicts();
+  buildPrompt();
+}
+
+function randomPrompt() {
+  clearAll();
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    if (Math.random() < 0.12) cb.checked = true;
+  });
+  checkConflicts();
+  buildPrompt();
+}
+
+function copyPrompt(btn) {
+  const text = promptTA.value;
+  if (!text.trim()) return;
+  navigator.clipboard.writeText(text).catch(() => {
+    promptTA.select();
+    document.execCommand('copy');
+  });
+  const orig = btn.textContent;
+  btn.textContent = '✅ Скопировано!';
+  btn.classList.add('flash');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('flash'); }, 1500);
+}
+
+initApp();
+</script>
+</body>
+</html>
