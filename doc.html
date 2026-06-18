@@ -5,38 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Приходское ознакомление: Личность Святого Духа</title>
     <style>
-        /* Обнуляем отступы, чтобы документ занимал всё пространство */
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            overflow-x: hidden;
         }
-        /* Контейнер для адаптивного отображения на смартфонах и ПК */
-        .iframe-container {
+
+        /* Кнопка мгновенного скачивания PDF */
+        .download-btn {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 9999;
+            width: 38px;
+            height: 38px;
+            background-color: #2b4c7e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            background-color: #3a5fcd;
+        }
+
+        .download-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Иконка стрелочки вниз */
+        .download-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Контейнер, скрывающий боковые поля Google Docs */
+        .phone-viewport-fix {
             position: relative;
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
-        /* Сам фрейм с документом */
+
         iframe {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             border: none;
+            height: 100%;
+        }
+
+        /* Масштабирование для мобильных телефонов */
+        @media (max-width: 767px) {
+            iframe {
+                width: 160% !important;
+                left: -30% !important; 
+                transform: scale(0.9);
+                transform-origin: top center;
+            }
+        }
+
+        /* Настройка для больших экранов (ПК) */
+        @media (min-width: 768px) {
+            iframe {
+                width: 100%;
+                left: 0;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="iframe-container">
-    <!-- Встроенный Google Документ в режиме адаптивной веб-страницы -->
-    <iframe src="https://docs.google.com/document/d/13B61C2okmMkzpYESaV2h0zHLP9tUsGYb6di5WTXTvSY/pub?embedded=true"></iframe>
-</div>
+    <a class="download-btn" href="https://docs.google.com/document/d/13B61C2okmMkzpYESaV2h0zHLP9tUsGYb6di5WTXTvSY/export?format=pdf" title="Скачать как PDF">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+    </a>
+
+    <div class="phone-viewport-fix">
+        <iframe src="https://docs.google.com/document/d/e/2PACX-1vSFoifUpRSGrY-AKPZIcUT5flfmSftRG48dI4tcVlX-Ki9DtgDa3-LZ83Lk6vfUIH5oSOxVZ2P4sPOx/pub?embedded=true"></iframe>
+    </div>
 
 </body>
 </html>
