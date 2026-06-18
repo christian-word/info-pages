@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор Одноразовых Ссылок</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/md5.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+        .box { background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { background: #0088cc; color: white; border: none; cursor: pointer; font-weight: bold; }
+        #result { background: #e7f3ff; padding: 10px; word-break: break-all; margin-top: 10px; display: none; border-left: 5px solid #0088cc; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h3>Генератор защищенных ссылок для Telegram</h3>
+    <label>URL твоего скрипта GAS:</label>
+    <input type="text" id="gasUrl"     value="https://script.google.com/macros/s/AKfycbzPFbyF16qGlWUuu4-dxI3EEeREWqYPUIuzGTvOdDSwpgpVKGmMc5v1QkKp7CRkkQ1jBw/exec">
+    
+    <label>Идентификатор трека (как в коде GAS):</label>
+    <input type="text" id="trackId" value="https://">
+    
+    <button onclick="generateLink()">Создать ссылку для Telegram (на 45 сек)</button>
+    
+    <div id="result"></div>
+</div>
+
+<script>
+    const SECRET_SALT = "РыбалкаДелоСвятое_123"; // Должен быть ОДИНАКОВЫМ и в GAS, и тут
+
+    function generateLink() {
+        const gasUrl = document.getElementById('gasUrl').value.trim();
+        const trackId = document.getElementById('trackId').value.trim();
+        
+        // Время жизни: текущее + 45 секунд
+        const expires = Math.floor(Date.now() / 1000) + 45;
+        
+        // Генерируем MD5 хэш строки
+        const stringToHash = SECRET_SALT + trackId + expires;
+        const token = CryptoJS.MD5(stringToHash).toString();
+        
+        // Собираем итоговую ссылку и маскируем её под аудио-файл для Telegram через маневр с якорем (#)
+        const finalLink = `${gasUrl}?track=${trackId}&expires=${expires}&token=${token}#/(Epic_Electronic_Hybrid).m4a`;
+        
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<strong>Ссылка создана! У тебя есть 45 секунд, чтобы закинуть её в Телеграм:</strong><br><br>${finalLink}`;
+    }
+</script>
+
+</body>
+</html>
