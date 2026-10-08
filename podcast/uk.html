@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Світло як посланець: порядок, у якому ми живемо</title>
+<meta name="description" content="Пізнавальний матеріал: що насправді означає швидкість світла і чому у світу є лад. Три подкасти та роздум у світлі віри.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f1f4f8;
+    --ink: #0f1b2d;
+    --muted: #4b5a70;
+    --ray: #c98a1b;
+    --deep: #24476e;
+    --panel: #e3e9f1;
+    --line: #c6d0de;
+    --serif: "PT Serif", Georgia, "Times New Roman", serif;
+    --head: "Lora", Georgia, serif;
+    --sans: "PT Sans", "Segoe UI", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0e1726;
+      --ink: #e8edf5;
+      --muted: #a3b1c6;
+      --ray: #e3a93c;
+      --deep: #8db4e2;
+      --panel: #16233a;
+      --line: #2a3b57;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.7;
+  }
+  .wrap { width: min(100% - 2.5rem, 42rem); margin-inline: auto; }
+
+  /* Hero */
+  header.hero { padding: 5rem 0 3rem; }
+  .ray { display: block; width: 100%; height: 40px; margin-bottom: 2rem; overflow: visible; }
+  .ray line { stroke: var(--ray); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: shine 2.2s ease-out forwards; }
+  .ray circle { fill: var(--ray); opacity: 0; animation: appear .4s ease-out 2s forwards; }
+  @keyframes shine { to { stroke-dashoffset: 0; } }
+  @keyframes appear { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .ray line { animation: none; stroke-dashoffset: 0; }
+    .ray circle { animation: none; opacity: 1; }
+    html { scroll-behavior: auto; }
+  }
+  h1 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 6vw, 3.3rem);
+    line-height: 1.15;
+    margin: 0 0 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .lead { font-size: 1.25rem; color: var(--muted); margin: 0; }
+
+  h2 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: 1.7rem;
+    line-height: 1.25;
+    margin: 0 0 1rem;
+  }
+  h3 { font-family: var(--head); font-size: 1.15rem; margin: 1.8rem 0 .4rem; }
+  section { padding: 2.6rem 0; border-top: 1px solid var(--line); }
+  p { margin: 0 0 1.1rem; }
+
+  /* Podcasts */
+  .episodes { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 1rem; }
+  .episode { background: var(--panel); border-left: 4px solid var(--ray); padding: 1rem 1.2rem 1.1rem; border-radius: 0 6px 6px 0; }
+  .episode .name { font-family: var(--head); font-weight: 500; font-size: 1.1rem; line-height: 1.35; margin: 0 0 .15rem; }
+  .episode .lang { font-family: var(--sans); font-size: .9rem; color: var(--muted); margin: 0 0 .7rem; }
+  audio { width: 100%; }
+  .note { font-family: var(--sans); font-size: .95rem; color: var(--muted); margin-top: 1rem; }
+
+  /* Key ideas */
+  .ideas { margin: 1.5rem 0 0; padding: 0; list-style: none; }
+  .ideas li { padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .ideas li:last-child { border-bottom: 0; }
+  .ideas strong { font-family: var(--head); font-size: 1.1rem; display: block; margin-bottom: .2rem; }
+
+  /* Scripture */
+  blockquote {
+    margin: 1.4rem 0;
+    padding: .2rem 0 .2rem 1.3rem;
+    border-left: 3px solid var(--deep);
+    font-style: italic;
+  }
+  blockquote cite { display: block; font-style: normal; font-family: var(--sans); font-size: .95rem; color: var(--muted); margin-top: .3rem; }
+
+  .honest { background: var(--panel); padding: 1.2rem 1.4rem; border-radius: 6px; margin-top: 1.6rem; }
+  .honest p:last-child { margin-bottom: 0; }
+
+  ol.questions { padding-left: 1.4rem; }
+  ol.questions li { margin-bottom: .8rem; }
+
+  .back { font-family: var(--sans); font-size: .95rem; margin: 0 0 1.5rem; }
+  footer { padding: 2.2rem 0 4rem; border-top: 1px solid var(--line); font-family: var(--sans); font-size: .92rem; color: var(--muted); }
+  a { color: var(--deep); }
+  .made { margin: 1.4rem 0 0; font-weight: 700; }
+  :focus-visible { outline: 3px solid var(--ray); outline-offset: 3px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <svg class="ray" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="0" y1="20" x2="580" y2="20"></line>
+      <circle cx="588" cy="20" r="7"></circle>
+    </svg>
+    <p class="back"><a href="index.html">← Вибір мови / Выбор языка</a></p>
+    <h1>Світло як посланець: порядок, у якому ми живемо</h1>
+    <p class="lead">Що насправді означає «швидкість світла» і чому з цього можна почути вістку про Творця, у Якого все було влаштовано мірою та сенсом.</p>
+  </div>
+</header>
+
+<main>
+  <section id="podcasts">
+    <div class="wrap">
+      <h2>Послухайте подкасти</h2>
+      <p>Три короткі випуски про одне й те саме: про те, що швидкість світла — не рекорд, а частина будови світу. Слухати можна в будь-якому порядку.</p>
+
+      <ul class="episodes">
+        <li class="episode">
+          <p class="name" lang="uk">Чому швидкість світла насправді не швидкість</p>
+          <p class="lang">Українська</p>
+          <audio controls preload="none" src="audio/Чому_швидкість_світла_насправді_не_швидкість.m4a">Ваш браузер не підтримує аудіо.</audio>
+        </li>
+        <li class="episode">
+          <p class="name" lang="uk">Як швидкість світла рятує Всесвіт від хаосу</p>
+          <p class="lang">Українська</p>
+          <audio controls preload="none" src="audio/Як_швидкість_світла_рятує_Всесвіт_від_хаосу.m4a">Ваш браузер не підтримує аудіо.</audio>
+        </li>
+        <li class="episode">
+          <p class="name" lang="ru">Почему скорость света защищает реальность от хаоса</p>
+          <p class="lang">Російською</p>
+          <audio controls preload="none" src="audio/Почему_скорость_света_защищает_реальность_от_хаоса.m4a">Ваш браузер не підтримує аудіо.</audio>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="idea">
+    <div class="wrap">
+      <h2>Головна думка простими словами</h2>
+      <p>Ми звикли думати, що світло — це щось дуже швидке, учасник космічних перегонів, який прийшов першим. Фізика каже інакше: число 299 792 458 м/с описує не «рекорд світла», а те, як пов’язані між собою простір і час.</p>
+
+      <ul class="ideas">
+        <li>
+          <strong>Це не перегони, а правило</strong>
+          Ніхто не змагається зі світлом. Ця величина однакова для всіх спостерігачів, її не можна «розігнати» чи «сповільнити».
+        </li>
+        <li>
+          <strong>Світло — лише посланець</strong>
+          Та сама межа діє для будь-якої частинки без маси. Світло назвали першим просто тому, що люди помітили його раніше за все інше.
+        </li>
+        <li>
+          <strong>Простір і час пов’язані в одне ціле</strong>
+          Стала <em>c</em> працює як перевідний коефіцієнт між ними: так секунди й метри виявляються двома боками однієї тканини.
+        </li>
+        <li>
+          <strong>Межа захищає причину й наслідок</strong>
+          Якби вплив міг поширюватися миттєво або швидше за межу, порядок подій втратив би сенс: наслідок міг би виявитися раніше за причину. Скінченна швидкість — гарантія того, що «до» і «після» лишаються справжніми.
+        </li>
+        <li>
+          <strong>Саме число умовне, а його існування — ні</strong>
+          Значення в кілометрах чи милях залежить від наших одиниць виміру (з 1983 року метр визначають через швидкість світла). Важливе інше: що така межа взагалі існує.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="faith">
+    <div class="wrap">
+      <h2>Роздум у світлі віри</h2>
+      <p>Якщо причинно-наслідковий зв’язок — основа ладу, то лад — основа всього буття і всякого життя. Без нього ми не змогли б ні думати, ні працювати, ні любити, ні навіть поставити запитання «чому?». Для віруючої людини такий упорядкований, зрозумілий світ — не випадковість, а дар.</p>
+
+      <p>Писання говорить про це своєю мовою. Перше слово творіння — про світло:</p>
+      <blockquote>
+        І сказав Бог: Хай станеться світло! І сталося світло.
+        <cite>Буття 1:3</cite>
+      </blockquote>
+
+      <p>Псалмоспівець чує в сотвореному світі голос Творця:</p>
+      <blockquote>
+        Небеса розповідають про славу Божу, і про діло рук Його звіщає твердь.
+        <cite>Псалом 18:2 (19:2)</cite>
+      </blockquote>
+
+      <p>Автор Послання до євреїв говорить про Божого Сина як про сяйво слави Отця:</p>
+      <blockquote>
+        Він є сяйво слави і відбиток істоти Його, і тримає все словом сили Своєї.
+        <cite>Послання до євреїв 1:3</cite>
+      </blockquote>
+
+      <p>Апостол Павло говорить про Христа, що в Ньому все стоїть:</p>
+      <blockquote>
+        І Він перед усім, і все Ним стоїть.
+        <cite>Послання до колосян 1:17</cite>
+      </blockquote>
+
+      <p>Сучасна фізика не вимовляє цих слів, але її відкриття — що світ тримається на суворих, сталих, пізнаваних співвідношеннях — звучить із ними в унісон. Те, що світ упорядкований і людина здатна цей лад збагнути, для християнина є приводом до вдячності та подиву.</p>
+
+      <p>І є ще одна думка, до якої підводить цей матеріал: якщо навіть простий лад причини й наслідку — таке диво, то життя — ще більше творіння, яке ми поки розуміємо лише почасти.</p>
+
+      <div class="honest">
+        <p><strong>Що тут наука, а що віра.</strong> Фізика показує, що в основі світу лежить сувора структура. Те, що за нею стоїть Бог Творець, — це висновок віри й роздуму, а не лабораторний доказ. Ці розмови не суперечать одна одній: наука описує, <em>як</em> влаштований світ, віра відповідає, <em>Хто</em> і <em>навіщо</em> його створив. Саме тому ми називаємо це роздумом, а не доказом.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="discuss">
+    <div class="wrap">
+      <h2>Запитання для бесіди в групі</h2>
+      <ol class="questions">
+        <li>Що змінилося у вашому розумінні «швидкості світла» після подкастів?</li>
+        <li>Як ви розумієте слова «і тримає все словом сили Своєї» стосовно того, що ми знаємо про світ сьогодні?</li>
+        <li>Чому сама можливість пізнавати світ може бути приводом до вдячності?</li>
+        <li>Чим відрізняються «доказ» і «свідчення» та як говорити про це з людиною, яка не вірить?</li>
+        <li>Якщо лад — це дар, то як він пов’язаний з нашою відповідальністю за світ і за ближніх?</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Про виклад.</strong> Матеріал — популярний виклад ідей із лекцій про теорію відносності. Деякі формулювання в подкастах спрощені (наприклад, образ «погляду фотона» чи «зростаючої маси» під час розгону) і подані заради наочності; за точними визначеннями звертайтеся до підручників фізики. Цитати з Писання наведені за перекладом Огієнка, звірте їх із виданням, яким користується ваша громада.</p>
+    <p class="made">Створено для помістної церкви, м. Суми, 2026 р.</p>
+  </div>
+</footer>
+
+</body>
+</html>
